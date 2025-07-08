@@ -1,0 +1,9 @@
+{
+  "/not-found": "app/not-found.js",
+  "/page": "app/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/pipelines/page": "app/pipelines/page.js",
+  "/documents/page": "app/documents/page.js",
+  "/playground/page": "app/playground/page.js",
+  "/pipelines/new/page": "app/pipelines/new/page.js"
+}
