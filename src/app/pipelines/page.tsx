@@ -6,6 +6,7 @@ import { MainLayout, PageHeader, PageContent } from '@/components/layout/main-la
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge, StatusBadge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import { 
   Plus,
   Download,
@@ -19,25 +20,47 @@ import {
   Zap,
   FileText,
   Search,
-  Brain
+  Brain,
+  Folder,
+  Clock,
+  BarChart3,
+  Play,
+  Pause,
+  Settings,
+  Trash2,
+  Copy,
+  ExternalLink
 } from 'lucide-react'
-import { formatNumber } from '@/lib/utils'
+import { formatNumber, formatDate } from '@/lib/utils'
 import { Pipeline } from '@/types'
+import { cn } from '@/lib/utils'
 
-// Mock data
+// Mock data with updated structure
 const pipelines: Pipeline[] = [
   {
     id: '1',
-    name: 'Customer Support RAG v2',
-    description: 'Multi-language customer support with enhanced context retrieval',
+    name: 'Customer Support Assistant',
+    description: 'Multi-language support chatbot with product knowledge',
     type: 'Q&A • Multi-language • GPT-4',
     status: 'active',
-    model: {
-      id: 'gpt-4-turbo',
-      name: 'GPT-4 Turbo',
+    collectionIds: ['1', '2'], // References to document collections
+    retrievalConfig: {
+      searchMethod: 'hybrid',
+      topK: 5,
+      scoreThreshold: 0.7,
+      reranker: {
+        enabled: true,
+        model: 'cohere-rerank-v2',
+      },
+    },
+    llmConfig: {
       provider: 'openai',
-      costPer1kTokens: 0.01,
-      contextWindow: 128000,
+      model: 'gpt-4-turbo',
+      temperature: 0.7,
+      maxTokens: 1000,
+      systemPrompt: 'You are a helpful customer support assistant...',
+      userPromptTemplate: 'Question: {query}',
+      streaming: true,
     },
     documentsCount: 5200,
     queriesPerDay: 1234,
@@ -47,144 +70,114 @@ const pipelines: Pipeline[] = [
     createdAt: '2024-01-01T00:00:00Z',
     updatedAt: '2024-01-15T10:30:00Z',
     tags: ['customer-support', 'production'],
+    lastQueryAt: '2024-01-15T16:45:00Z',
+    metrics: {
+      totalQueries: 45678,
+      failureRate: 2.1,
+    },
   },
   {
     id: '2',
-    name: 'Technical Documentation',
-    description: 'Code-aware search for technical documentation and API references',
+    name: 'Technical Documentation Search',
+    description: 'Code-aware search for API docs and developer guides',
     type: 'Search • Code-aware • Claude 3',
-    status: 'processing',
-    model: {
-      id: 'claude-3-opus',
-      name: 'Claude 3 Opus',
+    status: 'active',
+    collectionIds: ['3'], 
+    retrievalConfig: {
+      searchMethod: 'vector',
+      topK: 10,
+      reranker: {
+        enabled: false,
+        model: '',
+      },
+    },
+    llmConfig: {
       provider: 'anthropic',
-      costPer1kTokens: 0.015,
-      contextWindow: 200000,
+      model: 'claude-3-opus',
+      temperature: 0.3,
+      maxTokens: 2000,
+      systemPrompt: 'You are a technical documentation assistant...',
+      userPromptTemplate: 'Technical Question: {query}',
+      streaming: true,
     },
     documentsCount: 3800,
     queriesPerDay: 892,
     avgLatency: 156,
     accuracy: 92,
-    costPerDay: 89.21,
+    costPerDay: 98.50,
     createdAt: '2024-01-05T00:00:00Z',
-    updatedAt: '2024-01-15T09:00:00Z',
-    tags: ['technical', 'documentation'],
+    updatedAt: '2024-01-14T12:00:00Z',
+    tags: ['technical', 'developers'],
   },
   {
     id: '3',
-    name: 'Legal Contract Analysis',
-    description: 'Extract and analyze legal clauses with compliance checking',
-    type: 'Extraction • Compliance • GPT-4',
-    status: 'active',
-    model: {
-      id: 'gpt-4-turbo',
-      name: 'GPT-4 Turbo',
+    name: 'Legal Contract Analyzer',
+    description: 'Extract and analyze contract terms and compliance',
+    type: 'Analysis • Legal • GPT-4',
+    status: 'paused',
+    collectionIds: ['4'],
+    retrievalConfig: {
+      searchMethod: 'hybrid',
+      topK: 20,
+      scoreThreshold: 0.8,
+      reranker: {
+        enabled: true,
+        model: 'cohere-rerank-v2',
+      },
+    },
+    llmConfig: {
       provider: 'openai',
-      costPer1kTokens: 0.01,
-      contextWindow: 128000,
+      model: 'gpt-4',
+      temperature: 0.2,
+      maxTokens: 3000,
+      systemPrompt: 'You are a legal document analyst...',
+      userPromptTemplate: 'Analyze: {query}',
+      streaming: false,
     },
     documentsCount: 1200,
-    queriesPerDay: 342,
-    avgLatency: 201,
+    queriesPerDay: 45,
+    avgLatency: 523,
     accuracy: 97,
-    costPerDay: 56.78,
-    createdAt: '2024-01-03T00:00:00Z',
-    updatedAt: '2024-01-14T14:20:00Z',
+    costPerDay: 34.20,
+    createdAt: '2023-12-15T00:00:00Z',
+    updatedAt: '2024-01-10T08:30:00Z',
     tags: ['legal', 'compliance'],
   },
-  {
-    id: '4',
-    name: 'Product Knowledge Base',
-    description: 'FAQ and product information retrieval system',
-    type: 'FAQ • Support • GPT-3.5',
-    status: 'error',
-    model: {
-      id: 'gpt-3.5-turbo',
-      name: 'GPT-3.5 Turbo',
-      provider: 'openai',
-      costPer1kTokens: 0.001,
-      contextWindow: 16000,
-    },
-    documentsCount: 2100,
-    queriesPerDay: 0,
-    avgLatency: 0,
-    accuracy: 0,
-    costPerDay: 0,
-    createdAt: '2024-01-02T00:00:00Z',
-    updatedAt: '2024-01-15T08:00:00Z',
-    tags: ['product', 'faq'],
-  },
-  {
-    id: '5',
-    name: 'HR Policy Assistant',
-    description: 'Internal HR policy Q&A with privacy-focused local LLM',
-    type: 'Internal • Q&A • Llama 3',
-    status: 'inactive',
-    model: {
-      id: 'llama-3-70b',
-      name: 'Llama 3 70B',
-      provider: 'meta',
-      costPer1kTokens: 0,
-      contextWindow: 8000,
-    },
-    documentsCount: 456,
-    queriesPerDay: 0,
-    avgLatency: 124,
-    accuracy: 89,
-    costPerDay: 0,
-    createdAt: '2024-01-04T00:00:00Z',
-    updatedAt: '2024-01-10T11:00:00Z',
-    tags: ['hr', 'internal'],
-  },
-  {
-    id: '6',
-    name: 'Sales Enablement',
-    description: 'Sales team knowledge base integrated with CRM data',
-    type: 'Knowledge • CRM • GPT-4',
-    status: 'active',
-    model: {
-      id: 'gpt-4-turbo',
-      name: 'GPT-4 Turbo',
-      provider: 'openai',
-      costPer1kTokens: 0.01,
-      contextWindow: 128000,
-    },
-    documentsCount: 892,
-    queriesPerDay: 567,
-    avgLatency: 112,
-    accuracy: 91,
-    costPerDay: 45.32,
-    createdAt: '2024-01-06T00:00:00Z',
-    updatedAt: '2024-01-15T07:30:00Z',
-    tags: ['sales', 'crm'],
-  },
 ]
 
-const filterTabs = [
-  { label: 'All Pipelines', value: 'all', count: pipelines.length },
-  { label: 'Active', value: 'active', count: pipelines.filter(p => p.status === 'active').length },
-  { label: 'Inactive', value: 'inactive', count: pipelines.filter(p => p.status === 'inactive').length },
-  { label: 'Issues', value: 'issues', count: pipelines.filter(p => p.status === 'error' || p.status === 'processing').length },
+const stats = [
+  {
+    label: 'Active Pipelines',
+    value: pipelines.filter(p => p.status === 'active').length,
+    total: pipelines.length,
+    icon: Activity,
+    color: 'text-green-500',
+  },
+  {
+    label: 'Total Queries Today',
+    value: pipelines.reduce((sum, p) => sum + (p.queriesPerDay || 0), 0),
+    icon: Search,
+    color: 'text-blue-500',
+  },
+  {
+    label: 'Avg Response Time',
+    value: Math.round(pipelines.reduce((sum, p) => sum + (p.avgLatency || 0), 0) / pipelines.length) + 'ms',
+    icon: Zap,
+    color: 'text-orange-500',
+  },
+  {
+    label: 'Daily Cost',
+    value: '$' + pipelines.reduce((sum, p) => sum + (p.costPerDay || 0), 0).toFixed(2),
+    icon: DollarSign,
+    color: 'text-purple-500',
+  },
 ]
-
-const statusIcons = {
-  active: CheckCircle,
-  inactive: XCircle,
-  processing: Activity,
-  error: AlertCircle,
-}
 
 export default function PipelinesPage() {
   const router = useRouter()
-  const [activeFilter, setActiveFilter] = useState('all')
-
-  const filteredPipelines = pipelines.filter(pipeline => {
-    if (activeFilter === 'all') return true
-    if (activeFilter === 'active') return pipeline.status === 'active'
-    if (activeFilter === 'inactive') return pipeline.status === 'inactive'
-    if (activeFilter === 'issues') return pipeline.status === 'error' || pipeline.status === 'processing'
-    return true
-  })
+  const [searchQuery, setSearchQuery] = useState('')
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [filterStatus, setFilterStatus] = useState<string>('all')
 
   const handleCreatePipeline = () => {
     router.push('/pipelines/new')
@@ -194,16 +187,25 @@ export default function PipelinesPage() {
     router.push(`/pipelines/${pipelineId}`)
   }
 
+  const handlePlayground = (pipelineId: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    router.push(`/playground?pipeline=${pipelineId}`)
+  }
+
+  const filteredPipelines = pipelines.filter(pipeline => {
+    const matchesSearch = 
+      pipeline.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      pipeline.description.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesStatus = filterStatus === 'all' || pipeline.status === filterStatus
+    return matchesSearch && matchesStatus
+  })
+
   return (
     <MainLayout>
       <PageHeader
-        title="Pipeline Management"
-        description="Configure and monitor your RAG pipelines"
+        title="RAG Pipelines"
+        description="Manage your retrieval-augmented generation pipelines"
       >
-        <Button variant="outline">
-          <Download className="mr-2 h-4 w-4" />
-          Import
-        </Button>
         <Button onClick={handleCreatePipeline}>
           <Plus className="mr-2 h-4 w-4" />
           New Pipeline
@@ -211,157 +213,205 @@ export default function PipelinesPage() {
       </PageHeader>
 
       <PageContent>
-        {/* Filter Tabs */}
-        <div className="flex gap-6 mb-8 border-b border-border">
-          {filterTabs.map((tab) => (
-            <button
-              key={tab.value}
-              onClick={() => setActiveFilter(tab.value)}
-              className={`pb-3 px-1 text-sm font-medium transition-colors relative ${
-                activeFilter === tab.value
-                  ? 'text-primary'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
+        {/* Stats Overview */}
+        <div className="grid gap-4 md:grid-cols-4 mb-8">
+          {stats.map((stat) => {
+            const Icon = stat.icon
+            return (
+              <Card key={stat.label}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    {stat.label}
+                  </CardTitle>
+                  <Icon className={cn("h-4 w-4", stat.color)} />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {stat.value}
+                  </div>
+                  {stat.total && (
+                    <p className="text-xs text-muted-foreground">
+                      of {stat.total} total
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+
+        {/* Filters */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
+          <div className="flex flex-1 gap-4">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search pipelines..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="px-3 py-2 border border-input bg-background rounded-md"
             >
-              {tab.label}
-              <Badge variant="secondary" className="ml-2 text-xs">
-                {tab.count}
-              </Badge>
-              {activeFilter === tab.value && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
-              )}
-            </button>
-          ))}
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="error">Error</option>
+            </select>
+          </div>
         </div>
 
         {/* Pipelines Grid */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredPipelines.map((pipeline) => {
-            const StatusIcon = statusIcons[pipeline.status]
-            
-            return (
-              <Card 
-                key={pipeline.id} 
-                className="card-hover relative overflow-hidden"
-                onClick={() => handlePipelineClick(pipeline.id)}
-              >
-                {/* Status line at top */}
-                <div className={`absolute top-0 left-0 right-0 h-1 ${
-                  pipeline.status === 'active' ? 'bg-green-500' :
-                  pipeline.status === 'inactive' ? 'bg-gray-500' :
-                  pipeline.status === 'processing' ? 'bg-yellow-500' :
-                  'bg-red-500'
-                }`} />
-                
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-lg">{pipeline.name}</CardTitle>
-                      <p className="text-sm text-muted-foreground mt-1">{pipeline.type}</p>
-                    </div>
+          {filteredPipelines.map((pipeline) => (
+            <Card
+              key={pipeline.id}
+              className="cursor-pointer hover:shadow-lg transition-all duration-200 group"
+              onClick={() => handlePipelineClick(pipeline.id)}
+            >
+              <CardHeader className="pb-4">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1 flex-1">
+                    <CardTitle className="text-lg line-clamp-1">
+                      {pipeline.name}
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {pipeline.description}
+                    </p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      // Handle menu
+                    }}
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                <div className="flex items-center gap-2 mt-3">
+                  <StatusBadge status={pipeline.status} />
+                  <Badge variant="secondary" className="text-xs">
+                    {pipeline.llmConfig.model}
+                  </Badge>
+                  {pipeline.retrievalConfig.reranker?.enabled && (
+                    <Badge variant="outline" className="text-xs">
+                      Reranked
+                    </Badge>
+                  )}
+                </div>
+              </CardHeader>
+
+              <CardContent className="space-y-4">
+                {/* Collections Info */}
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Folder className="h-4 w-4" />
+                  <span>{pipeline.collectionIds.length} collection{pipeline.collectionIds.length > 1 ? 's' : ''}</span>
+                  <span className="text-xs">•</span>
+                  <span>{formatNumber(pipeline.documentsCount)} docs</span>
+                </div>
+
+                {/* Metrics Grid */}
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="space-y-1">
+                    <p className="text-muted-foreground flex items-center gap-1">
+                      <Activity className="h-3 w-3" />
+                      Queries/day
+                    </p>
+                    <p className="font-medium">{formatNumber(pipeline.queriesPerDay)}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-muted-foreground flex items-center gap-1">
+                      <Zap className="h-3 w-3" />
+                      Latency
+                    </p>
+                    <p className="font-medium">{pipeline.avgLatency}ms</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-muted-foreground flex items-center gap-1">
+                      <TrendingUp className="h-3 w-3" />
+                      Accuracy
+                    </p>
+                    <p className="font-medium">{pipeline.accuracy}%</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-muted-foreground flex items-center gap-1">
+                      <DollarSign className="h-3 w-3" />
+                      Cost/day
+                    </p>
+                    <p className="font-medium">${pipeline.costPerDay.toFixed(2)}</p>
+                  </div>
+                </div>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-1">
+                  {pipeline.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center justify-between pt-3 border-t">
+                  <p className="text-xs text-muted-foreground">
+                    {pipeline.lastQueryAt 
+                      ? `Last used ${formatDate(pipeline.lastQueryAt)}`
+                      : `Updated ${formatDate(pipeline.updatedAt)}`
+                    }
+                  </p>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={(e) => handlePlayground(pipeline.id, e)}
+                    >
+                      <Play className="h-3 w-3" />
+                    </Button>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8"
                       onClick={(e) => {
                         e.stopPropagation()
-                        // Handle menu click
+                        // Handle settings
                       }}
                     >
-                      <MoreVertical className="h-4 w-4" />
+                      <Settings className="h-3 w-3" />
                     </Button>
                   </div>
-                  
-                  <div className="mt-3">
-                    <StatusBadge status={pipeline.status} />
-                  </div>
-                </CardHeader>
-                
-                <CardContent>
-                  {/* Performance Chart Placeholder */}
-                  <div className="h-16 bg-muted/30 rounded-lg mb-4 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" 
-                      style={{
-                        clipPath: 'polygon(0% 80%, 10% 70%, 20% 75%, 30% 65%, 40% 60%, 50% 55%, 60% 50%, 70% 45%, 80% 40%, 90% 35%, 100% 30%, 100% 100%, 0% 100%)'
-                      }}
-                    />
-                    <span className="absolute top-2 left-3 text-xs text-muted-foreground">Response time (7d)</span>
-                  </div>
-                  
-                  {/* Stats Grid */}
-                  <div className="grid grid-cols-3 gap-4 text-center mb-4">
-                    <div>
-                      <p className="text-lg font-semibold">{formatNumber(pipeline.documentsCount)}</p>
-                      <p className="text-xs text-muted-foreground">Documents</p>
-                    </div>
-                    <div>
-                      <p className="text-lg font-semibold">{formatNumber(pipeline.queriesPerDay)}</p>
-                      <p className="text-xs text-muted-foreground">Queries/day</p>
-                    </div>
-                    <div>
-                      <p className="text-lg font-semibold">{pipeline.avgLatency}ms</p>
-                      <p className="text-xs text-muted-foreground">Avg latency</p>
-                    </div>
-                  </div>
-                  
-                  {/* Metrics */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge variant="outline" className="text-xs">
-                      <CheckCircle className="mr-1 h-3 w-3" />
-                      {pipeline.accuracy}% accuracy
-                    </Badge>
-                    <Badge variant="outline" className="text-xs">
-                      <DollarSign className="mr-1 h-3 w-3" />
-                      ${pipeline.costPerDay}/day
-                    </Badge>
-                    {pipeline.status === 'active' && (
-                      <Badge variant="outline" className="text-xs">
-                        <Zap className="mr-1 h-3 w-3" />
-                        Auto-scaled
-                      </Badge>
-                    )}
-                  </div>
-                  
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
-                      className="flex-1"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        router.push('/playground')
-                      }}
-                    >
-                      Test
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="flex-1"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        router.push(`/pipelines/${pipeline.id}/config`)
-                      }}
-                    >
-                      Configure
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="flex-1"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        router.push(`/analytics/pipeline/${pipeline.id}`)
-                      }}
-                    >
-                      Analytics
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )
-          })}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
+
+        {/* Empty State */}
+        {filteredPipelines.length === 0 && (
+          <div className="text-center py-12">
+            <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium mb-2">No pipelines found</h3>
+            <p className="text-muted-foreground mb-4">
+              {searchQuery 
+                ? 'Try adjusting your search terms' 
+                : 'Create your first RAG pipeline to get started'
+              }
+            </p>
+            {!searchQuery && (
+              <Button onClick={handleCreatePipeline}>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Pipeline
+              </Button>
+            )}
+          </div>
+        )}
       </PageContent>
     </MainLayout>
   )

@@ -4,567 +4,473 @@ import { useState } from 'react'
 import { MainLayout, PageHeader, PageContent } from '@/components/layout/main-layout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge, StatusBadge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { 
-  Target,
+  Brain,
   Plus,
   Settings,
-  Trash2,
-  CheckCircle,
-  AlertCircle,
-  Zap,
   DollarSign,
-  TrendingUp,
-  Globe,
-  Lock,
-  ExternalLink,
-  Copy,
-  Eye,
-  EyeOff,
-  Gauge,
-  Clock,
   Activity,
-  Info
+  AlertCircle,
+  CheckCircle,
+  Loader2,
+  Key,
+  Hash,
+  Zap,
+  X,
+  Save,
+  TestTube
 } from 'lucide-react'
-import { formatDate, formatNumber } from '@/lib/utils'
+import { formatNumber } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
-interface EmbeddingProvider {
-  id: string
-  name: string
-  provider: 'openai' | 'cohere' | 'voyage' | 'huggingface' | 'local'
-  model: string
-  status: 'active' | 'inactive' | 'error' | 'rate_limited'
-  dimensions: number
-  maxInputTokens: number
-  performance: {
-    avgLatency: number
-    throughput: number // embeddings per second
-    successRate: number
-  }
-  usage: {
-    embeddingsToday: number
-    tokensProcessed: number
-    costToday: number
-    rateLimit: number
-    rateLimitRemaining: number
-  }
-  config: {
-    apiKey?: string
-    endpoint?: string
-    batchSize?: number
-    maxRetries?: number
-  }
-  lastUsed: string
-}
-
-const mockEmbeddingProviders: EmbeddingProvider[] = [
+// Mock data
+const embeddingProviders = [
   {
-    id: '1',
-    name: 'OpenAI Ada-002',
-    provider: 'openai',
-    model: 'text-embedding-ada-002',
-    status: 'active',
-    dimensions: 1536,
-    maxInputTokens: 8191,
-    performance: {
-      avgLatency: 124,
-      throughput: 450,
-      successRate: 99.8,
-    },
-    usage: {
-      embeddingsToday: 45892,
-      tokensProcessed: 12847000,
-      costToday: 5.14,
-      rateLimit: 1000000,
-      rateLimitRemaining: 954108,
-    },
-    config: {
-      apiKey: 'sk-proj-...',
-      batchSize: 100,
-      maxRetries: 3,
-    },
-    lastUsed: '2024-01-15T11:45:00Z',
-  },
-  {
-    id: '2',
-    name: 'Cohere Embed v3',
-    provider: 'cohere',
-    model: 'embed-english-v3.0',
-    status: 'active',
-    dimensions: 1024,
-    maxInputTokens: 512,
-    performance: {
-      avgLatency: 98,
-      throughput: 620,
-      successRate: 99.5,
-    },
-    usage: {
-      embeddingsToday: 23456,
-      tokensProcessed: 6789000,
-      costToday: 2.71,
-      rateLimit: 500000,
-      rateLimitRemaining: 476544,
-    },
-    config: {
-      apiKey: 'co-...',
-      batchSize: 96,
-      maxRetries: 3,
-    },
-    lastUsed: '2024-01-15T11:30:00Z',
-  },
-  {
-    id: '3',
-    name: 'BGE Large EN',
-    provider: 'huggingface',
-    model: 'BAAI/bge-large-en-v1.5',
-    status: 'active',
-    dimensions: 1024,
-    maxInputTokens: 512,
-    performance: {
-      avgLatency: 156,
-      throughput: 320,
-      successRate: 98.2,
-    },
-    usage: {
-      embeddingsToday: 18234,
-      tokensProcessed: 4567000,
-      costToday: 0.91,
-      rateLimit: 100000,
-      rateLimitRemaining: 81766,
-    },
-    config: {
-      apiKey: 'hf-...',
-      endpoint: 'https://api-inference.huggingface.co',
-      batchSize: 32,
-      maxRetries: 2,
-    },
-    lastUsed: '2024-01-15T10:20:00Z',
-  },
-  {
-    id: '4',
-    name: 'Local Sentence Transformers',
-    provider: 'local',
-    model: 'all-MiniLM-L6-v2',
-    status: 'active',
-    dimensions: 384,
-    maxInputTokens: 256,
-    performance: {
-      avgLatency: 45,
-      throughput: 1200,
-      successRate: 100,
-    },
-    usage: {
-      embeddingsToday: 67890,
-      tokensProcessed: 8901234,
-      costToday: 0,
-      rateLimit: -1, // Unlimited
-      rateLimitRemaining: -1,
-    },
-    config: {
-      endpoint: 'http://localhost:8080',
-      batchSize: 64,
-    },
-    lastUsed: '2024-01-15T11:50:00Z',
-  },
-  {
-    id: '5',
-    name: 'Voyage AI',
-    provider: 'voyage',
-    model: 'voyage-02',
-    status: 'rate_limited',
-    dimensions: 1024,
-    maxInputTokens: 4096,
-    performance: {
-      avgLatency: 134,
-      throughput: 380,
-      successRate: 97.8,
-    },
-    usage: {
-      embeddingsToday: 10000,
-      tokensProcessed: 2500000,
-      costToday: 1.25,
-      rateLimit: 10000,
-      rateLimitRemaining: 0,
-    },
-    config: {
-      apiKey: 'vo-...',
-      batchSize: 50,
-      maxRetries: 3,
-    },
-    lastUsed: '2024-01-15T09:00:00Z',
-  },
-]
-
-const providerInfo = {
-  openai: {
+    id: 'openai',
     name: 'OpenAI',
-    icon: '🎯',
-    color: 'text-green-500',
-    bgColor: 'bg-green-500/10',
-    features: ['Industry standard', 'High quality', 'Fast', 'Multilingual'],
+    icon: '🤖',
+    models: [
+      {
+        id: 'text-embedding-ada-002',
+        name: 'text-embedding-ada-002',
+        dimensions: 1536,
+        maxTokens: 8192,
+        costPer1M: 0.10,
+        status: 'active',
+        usage: {
+          collectionsUsing: 3,
+          embeddingsCreated: 1234567,
+          costToday: 12.34,
+        }
+      },
+      {
+        id: 'text-embedding-3-small',
+        name: 'text-embedding-3-small',
+        dimensions: 1536,
+        maxTokens: 8192,
+        costPer1M: 0.02,
+        status: 'active',
+        usage: {
+          collectionsUsing: 1,
+          embeddingsCreated: 456789,
+          costToday: 0.91,
+        }
+      }
+    ],
+    apiKeyConfigured: true,
+    totalCost: 13.25,
   },
-  cohere: {
+  {
+    id: 'cohere',
     name: 'Cohere',
-    icon: '🌊',
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-500/10',
-    features: ['Compress API', 'Multi-lingual', 'Domain-specific', 'Fast inference'],
+    icon: '🎯',
+    models: [
+      {
+        id: 'embed-english-v3.0',
+        name: 'embed-english-v3.0',
+        dimensions: 1024,
+        maxTokens: 512,
+        costPer1M: 0.10,
+        status: 'active',
+        usage: {
+          collectionsUsing: 2,
+          embeddingsCreated: 890123,
+          costToday: 8.90,
+        }
+      }
+    ],
+    apiKeyConfigured: true,
+    totalCost: 8.90,
   },
-  voyage: {
-    name: 'Voyage AI',
-    icon: '🚀',
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-500/10',
-    features: ['Domain-specific', 'Finance optimized', 'Code optimized', 'Legal optimized'],
-  },
-  huggingface: {
-    name: 'HuggingFace',
-    icon: '🤗',
-    color: 'text-yellow-500',
-    bgColor: 'bg-yellow-500/10',
-    features: ['Open models', 'Community driven', 'Customizable', 'Self-hostable'],
-  },
-  local: {
+  {
+    id: 'local',
     name: 'Local Models',
     icon: '💻',
-    color: 'text-orange-500',
-    bgColor: 'bg-orange-500/10',
-    features: ['Privacy-first', 'No API costs', 'Low latency', 'Offline capable'],
-  },
-}
+    models: [
+      {
+        id: 'bge-large-en-v1.5',
+        name: 'bge-large-en-v1.5',
+        dimensions: 1024,
+        maxTokens: 512,
+        costPer1M: 0,
+        status: 'active',
+        usage: {
+          collectionsUsing: 1,
+          embeddingsCreated: 234567,
+          costToday: 0,
+        }
+      }
+    ],
+    apiKeyConfigured: false,
+    totalCost: 0,
+  }
+]
 
-export default function EmbeddingsPage() {
-  const [providers] = useState(mockEmbeddingProviders)
-  const [showApiKey, setShowApiKey] = useState<Record<string, boolean>>({})
-  const [selectedProvider, setSelectedProvider] = useState<string | null>(null)
+const availableProviders = [
+  { id: 'openai', name: 'OpenAI', icon: '🤖' },
+  { id: 'cohere', name: 'Cohere', icon: '🎯' },
+  { id: 'voyage', name: 'Voyage AI', icon: '🚀' },
+  { id: 'anthropic', name: 'Anthropic', icon: '🧠' },
+  { id: 'local', name: 'Local/Self-hosted', icon: '💻' },
+]
 
-  const toggleApiKeyVisibility = (providerId: string) => {
-    setShowApiKey(prev => ({ ...prev, [providerId]: !prev[providerId] }))
+export default function EmbeddingsConfigPage() {
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [selectedProvider, setSelectedProvider] = useState('')
+  const [modelId, setModelId] = useState('')
+  const [modelName, setModelName] = useState('')
+  const [dimensions, setDimensions] = useState('')
+  const [apiKey, setApiKey] = useState('')
+  const [endpoint, setEndpoint] = useState('')
+  const [testStatus, setTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle')
+
+  const totalStats = {
+    totalModels: embeddingProviders.reduce((acc, p) => acc + p.models.length, 0),
+    totalEmbeddings: embeddingProviders.reduce((acc, p) => 
+      acc + p.models.reduce((sum, m) => sum + m.usage.embeddingsCreated, 0), 0
+    ),
+    totalCost: embeddingProviders.reduce((acc, p) => acc + p.totalCost, 0),
+    activeCollections: embeddingProviders.reduce((acc, p) => 
+      acc + p.models.reduce((sum, m) => sum + m.usage.collectionsUsing, 0), 0
+    ),
   }
 
-  const calculateTotalEmbeddings = () => {
-    return providers.reduce((sum, provider) => sum + provider.usage.embeddingsToday, 0)
+  const handleTestConnection = async () => {
+    setTestStatus('testing')
+    // Simulate API test
+    setTimeout(() => {
+      setTestStatus('success')
+    }, 2000)
   }
 
-  const calculateTotalCost = () => {
-    return providers.reduce((sum, provider) => sum + provider.usage.costToday, 0)
-  }
-
-  const calculateAvgLatency = () => {
-    const activeProviders = providers.filter(p => p.status === 'active')
-    if (activeProviders.length === 0) return 0
-    const totalLatency = activeProviders.reduce((sum, p) => sum + p.performance.avgLatency, 0)
-    return Math.round(totalLatency / activeProviders.length)
+  const handleSaveModel = () => {
+    // Save the new embedding model
+    console.log('Saving model:', { selectedProvider, modelId, modelName, dimensions })
+    setShowAddModal(false)
+    // Reset form
+    setSelectedProvider('')
+    setModelId('')
+    setModelName('')
+    setDimensions('')
+    setApiKey('')
+    setEndpoint('')
+    setTestStatus('idle')
   }
 
   return (
     <MainLayout>
       <PageHeader
-        title="Embedding Configuration"
-        description="Manage embedding models for document vectorization"
+        title="Embedding Models"
+        description="Manage embedding models for document processing"
       >
-        <Button>
+        <Button onClick={() => setShowAddModal(true)}>
           <Plus className="mr-2 h-4 w-4" />
-          Add Provider
+          Add Embedding Model
         </Button>
       </PageHeader>
 
       <PageContent>
-        {/* Info Box */}
-        <div className="flex items-start gap-3 p-4 bg-primary/10 border border-primary/30 rounded-lg mb-8">
-          <Info className="h-5 w-5 text-primary mt-0.5" />
-          <div className="text-sm">
-            <p className="font-medium text-primary mb-1">Embedding Model Selection Tips</p>
-            <p className="text-muted-foreground">
-              Choose embedding models based on your needs: OpenAI Ada-002 for general purpose, 
-              domain-specific models for specialized content, or local models for privacy. 
-              Higher dimensions typically mean better quality but increased storage costs.
-            </p>
-          </div>
-        </div>
-
         {/* Stats Overview */}
-        <div className="grid gap-6 md:grid-cols-4 mb-8">
+        <div className="grid gap-4 md:grid-cols-4 mb-8">
           <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold">{formatNumber(calculateTotalEmbeddings())}</p>
-                  <p className="text-sm text-muted-foreground">Embeddings Today</p>
-                </div>
-                <Target className="h-8 w-8 text-muted-foreground/40" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold">{calculateAvgLatency()}ms</p>
-                  <p className="text-sm text-muted-foreground">Avg Latency</p>
-                </div>
-                <Gauge className="h-8 w-8 text-yellow-500/40" />
-              </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Models</CardTitle>
+              <Brain className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{totalStats.totalModels}</div>
+              <p className="text-xs text-muted-foreground">Across all providers</p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold">99.1%</p>
-                  <p className="text-sm text-muted-foreground">Success Rate</p>
-                </div>
-                <TrendingUp className="h-8 w-8 text-green-500/40" />
-              </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Embeddings Created</CardTitle>
+              <Hash className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{formatNumber(totalStats.totalEmbeddings)}</div>
+              <p className="text-xs text-muted-foreground">All time</p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold">${calculateTotalCost().toFixed(2)}</p>
-                  <p className="text-sm text-muted-foreground">Cost Today</p>
-                </div>
-                <DollarSign className="h-8 w-8 text-blue-500/40" />
-              </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Active Collections</CardTitle>
+              <Activity className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{totalStats.activeCollections}</div>
+              <p className="text-xs text-muted-foreground">Using embeddings</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Daily Cost</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">${totalStats.totalCost.toFixed(2)}</div>
+              <p className="text-xs text-muted-foreground">Across all models</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Embedding Providers List */}
-        <div className="grid gap-6">
-          {providers.map((provider) => {
-            const info = providerInfo[provider.provider]
-            const isSelected = selectedProvider === provider.id
-            const rateUsagePercent = provider.usage.rateLimit > 0 
-              ? ((provider.usage.rateLimit - provider.usage.rateLimitRemaining) / provider.usage.rateLimit) * 100
-              : 0
-            
-            return (
-              <Card 
-                key={provider.id} 
-                className={`transition-all ${isSelected ? 'ring-2 ring-primary' : ''}`}
-              >
+        {/* Providers and Models */}
+        <div className="space-y-6">
+          {embeddingProviders.map((provider) => (
+            <Card key={provider.id}>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{provider.icon}</span>
+                    <div>
+                      <CardTitle>{provider.name}</CardTitle>
+                      <p className="text-sm text-muted-foreground">
+                        {provider.models.length} model{provider.models.length > 1 ? 's' : ''} configured
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    {provider.apiKeyConfigured ? (
+                      <Badge variant="secondary" className="gap-1">
+                        <Key className="h-3 w-3" />
+                        API Key Configured
+                      </Badge>
+                    ) : provider.id !== 'local' && (
+                      <Badge variant="outline" className="gap-1 text-orange-600">
+                        <AlertCircle className="h-3 w-3" />
+                        API Key Required
+                      </Badge>
+                    )}
+                    <Button variant="outline" size="sm">
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {provider.models.map((model) => (
+                    <div key={model.id} className="border rounded-lg p-4">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-3 flex-1">
+                          <div>
+                            <h4 className="font-medium">{model.name}</h4>
+                            <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <Hash className="h-3 w-3" />
+                                {model.dimensions} dimensions
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Zap className="h-3 w-3" />
+                                {model.maxTokens} max tokens
+                              </span>
+                              {model.costPer1M > 0 && (
+                                <span className="flex items-center gap-1">
+                                  <DollarSign className="h-3 w-3" />
+                                  ${model.costPer1M}/1M tokens
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-4 gap-4 pt-2 border-t">
+                            <div>
+                              <p className="text-xs text-muted-foreground">Collections Using</p>
+                              <p className="font-medium">{model.usage.collectionsUsing}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">Embeddings Created</p>
+                              <p className="font-medium">{formatNumber(model.usage.embeddingsCreated)}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">Cost Today</p>
+                              <p className="font-medium">${model.usage.costToday.toFixed(2)}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">Status</p>
+                              <Badge variant={model.status === 'active' ? 'secondary' : 'outline'}>
+                                {model.status}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Add Model Modal */}
+        {showAddModal && (
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50">
+            <div className="fixed left-[50%] top-[50%] max-h-[90vh] w-[90vw] max-w-[600px] translate-x-[-50%] translate-y-[-50%] overflow-y-auto">
+              <Card>
                 <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-4">
-                      <div className={`p-3 rounded-lg ${info.bgColor}`}>
-                        <span className="text-2xl">{info.icon}</span>
-                      </div>
-                      <div>
-                        <CardTitle className="text-xl flex items-center gap-2">
-                          {provider.name}
-                          {provider.provider === 'local' && (
-                            <Lock className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </CardTitle>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {provider.model} • {provider.dimensions} dimensions
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <StatusBadge status={provider.status} />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setSelectedProvider(isSelected ? null : provider.id)}
-                      >
-                        <Settings className="h-4 w-4" />
-                      </Button>
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Add Embedding Model</CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setShowAddModal(false)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   </div>
                 </CardHeader>
-
-                <CardContent>
-                  {/* Performance Metrics */}
-                  <div className="grid grid-cols-4 gap-4 mb-4">
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-1 mb-1">
-                        <Activity className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-xl font-semibold">{provider.performance.avgLatency}ms</p>
-                      </div>
-                      <p className="text-xs text-muted-foreground">Avg Latency</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-1 mb-1">
-                        <Zap className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-xl font-semibold">{provider.performance.throughput}</p>
-                      </div>
-                      <p className="text-xs text-muted-foreground">Emb/sec</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-1 mb-1">
-                        <CheckCircle className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-xl font-semibold">{provider.performance.successRate}%</p>
-                      </div>
-                      <p className="text-xs text-muted-foreground">Success</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-1 mb-1">
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-xl font-semibold">${provider.usage.costToday.toFixed(2)}</p>
-                      </div>
-                      <p className="text-xs text-muted-foreground">Cost Today</p>
-                    </div>
-                  </div>
-
-                  {/* Rate Limit Progress */}
-                  {provider.usage.rateLimit > 0 && (
-                    <div className="mb-4">
-                      <div className="flex justify-between text-sm mb-2">
-                        <span className="text-muted-foreground">Rate Limit Usage</span>
-                        <span className="font-medium">
-                          {formatNumber(provider.usage.rateLimit - provider.usage.rateLimitRemaining)} / {formatNumber(provider.usage.rateLimit)}
-                        </span>
-                      </div>
-                      <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full transition-all ${
-                            rateUsagePercent > 90 ? 'bg-red-500' : 
-                            rateUsagePercent > 70 ? 'bg-yellow-500' : 'bg-primary'
-                          }`}
-                          style={{ width: `${Math.min(rateUsagePercent, 100)}%` }}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Usage Stats */}
-                  <div className="grid grid-cols-3 gap-4 mb-4">
-                    <div className="text-center p-3 bg-muted/30 rounded-lg">
-                      <p className="text-lg font-semibold">{formatNumber(provider.usage.embeddingsToday)}</p>
-                      <p className="text-xs text-muted-foreground">Embeddings</p>
-                    </div>
-                    <div className="text-center p-3 bg-muted/30 rounded-lg">
-                      <p className="text-lg font-semibold">{formatNumber(provider.usage.tokensProcessed)}</p>
-                      <p className="text-xs text-muted-foreground">Tokens</p>
-                    </div>
-                    <div className="text-center p-3 bg-muted/30 rounded-lg">
-                      <p className="text-lg font-semibold">{provider.maxInputTokens}</p>
-                      <p className="text-xs text-muted-foreground">Max Input</p>
-                    </div>
-                  </div>
-
-                  {/* Features */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {info.features.map((feature) => (
-                      <Badge key={feature} variant="secondary" className="text-xs">
-                        {feature}
-                      </Badge>
-                    ))}
-                  </div>
-
-                  {/* Expanded Configuration */}
-                  {isSelected && (
-                    <div className="pt-4 border-t border-border space-y-4">
-                      {provider.config.endpoint && (
-                        <div>
-                          <label className="text-sm font-medium mb-2 block">Endpoint</label>
-                          <div className="flex gap-2">
-                            <Input 
-                              value={provider.config.endpoint} 
-                              readOnly 
-                              className="font-mono text-sm"
-                            />
-                            <Button variant="outline" size="icon">
-                              <Copy className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-
-                      {provider.config.apiKey && (
-                        <div>
-                          <label className="text-sm font-medium mb-2 block">API Key</label>
-                          <div className="flex gap-2">
-                            <Input 
-                              type={showApiKey[provider.id] ? "text" : "password"}
-                              value={provider.config.apiKey} 
-                              readOnly 
-                              className="font-mono text-sm"
-                            />
-                            <Button 
-                              variant="outline" 
-                              size="icon"
-                              onClick={() => toggleApiKeyVisibility(provider.id)}
-                            >
-                              {showApiKey[provider.id] ? (
-                                <EyeOff className="h-4 w-4" />
-                              ) : (
-                                <Eye className="h-4 w-4" />
-                              )}
-                            </Button>
-                            <Button variant="outline" size="icon">
-                              <Copy className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="text-sm font-medium mb-2 block">Batch Size</label>
-                          <Input 
-                            type="number"
-                            value={provider.config.batchSize || 32} 
-                            readOnly 
-                            className="text-sm"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium mb-2 block">Max Retries</label>
-                          <Input 
-                            type="number"
-                            value={provider.config.maxRetries || 3} 
-                            readOnly 
-                            className="text-sm"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex gap-3 pt-2">
-                        <Button variant="outline">
-                          <Zap className="mr-2 h-4 w-4" />
-                          Test Embedding
-                        </Button>
-                        <Button variant="outline">
-                          <Activity className="mr-2 h-4 w-4" />
-                          Benchmark
-                        </Button>
-                        <Button variant="outline">
-                          <ExternalLink className="mr-2 h-4 w-4" />
-                          View Docs
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          className="text-destructive hover:text-destructive"
+                <CardContent className="space-y-4">
+                  {/* Provider Selection */}
+                  <div className="space-y-2">
+                    <Label>Provider</Label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {availableProviders.map((provider) => (
+                        <div
+                          key={provider.id}
+                          className={cn(
+                            "border rounded-lg p-3 cursor-pointer transition-all",
+                            selectedProvider === provider.id
+                              ? "border-primary bg-primary/5"
+                              : "border-border hover:border-primary/50"
+                          )}
+                          onClick={() => setSelectedProvider(provider.id)}
                         >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Remove
+                          <div className="flex items-center gap-3">
+                            <span className="text-2xl">{provider.icon}</span>
+                            <span className="font-medium">{provider.name}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {selectedProvider && (
+                    <>
+                      {/* Model Configuration */}
+                      <div className="space-y-4 pt-4 border-t">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="model-id">Model ID</Label>
+                            <Input
+                              id="model-id"
+                              placeholder="e.g., text-embedding-3-large"
+                              value={modelId}
+                              onChange={(e) => setModelId(e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="model-name">Display Name</Label>
+                            <Input
+                              id="model-name"
+                              placeholder="e.g., Text Embedding Large"
+                              value={modelName}
+                              onChange={(e) => setModelName(e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="dimensions">Embedding Dimensions</Label>
+                          <Input
+                            id="dimensions"
+                            type="number"
+                            placeholder="e.g., 1536"
+                            value={dimensions}
+                            onChange={(e) => setDimensions(e.target.value)}
+                          />
+                        </div>
+
+                        {selectedProvider !== 'local' && (
+                          <div className="space-y-2">
+                            <Label htmlFor="api-key">API Key</Label>
+                            <Input
+                              id="api-key"
+                              type="password"
+                              placeholder="Enter your API key"
+                              value={apiKey}
+                              onChange={(e) => setApiKey(e.target.value)}
+                            />
+                          </div>
+                        )}
+
+                        {selectedProvider === 'local' && (
+                          <div className="space-y-2">
+                            <Label htmlFor="endpoint">Model Endpoint</Label>
+                            <Input
+                              id="endpoint"
+                              placeholder="http://localhost:8080/embeddings"
+                              value={endpoint}
+                              onChange={(e) => setEndpoint(e.target.value)}
+                            />
+                          </div>
+                        )}
+
+                        {/* Test Connection */}
+                        <div className="flex items-center gap-4 pt-4">
+                          <Button
+                            variant="outline"
+                            onClick={handleTestConnection}
+                            disabled={testStatus === 'testing'}
+                          >
+                            {testStatus === 'testing' ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Testing...
+                              </>
+                            ) : (
+                              <>
+                                <TestTube className="mr-2 h-4 w-4" />
+                                Test Connection
+                              </>
+                            )}
+                          </Button>
+
+                          {testStatus === 'success' && (
+                            <div className="flex items-center gap-2 text-green-600">
+                              <CheckCircle className="h-4 w-4" />
+                              <span className="text-sm">Connection successful</span>
+                            </div>
+                          )}
+
+                          {testStatus === 'error' && (
+                            <div className="flex items-center gap-2 text-destructive">
+                              <AlertCircle className="h-4 w-4" />
+                              <span className="text-sm">Connection failed</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex justify-end gap-3 pt-4 border-t">
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowAddModal(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={handleSaveModel}
+                          disabled={!modelId || !modelName || !dimensions || (selectedProvider !== 'local' && !apiKey)}
+                        >
+                          <Save className="mr-2 h-4 w-4" />
+                          Save Model
                         </Button>
                       </div>
-                    </div>
+                    </>
                   )}
-
-                  <div className="flex items-center justify-between pt-4 border-t border-border text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      Last used: {formatDate(provider.lastUsed)}
-                    </span>
-                    <span>
-                      Batch: {provider.config.batchSize || 32} embeddings
-                    </span>
-                  </div>
                 </CardContent>
               </Card>
-            )
-          })}
-        </div>
+            </div>
+          </div>
+        )}
       </PageContent>
     </MainLayout>
   )
