@@ -14,26 +14,44 @@ import {
   BarChart3,
   DollarSign,
   Link2,
-  Hash
+  Hash,
+  type LucideIcon
 } from 'lucide-react'
 
-const navigation = [
+// Define types for navigation items
+type BaseNavItem = {
+  name: string
+  href: string
+  icon: LucideIcon
+}
+
+type ConfigNavItem = BaseNavItem & {
+  contexter?: boolean
+  inferencer?: boolean
+}
+
+type NavSection = {
+  title: string
+  items: (BaseNavItem | ConfigNavItem)[]
+}
+
+const navigation: NavSection[] = [
   {
     title: 'MAIN',
     items: [
-      { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-      { name: 'Pipelines', href: '/pipelines', icon: Link2 },
-      { name: 'Documents', href: '/documents', icon: FileText },
+      { name: 'Dashboards', href: '/dashboards', icon: LayoutDashboard },
+      { name: 'Contexter', href: '/contexter', icon: FileText },
+      { name: 'Inferencer', href: '/inferencer', icon: Link2 },
       { name: 'Query Playground', href: '/playground', icon: Search },
     ],
   },
   {
     title: 'CONFIGURATION',
     items: [
-      { name: 'Vector Stores', href: '/config/vector-stores', icon: Database },
-      { name: 'LLM Providers', href: '/config/llm', icon: Brain },
-      { name: 'Embeddings', href: '/config/embeddings', icon: Hash },
-      { name: 'Prompts', href: '/config/prompts', icon: MessageSquare },
+      { name: 'Vector Stores', href: '/config/vector-stores', icon: Database, contexter: true, inferencer: false },
+      { name: 'LLM Providers', href: '/config/llm', icon: Brain, contexter: true, inferencer: true },
+      { name: 'Embeddings', href: '/config/embeddings', icon: Hash, contexter: true, inferencer: false },
+      { name: 'Prompts', href: '/config/prompts', icon: MessageSquare, contexter: true, inferencer: true },
     ],
   },
   {
@@ -47,6 +65,53 @@ const navigation = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  
+  // Determine active section based on current path
+  const getActiveSection = () => {
+    if (pathname.startsWith('/contexter')) {
+      return 'contexter'
+    }
+    if (pathname.startsWith('/inferencer')) {
+      return 'inferencer'
+    }
+    // Default to showing all config items if not in a specific section
+    return 'all'
+  }
+  
+  const activeSection = getActiveSection()
+  
+  // Filter configuration items based on active section
+  const getFilteredNavigation = () => {
+    return navigation.map(section => {
+      if (section.title === 'CONFIGURATION') {
+        const filteredItems = section.items.filter(item => {
+          // Type guard to check if item is a ConfigNavItem
+          const configItem = item as ConfigNavItem
+          
+          // If no contexter/inferencer properties, always show
+          if (!('contexter' in configItem) && !('inferencer' in configItem)) {
+            return true
+          }
+          
+          // Show based on active section
+          if (activeSection === 'contexter') {
+            return configItem.contexter === true
+          }
+          if (activeSection === 'inferencer') {
+            return configItem.inferencer === true
+          }
+          
+          // Show all if not in specific section
+          return true
+        })
+        
+        return { ...section, items: filteredItems }
+      }
+      return section
+    })
+  }
+  
+  const filteredNavigation = getFilteredNavigation()
   
   return (
     <div className="fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border">
@@ -78,7 +143,7 @@ export function Sidebar() {
 
         {/* Navigation */}
         <nav className="flex-1 px-3 py-4">
-          {navigation.map((section, sectionIndex) => (
+          {filteredNavigation.map((section, sectionIndex) => (
             <div key={section.title} className={cn(
               "space-y-1",
               sectionIndex > 0 && "mt-6"
@@ -88,6 +153,7 @@ export function Sidebar() {
               </h2>
               {section.items.map((item) => {
                 const isActive = pathname === item.href
+                  
                 return (
                   <Link
                     key={item.name}

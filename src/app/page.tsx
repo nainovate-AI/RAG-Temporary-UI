@@ -156,7 +156,7 @@ export default function Home() {
             
             {/* Right side */}
             <div className="flex items-center gap-3">
-              <Link href="/dashboard">
+              <Link href="/dashboards">
                 <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                   Get Started
                 </button>
@@ -193,7 +193,7 @@ export default function Home() {
             
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Link href="/documents">
+              <Link href="/contexter">
                 <button className="px-8 py-4 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-all hover:scale-105 flex items-center gap-2 group">
                   Start Building
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -440,15 +440,12 @@ export default function Home() {
           <p className="text-lg text-muted-foreground mb-8">
             Join hundreds of developers who are already building with us
           </p>
-          <Link href="/documents">
+          <Link href="/contexter">
             <button className="px-8 py-4 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-all hover:scale-105 text-lg">
               Create Your First Pipeline
               <ChevronRight className="inline-block ml-2 h-5 w-5" />
             </button>
           </Link>
-          <p className="mt-4 text-sm text-muted-foreground">
-            No credit card required • Free forever for small projects
-          </p>
         </div>
       </section>
 
