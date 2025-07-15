@@ -56,65 +56,62 @@ export default function Home() {
   const uptimeCount = useCounter(99.9, 1000)
   
   const features = [
-  {
-    icon: FileText,
-    title: 'Universal Document Support',
-    description: 'PDF, DOCX, CSV, JSON, HTML, Markdown and more. Process any document type effortlessly.',
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-500/10'
-  },
-  {
-    icon: Brain,
-    title: 'Smart Chunking',
-    description: 'Intelligent text splitting that preserves context and meaning for better retrieval.',
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-500/10'
-  },
-  {
-    icon: Zap,
-    title: 'Lightning Fast',
-    description: 'Sub-100ms query responses with optimized vector search and caching.',
-    color: 'text-yellow-500',
-    bgColor: 'bg-yellow-500/10'
-  },
-  {
-    icon: Database,
-    title: 'Multi-Vector Support',
-    description: 'Connect Pinecone, Qdrant, Weaviate, Chroma, or any vector database.',
-    color: 'text-green-500',
-    bgColor: 'bg-green-500/10'
-  },
-  {
-    icon: BarChart3,
-    title: 'Real-time Analytics',
-    description: 'Monitor performance, track queries, and optimize your RAG pipeline.',
-    color: 'text-orange-500',
-    bgColor: 'bg-orange-500/10'
-  },
-  {
-    icon: Shield,
-    title: 'Enterprise Ready',
-    description: 'Production-grade security, scalability, and reliability built-in.',
-    color: 'text-red-500',
-    bgColor: 'bg-red-500/10'
-  },
-  {
-    icon: MessageSquare,
-    title: 'Advanced Prompts',
-    description: 'Craft perfect prompts with templates, variables, and context management.',
-    color: 'text-indigo-500',
-    bgColor: 'bg-indigo-500/10'
-  },
-  {
-    icon: Brain,
-    title: 'Memory',
-    description: 'Long-term conversation memory and context retention across sessions.',
-    color: 'text-pink-500',
-    bgColor: 'bg-pink-500/10',
-    badge: 'In Development',
-    badgeColor: 'bg-yellow-500/20 text-yellow-600'
-  }
-]
+    {
+      icon: FileText,
+      title: 'Universal Document Support',
+      description: 'PDF, DOCX, CSV, JSON, HTML, Markdown and more. Process any document type effortlessly.',
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-500/10',
+      badge: 'Production Ready',
+      badgeColor: 'bg-blue-500/20 text-blue-600'
+    },
+    {
+      icon: Brain,
+      title: 'Smart Chunking',
+      description: 'Intelligent text splitting that preserves context and meaning for better retrieval.',
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-500/10',
+      badge: 'Production Ready',
+      badgeColor: 'bg-purple-500/20 text-purple-600'
+    },
+    {
+      icon: Zap,
+      title: 'Lightning Fast',
+      description: 'Sub-100ms query responses with optimized vector search and caching.',
+      color: 'text-yellow-500',
+      bgColor: 'bg-yellow-500/10',
+      badge: 'Production Ready',
+      badgeColor: 'bg-yellow-500/20 text-yellow-600'
+    },
+    {
+      icon: Database,
+      title: 'Multi-Vector Support',
+      description: 'Connect Pinecone, Qdrant, Weaviate, Chroma, or any vector database.',
+      color: 'text-green-500',
+      bgColor: 'bg-green-500/10',
+      badge: 'Production Ready',
+      badgeColor: 'bg-green-500/20 text-green-600'
+    },
+    {
+      icon: MessageSquare,
+      title: 'Advanced Prompts',
+      description: 'Template library, dynamic variables, and context-aware prompt engineering.',
+      color: 'text-indigo-500',
+      bgColor: 'bg-indigo-500/10',
+      badge: 'Production Ready',
+      badgeColor: 'bg-indigo-500/20 text-indigo-600'
+    },
+    {
+      icon: Brain,
+      title: 'Memory & Caching',
+      description: 'Session memory, conversation history, and intelligent response caching.',
+      color: 'text-pink-500',
+      bgColor: 'bg-pink-500/10',
+      badge: 'In Development',
+      badgeColor: 'bg-yellow-500/20 text-yellow-600'
+    }
+  ]
+
   const stats = [
     { label: 'Documents Processed', value: documentsCount.toLocaleString() + '+' },
     { label: 'Queries Handled', value: (queriesCount / 1000000).toFixed(1) + 'M+' },
@@ -183,7 +180,7 @@ export default function Home() {
             {/* Main heading */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
               RAG made{' '}
-              <span className="text-gradient bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent inline-block hover:scale-105 transition-transform duration-300">
+              <span className="text-gradient bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 simple
               </span>
             </h1>
@@ -234,31 +231,39 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              Everything you need for RAG
+              Everything you need to deploy RAG at scale
             </h2>
             <p className="text-lg text-muted-foreground">
-              Powerful features that make building RAG systems a breeze
+              From raw documents to production-ready Q&A systems, we handle the entire pipeline so you can ship faster
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
-            <div
-              key={index}
-              className="group p-6 rounded-xl border border-border bg-card hover:shadow-lg transition-all hover:-translate-y-1 relative"
-            >
-              {feature.badge && (
-                <Badge className={cn("absolute top-4 right-4 text-xs", feature.badgeColor)}>
-                  {feature.badge}
-                </Badge>
-              )}
-              <div className={cn("p-3 rounded-lg w-fit", feature.bgColor)}>
-                <feature.icon className={cn("h-6 w-6", feature.color)} />
+              <div
+                key={index}
+                className="group p-6 rounded-xl border border-border bg-card/50 backdrop-blur hover:shadow-lg transition-all hover:-translate-y-1 relative overflow-hidden"
+              >
+                {/* Background gradient effect */}
+                <div className={cn("absolute inset-0 opacity-5", feature.bgColor)} />
+                
+                {/* Badge */}
+                <div className="absolute top-4 right-4">
+                  <Badge className={cn("text-xs font-medium", feature.badgeColor)}>
+                    {feature.badge}
+                  </Badge>
+                </div>
+                
+                {/* Content */}
+                <div className="relative">
+                  <div className={cn("p-3 rounded-lg w-fit mb-4", feature.bgColor)}>
+                    <feature.icon className={cn("h-6 w-6", feature.color)} />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold mt-4 mb-2">{feature.title}</h3>
-              <p className="text-muted-foreground">{feature.description}</p>
-            </div>
-          ))}
+            ))}
           </div>
         </div>
       </section>
@@ -417,10 +422,10 @@ export default function Home() {
             
             <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-lg transition-all hover:-translate-y-1">
               <div className="w-12 h-12 mx-auto bg-orange-500/10 rounded-full flex items-center justify-center mb-4">
-                <Users className="h-6 w-6 text-orange-500" />
+                <Shield className="h-6 w-6 text-orange-500" />
               </div>
-              <h3 className="font-semibold mb-2">Free Forever</h3>
-              <p className="text-sm text-muted-foreground">Generous free tier for small projects</p>
+              <h3 className="font-semibold mb-2">Enterprise Security</h3>
+              <p className="text-sm text-muted-foreground">Production-grade security and compliance</p>
             </div>
           </div>
         </div>
@@ -441,6 +446,9 @@ export default function Home() {
               <ChevronRight className="inline-block ml-2 h-5 w-5" />
             </button>
           </Link>
+          <p className="mt-4 text-sm text-muted-foreground">
+            No credit card required • Free forever for small projects
+          </p>
         </div>
       </section>
 
