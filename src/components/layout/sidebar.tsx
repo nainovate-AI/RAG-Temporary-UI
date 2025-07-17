@@ -66,7 +66,17 @@ const navigation: NavSection[] = [
 export function Sidebar() {
   const pathname = usePathname()
   
-  // Determine active section based on current path
+  // Function to check if a menu item should be active
+  const isActive = (href: string) => {
+    // Special case for dashboards - exact match or starts with /dashboards/
+    if (href === '/dashboards') {
+      return pathname === '/dashboards' || pathname.startsWith('/dashboards/')
+    }
+    
+    // For other items, check if pathname starts with href
+    // This will make /contexter active for both /contexter and /contexter/ingest/new
+    return pathname === href || pathname.startsWith(href + '/')
+  }
   const getActiveSection = () => {
     if (pathname.startsWith('/contexter')) {
       return 'contexter'
@@ -152,7 +162,10 @@ export function Sidebar() {
                 {section.title}
               </h2>
               {section.items.map((item) => {
-                const isActive = pathname === item.href
+                // Updated logic to check if current path starts with the item's href
+                const isActive = pathname === item.href || 
+                  (item.href !== '/dashboards' && pathname.startsWith(item.href + '/')) ||
+                  (item.href === '/dashboards' && pathname.startsWith('/dashboards/'))
                   
                 return (
                   <Link
