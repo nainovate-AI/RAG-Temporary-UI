@@ -1,156 +1,81 @@
+// src/app/inferencer/page.tsx
 'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { MainLayout, PageHeader, PageContent } from '@/components/layout/main-layout'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { 
+  PageHeader, 
+  PageContent,
+  MainLayout
+} from '@/components/layout/main-layout'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge, StatusBadge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { StatusBadge } from '@/components/ui/badge'
 import { 
   Plus,
-  Download,
-  MoreVertical,
-  Activity,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-  TrendingUp,
-  DollarSign,
-  Zap,
-  FileText,
   Search,
+  Zap,
+  DollarSign,
   Brain,
-  Folder,
-  Clock,
-  BarChart3,
   Play,
-  Pause,
   Settings,
-  Trash2,
-  Copy,
-  ExternalLink
+  FileText,
+  MessageSquare
 } from 'lucide-react'
-import { formatNumber, formatDate } from '@/lib/utils'
-import { Pipeline } from '@/types'
-import { cn } from '@/lib/utils'
+import { formatDate, cn } from '@/lib/utils'
 
-// Mock data with updated structure
-const pipelines: Pipeline[] = [
+// Update pipeline data to include type
+const pipelines = [
   {
     id: '1',
-    name: 'Customer Support Assistant',
+    name: 'Customer Support RAG',
+    type: 'rag' as const,
     description: 'Multi-language support chatbot with product knowledge',
-    type: 'Q&A • Multi-language • GPT-4',
-    status: 'active',
-    collectionIds: ['1', '2'], // References to document collections
-    retrievalConfig: {
-      searchMethod: 'hybrid',
-      topK: 5,
-      scoreThreshold: 0.7,
-      reranker: {
-        enabled: true,
-        model: 'cohere-rerank-v2',
-      },
-    },
-    llmConfig: {
-      provider: 'openai',
-      model: 'gpt-4-turbo',
-      temperature: 0.7,
-      maxTokens: 1000,
-      systemPrompt: 'You are a helpful customer support assistant...',
-      userPromptTemplate: 'Question: {query}',
-      streaming: true,
-    },
+    status: 'active' as const,
+    collectionIds: ['1', '2'],
     documentsCount: 5200,
+    model: {
+      provider: 'openai',
+      name: 'gpt-4-turbo',
+    },
+    tags: ['customer-support', 'production'],
     queriesPerDay: 1234,
     avgLatency: 98,
-    accuracy: 94,
-    costPerDay: 127.43,
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-15T10:30:00Z',
-    tags: ['customer-support', 'production'],
+    costPerDay: 10.5,
     lastQueryAt: '2024-01-15T16:45:00Z',
-    metrics: {
-      totalQueries: 45678,
-      failureRate: 2.1,
-    },
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-15T14:30:00Z',
   },
   {
     id: '2',
-    name: 'Technical Documentation Search',
-    description: 'Code-aware search for API docs and developer guides',
-    type: 'Search • Code-aware • Claude 3',
-    status: 'active',
-    collectionIds: ['3'], 
-    retrievalConfig: {
-      searchMethod: 'vector',
-      topK: 10,
-      reranker: {
-        enabled: false,
-        model: '',
-      },
-    },
-    llmConfig: {
-      provider: 'anthropic',
-      model: 'claude-3-opus',
-      temperature: 0.3,
-      maxTokens: 2000,
-      systemPrompt: 'You are a technical documentation assistant...',
-      userPromptTemplate: 'Technical Question: {query}',
-      streaming: true,
-    },
-    documentsCount: 3800,
-    queriesPerDay: 892,
-    avgLatency: 156,
-    accuracy: 92,
-    costPerDay: 98.50,
-    createdAt: '2024-01-05T00:00:00Z',
-    updatedAt: '2024-01-14T12:00:00Z',
-    tags: ['technical', 'developers'],
-  },
-  {
-    id: '3',
-    name: 'Legal Contract Analyzer',
-    description: 'Extract and analyze contract terms and compliance',
-    type: 'Analysis • Legal • GPT-4',
-    status: 'paused',
-    collectionIds: ['4'],
-    retrievalConfig: {
-      searchMethod: 'hybrid',
-      topK: 20,
-      scoreThreshold: 0.8,
-      reranker: {
-        enabled: true,
-        model: 'cohere-rerank-v2',
-      },
-    },
-    llmConfig: {
+    name: 'GPT-4 Content Writer',
+    type: 'llm' as const,
+    description: 'AI-powered content generation for blog posts and social media',
+    status: 'active' as const,
+    collectionIds: [],
+    documentsCount: 0,
+    model: {
       provider: 'openai',
-      model: 'gpt-4',
-      temperature: 0.2,
-      maxTokens: 3000,
-      systemPrompt: 'You are a legal document analyst...',
-      userPromptTemplate: 'Analyze: {query}',
-      streaming: false,
+      name: 'gpt-4',
     },
-    documentsCount: 1200,
-    queriesPerDay: 45,
-    avgLatency: 523,
-    accuracy: 97,
-    costPerDay: 34.20,
-    createdAt: '2023-12-15T00:00:00Z',
-    updatedAt: '2024-01-10T08:30:00Z',
-    tags: ['legal', 'compliance'],
+    tags: ['content', 'marketing'],
+    queriesPerDay: 892,
+    avgLatency: 45,
+    costPerDay: 8.2,
+    lastQueryAt: '2024-01-15T15:30:00Z',
+    createdAt: '2024-01-05T00:00:00Z',
+    updatedAt: '2024-01-15T10:00:00Z',
   },
+  // Add more pipelines...
 ]
 
 const stats = [
   {
     label: 'Active Pipelines',
-    value: pipelines.filter(p => p.status === 'active').length,
-    total: pipelines.length,
-    icon: Activity,
+    value: pipelines.filter(p => p.status === 'active').length + ' of ' + pipelines.length,
+    icon: Brain,
     color: 'text-green-500',
   },
   {
@@ -176,8 +101,8 @@ const stats = [
 export default function PipelinesPage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [filterStatus, setFilterStatus] = useState<string>('all')
+  const [filterType, setFilterType] = useState<string>('all')
 
   const handleCreatePipeline = () => {
     router.push('/inferencer/new')
@@ -197,14 +122,15 @@ export default function PipelinesPage() {
       pipeline.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       pipeline.description.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = filterStatus === 'all' || pipeline.status === filterStatus
-    return matchesSearch && matchesStatus
+    const matchesType = filterType === 'all' || pipeline.type === filterType
+    return matchesSearch && matchesStatus && matchesType
   })
 
   return (
     <MainLayout>
       <PageHeader
-        title="RAG Pipelines"
-        description="Manage your retrieval-augmented generation pipelines"
+        title="AI Pipelines"
+        description="Manage your AI inference and RAG pipelines"
       >
         <Button onClick={handleCreatePipeline}>
           <Plus className="mr-2 h-4 w-4" />
@@ -220,20 +146,13 @@ export default function PipelinesPage() {
             return (
               <Card key={stat.label}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                  <CardTitle className="text-sm font-medium">
                     {stat.label}
                   </CardTitle>
                   <Icon className={cn("h-4 w-4", stat.color)} />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">
-                    {stat.value}
-                  </div>
-                  {stat.total && (
-                    <p className="text-xs text-muted-foreground">
-                      of {stat.total} total
-                    </p>
-                  )}
+                  <div className="text-2xl font-bold">{stat.value}</div>
                 </CardContent>
               </Card>
             )
@@ -241,10 +160,10 @@ export default function PipelinesPage() {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
-          <div className="flex flex-1 gap-4">
-            <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="flex-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search pipelines..."
                 value={searchQuery}
@@ -252,10 +171,21 @@ export default function PipelinesPage() {
                 className="pl-9"
               />
             </div>
+          </div>
+          <div className="flex gap-2">
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className="px-3 py-2 border border-input bg-background rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              <option value="all">All Types</option>
+              <option value="rag">RAG Pipelines</option>
+              <option value="llm">LLM Pipelines</option>
+            </select>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-2 border border-input bg-background rounded-md"
+              className="px-3 py-2 border border-input bg-background rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="all">All Status</option>
               <option value="active">Active</option>
@@ -266,100 +196,67 @@ export default function PipelinesPage() {
         </div>
 
         {/* Pipelines Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredPipelines.map((pipeline) => (
             <Card
               key={pipeline.id}
-              className="cursor-pointer hover:shadow-lg transition-all duration-200 group"
+              className="group cursor-pointer transition-all hover:shadow-lg hover:-translate-y-0.5"
               onClick={() => handlePipelineClick(pipeline.id)}
             >
-              <CardHeader className="pb-4">
+              <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
-                  <div className="space-y-1 flex-1">
-                    <CardTitle className="text-lg line-clamp-1">
-                      {pipeline.name}
-                    </CardTitle>
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {pipeline.description}
-                    </p>
+                  <div className="space-y-1">
+                    <CardTitle className="text-lg">{pipeline.name}</CardTitle>
+                    <div className="flex items-center gap-2">
+                      {pipeline.type === 'rag' ? (
+                        <Badge variant="secondary" className="text-xs">
+                          <FileText className="mr-1 h-3 w-3" />
+                          RAG Pipeline
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="text-xs">
+                          <MessageSquare className="mr-1 h-3 w-3" />
+                          LLM Pipeline
+                        </Badge>
+                      )}
+                      <StatusBadge status={pipeline.status} />
+                    </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      // Handle menu
-                    }}
-                  >
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
                 </div>
-
-                <div className="flex items-center gap-2 mt-3">
-                  <StatusBadge status={pipeline.status} />
-                  <Badge variant="secondary" className="text-xs">
-                    {pipeline.llmConfig.model}
-                  </Badge>
-                  {pipeline.retrievalConfig.reranker?.enabled && (
-                    <Badge variant="outline" className="text-xs">
-                      Reranked
-                    </Badge>
-                  )}
-                </div>
+                <CardDescription className="mt-2 line-clamp-2">
+                  {pipeline.description}
+                </CardDescription>
               </CardHeader>
-
               <CardContent className="space-y-4">
-                {/* Collections Info */}
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Folder className="h-4 w-4" />
-                  <span>{pipeline.collectionIds.length} collection{pipeline.collectionIds.length > 1 ? 's' : ''}</span>
-                  <span className="text-xs">•</span>
-                  <span>{formatNumber(pipeline.documentsCount)} docs</span>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{pipeline.model.name}</span>
+                  <Badge variant="outline">{pipeline.model.provider}</Badge>
                 </div>
-
-                {/* Metrics Grid */}
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div className="space-y-1">
-                    <p className="text-muted-foreground flex items-center gap-1">
-                      <Activity className="h-3 w-3" />
-                      Queries/day
+                
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  {pipeline.type === 'rag' && (
+                    <div>
+                      <p className="text-muted-foreground">Collections</p>
+                      <p className="font-medium">{pipeline.collectionIds.length}</p>
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-muted-foreground">Documents</p>
+                    <p className="font-medium">
+                      {pipeline.documentsCount > 0 ? pipeline.documentsCount.toLocaleString() : 'Direct LLM'}
                     </p>
-                    <p className="font-medium">{formatNumber(pipeline.queriesPerDay)}</p>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-muted-foreground flex items-center gap-1">
-                      <Zap className="h-3 w-3" />
-                      Latency
-                    </p>
-                    <p className="font-medium">{pipeline.avgLatency}ms</p>
+                  <div>
+                    <p className="text-muted-foreground">Queries/day</p>
+                    <p className="font-medium">{pipeline.queriesPerDay?.toLocaleString() || '0'}</p>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-muted-foreground flex items-center gap-1">
-                      <TrendingUp className="h-3 w-3" />
-                      Accuracy
-                    </p>
-                    <p className="font-medium">{pipeline.accuracy}%</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-muted-foreground flex items-center gap-1">
-                      <DollarSign className="h-3 w-3" />
-                      Cost/day
-                    </p>
-                    <p className="font-medium">${pipeline.costPerDay.toFixed(2)}</p>
+                  <div>
+                    <p className="text-muted-foreground">Latency</p>
+                    <p className="font-medium">{pipeline.avgLatency || '0'}ms</p>
                   </div>
                 </div>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1">
-                  {pipeline.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center justify-between pt-3 border-t">
+                <div className="flex items-center justify-between pt-2 border-t">
                   <p className="text-xs text-muted-foreground">
                     {pipeline.lastQueryAt 
                       ? `Last used ${formatDate(pipeline.lastQueryAt)}`
@@ -401,7 +298,7 @@ export default function PipelinesPage() {
             <p className="text-muted-foreground mb-4">
               {searchQuery 
                 ? 'Try adjusting your search terms' 
-                : 'Create your first RAG pipeline to get started'
+                : 'Create your first pipeline to get started'
               }
             </p>
             {!searchQuery && (

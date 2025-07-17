@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter,useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -114,6 +114,8 @@ Technical Context: {context}`,
 
 export default function LLMConfigPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()  
+  const pipelineType = searchParams.get('type')
   const [selectedProvider, setSelectedProvider] = useState('openai')
   const [selectedModel, setSelectedModel] = useState('gpt-4-turbo-preview')
   const [temperature, setTemperature] = useState(0.7)
@@ -136,12 +138,15 @@ export default function LLMConfigPage() {
   }
 
   const handleNext = () => {
-    // Save configuration to session/context
-    router.push('/inferencer/new/review')
+    router.push(`/inferencer/new/review?type=${pipelineType}`)
   }
 
   const handleBack = () => {
-    router.push('/inferencer/new/retrieval')
+    // Update this to include the type parameter too
+    const prevPath = pipelineType === 'rag' 
+      ? '/inferencer/new/retrieval'
+      : '/inferencer/new/mcp'
+    router.push(`${prevPath}?type=${pipelineType}`)
   }
 
   return (

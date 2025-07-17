@@ -119,7 +119,7 @@ export default function RetrievalConfigurationPage() {
 
   const handleNext = () => {
     // Save configuration to session/context
-    router.push('/inferencer/new/llm')
+    router.push('/inferencer/new/memory?type=rag')
   }
 
   const handleBack = () => {
@@ -497,7 +497,7 @@ export default function RetrievalConfigurationPage() {
         <Button
           onClick={handleNext}
         >
-          Next: LLM Configuration
+          Next: Memory Configuration
           <ChevronRight className="h-4 w-4 ml-2" />
         </Button>
       </div>

@@ -1,6 +1,7 @@
+// src/app/inferencer/new/layout.tsx
 'use client'
 
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { MainLayout } from '@/components/layout/main-layout'
 import { MinimalStepIndicator } from '@/components/ui/step-indicator'
 import { 
@@ -8,41 +9,92 @@ import {
   Search,
   Brain,
   CheckCircle,
-  ArrowLeft
+  ArrowLeft,
+  MessageSquare,
+  Cpu,
+  Zap,
+  Database
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
+import { PipelineType } from '@/types/pipeline.types'
 
-const steps = [
-  {
+// Define all possible steps
+const allSteps = {
+  basic: {
     id: 'basic',
-    title: 'Basic Info & Collections',
-    description: 'Name and select data',
+    title: 'Basic Info',
+    description: 'Name and description',
     icon: Folder,
-    path: '/inferencer/new',
+    path: '/inferencer/new/basic',
   },
-  {
+  collections: {
+    id: 'collections',
+    title: 'Collections',
+    description: 'Select data sources',
+    icon: Database,
+    path: '/inferencer/new/collections',
+  },
+  retrieval: {
     id: 'retrieval',
     title: 'Retrieval Config',
     description: 'Search settings',
     icon: Search,
     path: '/inferencer/new/retrieval',
   },
-  {
+  memory: {
+    id: 'memory',
+    title: 'Memory',
+    description: 'Conversation memory',
+    icon: Brain,
+    path: '/inferencer/new/memory',
+  },
+  mcp: {
+    id: 'mcp',
+    title: 'MCP Tools',
+    description: 'External tools',
+    icon: Cpu,
+    path: '/inferencer/new/mcp',
+  },
+  llm: {
     id: 'llm',
     title: 'LLM & Prompts',
     description: 'Model and prompts',
-    icon: Brain,
+    icon: MessageSquare,
     path: '/inferencer/new/llm',
   },
-  {
+  review: {
     id: 'review',
     title: 'Review & Deploy',
     description: 'Confirm settings',
     icon: CheckCircle,
     path: '/inferencer/new/review',
   },
-]
+}
+
+// Get steps based on pipeline type
+const getStepsForPipelineType = (type: PipelineType) => {
+  if (type === 'rag') {
+    return [
+      allSteps.basic,
+      allSteps.collections,
+      allSteps.retrieval,
+      allSteps.memory,
+      allSteps.mcp,
+      allSteps.llm,
+      allSteps.review,
+    ]
+  }
+  
+  // LLM pipeline
+  return [
+    allSteps.basic,
+    allSteps.memory,
+    allSteps.mcp,
+    allSteps.llm,
+    allSteps.review,
+  ]
+}
 
 export default function PipelineLayout({
   children,
@@ -50,9 +102,37 @@ export default function PipelineLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const router = useRouter()
   
+  // Get pipeline type from URL params
+  const pipelineType = searchParams.get('type') as PipelineType | null
+  
+  // Check if we're on the pipeline type selection page
+  const isTypeSelectionPage = pathname === '/inferencer/new'
+  
+  // Don't show layout wrapper for type selection page
+  if (isTypeSelectionPage) {
+    return <>{children}</>
+  }
+  
+  // If no pipeline type is set but we're past the selection page, redirect
+  if (!pipelineType) {
+    router.push('/inferencer/new')
+    return null
+  }
+  
+  // Get steps based on pipeline type
+  const steps = getStepsForPipelineType(pipelineType)
   const currentStepIndex = steps.findIndex(step => pathname === step.path)
+  
+  const headerTitle = pipelineType === 'llm' 
+    ? 'Create LLM Pipeline' 
+    : 'Create RAG Pipeline'
+    
+  const headerDescription = pipelineType === 'llm'
+    ? 'Configure direct language model inference'
+    : 'Configure retrieval-augmented generation for your documents'
   
   return (
     <MainLayout>
@@ -69,15 +149,15 @@ export default function PipelineLayout({
                 <ArrowLeft className="h-4 w-4" />
               </Button>
               <div>
-                <h1 className="text-2xl font-bold">Create RAG Pipeline</h1>
+                <h1 className="text-2xl font-bold">{headerTitle}</h1>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Configure retrieval-augmented generation for your documents
+                  {headerDescription}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Minimal Step Indicator with glow effect */}
+          {/* Step Indicator - Only show after pipeline type is selected */}
           <div className="bg-card/50 backdrop-blur-sm rounded-lg p-3 border border-border/50">
             <MinimalStepIndicator 
               steps={steps} 
