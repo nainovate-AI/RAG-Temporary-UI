@@ -194,14 +194,6 @@ export default function NewPipelinePage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header - Remove this if using layout */}
-      <div>
-        <h1 className="text-3xl font-bold">Create RAG Pipeline</h1>
-        <p className="text-muted-foreground mt-2">
-          Configure a new retrieval-augmented generation pipeline
-        </p>
-      </div>
-
       {/* Info Box */}
       <div className="flex items-start gap-3 p-4 bg-primary/10 border border-primary/30 rounded-lg">
         <Info className="h-5 w-5 text-primary mt-0.5" />
