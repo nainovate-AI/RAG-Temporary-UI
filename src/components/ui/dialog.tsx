@@ -65,3 +65,19 @@ export function DialogDescription({ children, className }: DialogDescriptionProp
     <p className={cn('text-muted-foreground text-sm', className)}>{children}</p>
   )
 }
+
+// Add this to your src/components/ui/dialog.tsx file
+
+export const DialogFooter = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn(
+      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+      className
+    )}
+    {...props}
+  />
+)
+DialogFooter.displayName = "DialogFooter"
