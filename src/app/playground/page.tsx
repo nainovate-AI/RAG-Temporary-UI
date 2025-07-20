@@ -35,6 +35,7 @@ const mockRetrievedDocs: RetrievedDocument[] = [
     score: 0.94,
     metadata: {
       filename: 'integration-guide.md',
+      collectionName: 'Demo Collection',
       updatedAt: '2 days ago',
       category: 'Technical Docs'
     }
@@ -45,6 +46,7 @@ const mockRetrievedDocs: RetrievedDocument[] = [
     score: 0.89,
     metadata: {
       filename: 'react-examples.tsx',
+      collectionName: 'Demo Collection',
       updatedAt: '1 week ago',
       category: 'Code Examples'
     }
@@ -55,6 +57,7 @@ const mockRetrievedDocs: RetrievedDocument[] = [
     score: 0.85,
     metadata: {
       filename: 'api-reference.md',
+      collectionName: 'Demo Collection',
       updatedAt: '3 days ago',
       category: 'API Docs'
     }
