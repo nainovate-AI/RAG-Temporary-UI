@@ -1,0 +1,252 @@
+{
+  "modules": {
+    "pipeline": {
+      "flow": {
+        "rag": {
+          "steps": [
+            {
+              "id": "basic-info",
+              "title": "Basic Information",
+              "component": "BasicInfoStep",
+              "enabled": true,
+              "required": true,
+              "order": 1,
+              "description": "Configure pipeline name and description"
+            },
+            {
+              "id": "collections",
+              "title": "Select Collections",
+              "component": "CollectionsStep",
+              "enabled": true,
+              "required": true,
+              "order": 2,
+              "description": "Choose document collections for retrieval"
+            },
+            {
+              "id": "retrieval",
+              "title": "Retrieval Config",
+              "component": "RetrievalConfigStep",
+              "enabled": true,
+              "required": true,
+              "order": 3,
+              "description": "Configure search and retrieval settings"
+            },
+            {
+              "id": "memory",
+              "title": "Memory Config",
+              "component": "MemoryStep",
+              "enabled": false,
+              "required": false,
+              "order": 4,
+              "description": "Setup conversation memory"
+            },
+            {
+              "id": "mcp",
+              "title": "MCP Tools",
+              "component": "MCPStep",
+              "enabled": false,
+              "required": false,
+              "order": 5,
+              "description": "Configure external tools"
+            },
+            {
+              "id": "llm",
+              "title": "LLM & Prompts",
+              "component": "LLMConfigStep",
+              "enabled": true,
+              "required": true,
+              "order": 6,
+              "description": "Select model and configure prompts"
+            },
+            {
+              "id": "review",
+              "title": "Review & Deploy",
+              "component": "ReviewDeployStep",
+              "enabled": true,
+              "required": true,
+              "order": 7,
+              "description": "Review configuration and deploy"
+            }
+          ]
+        },
+        "llm": {
+          "steps": [
+            {
+              "id": "basic-info",
+              "title": "Basic Information",
+              "component": "BasicInfoStep",
+              "enabled": true,
+              "required": true,
+              "order": 1,
+              "description": "Configure pipeline name and description"
+            },
+            {
+              "id": "llm",
+              "title": "LLM Configuration",
+              "component": "LLMConfigStep",
+              "enabled": true,
+              "required": true,
+              "order": 2,
+              "description": "Select model and configure settings"
+            },
+            {
+              "id": "review",
+              "title": "Review & Deploy",
+              "component": "ReviewDeployStep",
+              "enabled": true,
+              "required": true,
+              "order": 3,
+              "description": "Review configuration and deploy"
+            }
+          ]
+        }
+      },
+      "status": {
+        "draft": {
+          "label": "Draft",
+          "color": "gray",
+          "icon": "edit",
+          "description": "Pipeline is being configured"
+        },
+        "processing": {
+          "label": "Processing",
+          "color": "blue",
+          "icon": "loader",
+          "description": "Pipeline is being deployed"
+        },
+        "active": {
+          "label": "Active",
+          "color": "green",
+          "icon": "check-circle",
+          "description": "Pipeline is running"
+        },
+        "error": {
+          "label": "Error",
+          "color": "red",
+          "icon": "alert-circle",
+          "description": "Pipeline encountered an error"
+        },
+        "paused": {
+          "label": "Paused",
+          "color": "yellow",
+          "icon": "pause-circle",
+          "description": "Pipeline is temporarily stopped"
+        }
+      },
+      "states": {
+        "configuring": "Setting up pipeline configuration",
+        "validating": "Validating pipeline settings",
+        "deploying": "Deploying pipeline resources",
+        "testing": "Running test queries",
+        "ready": "Pipeline is ready for use",
+        "running": "Processing queries",
+        "updating": "Updating pipeline configuration",
+        "deleting": "Removing pipeline resources"
+      }
+    },
+    "ingest": {
+      "flow": {
+        "document": {
+          "steps": [
+            {
+              "id": "collection-info",
+              "title": "Collection Information",
+              "component": "CollectionInfoStep",
+              "enabled": true,
+              "required": true,
+              "order": 1,
+              "description": "Create or select a collection"
+            },
+            {
+              "id": "document-upload",
+              "title": "Upload Documents",
+              "component": "DocumentUploadStep",
+              "enabled": true,
+              "required": true,
+              "order": 2,
+              "description": "Upload your documents"
+            },
+            {
+              "id": "processing",
+              "title": "Processing Config",
+              "component": "ProcessingStep",
+              "enabled": true,
+              "required": true,
+              "order": 3,
+              "description": "Configure chunking and preprocessing"
+            },
+            {
+              "id": "embedding",
+              "title": "Embedding Config",
+              "component": "EmbeddingStep",
+              "enabled": true,
+              "required": true,
+              "order": 4,
+              "description": "Select embedding model"
+            },
+            {
+              "id": "vector-store",
+              "title": "Vector Store",
+              "component": "VectorStoreStep",
+              "enabled": true,
+              "required": true,
+              "order": 5,
+              "description": "Configure vector database"
+            },
+            {
+              "id": "review",
+              "title": "Review & Start",
+              "component": "ReviewStep",
+              "enabled": true,
+              "required": true,
+              "order": 6,
+              "description": "Review and start ingestion"
+            }
+          ]
+        }
+      },
+      "status": {
+        "pending": {
+          "label": "Pending",
+          "color": "gray",
+          "icon": "clock",
+          "description": "Ingestion not started"
+        },
+        "processing": {
+          "label": "Processing",
+          "color": "blue",
+          "icon": "loader",
+          "description": "Documents being processed"
+        },
+        "completed": {
+          "label": "Completed",
+          "color": "green",
+          "icon": "check-circle",
+          "description": "Ingestion successful"
+        },
+        "failed": {
+          "label": "Failed",
+          "color": "red",
+          "icon": "x-circle",
+          "description": "Ingestion failed"
+        },
+        "partial": {
+          "label": "Partial",
+          "color": "yellow",
+          "icon": "alert-triangle",
+          "description": "Some documents failed"
+        }
+      },
+      "states": {
+        "uploading": "Uploading documents",
+        "validating": "Validating document formats",
+        "chunking": "Splitting documents into chunks",
+        "embedding": "Generating embeddings",
+        "indexing": "Indexing in vector store",
+        "verifying": "Verifying indexed data",
+        "completed": "Ingestion complete",
+        "cleaning": "Cleaning up resources"
+      }
+    }
+  }
+}

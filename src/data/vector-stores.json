@@ -1,0 +1,55 @@
+{
+  "vectorStores": [
+    {
+      "id": "qdrant",
+      "name": "Qdrant",
+      "description": "High-performance vector database with advanced filtering",
+      "features": ["Filtering", "Payload storage", "Cloud & self-hosted"],
+      "cloudOption": true,
+      "selfHosted": true,
+      "recommended": true,
+      "icon": "🎯",
+      "status": "active"
+    },
+    {
+      "id": "pinecone",
+      "name": "Pinecone",
+      "description": "Fully managed vector database",
+      "features": ["Managed service", "Hybrid search", "Namespaces"],
+      "cloudOption": true,
+      "selfHosted": false,
+      "icon": "🌲",
+      "status": "active"
+    },
+    {
+      "id": "weaviate",
+      "name": "Weaviate",
+      "description": "Open-source vector database with modules",
+      "features": ["GraphQL API", "Modules", "Hybrid search"],
+      "cloudOption": true,
+      "selfHosted": true,
+      "icon": "🔮",
+      "status": "active"
+    },
+    {
+      "id": "chroma",
+      "name": "ChromaDB",
+      "description": "Open-source embedding database",
+      "features": ["Simple API", "Metadata filtering", "Collections"],
+      "cloudOption": false,
+      "selfHosted": true,
+      "icon": "🎨",
+      "status": "inactive"
+    },
+    {
+      "id": "faiss",
+      "name": "FAISS",
+      "description": "Facebook AI Similarity Search",
+      "features": ["Fast search", "GPU support", "Multiple indices"],
+      "cloudOption": false,
+      "selfHosted": true,
+      "icon": "⚡",
+      "status": "inactive"
+    }
+  ]
+}

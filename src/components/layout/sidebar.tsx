@@ -74,7 +74,7 @@ export function Sidebar() {
     }
     
     // For other items, check if pathname starts with href
-    // This will make /contexter active for both /contexter and /contexter/ingest/new
+    // This will make /contexter active for both /contexter and /contexter/ingest
     return pathname === href || pathname.startsWith(href + '/')
   }
   const getActiveSection = () => {

@@ -55,7 +55,7 @@ export default function DashboardsLayout({
   
   const handleNewClick = () => {
     if (isContexter) {
-      router.push('/contexter/ingest/new')
+      router.push('/contexter/ingest')
     } else {
       router.push('/inferencer/new')
     }

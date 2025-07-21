@@ -1,0 +1,54 @@
+{
+  "embeddings": [
+    {
+      "id": "text-embedding-ada-002",
+      "provider": "openai",
+      "name": "Ada 002",
+      "description": "Most capable OpenAI embedding model",
+      "dimensions": 1536,
+      "maxInputTokens": 8191,
+      "costPer1kTokens": 0.0001,
+      "status": "active"
+    },
+    {
+      "id": "text-embedding-3-small",
+      "provider": "openai",
+      "name": "Embedding 3 Small",
+      "description": "Newer, smaller OpenAI embedding model",
+      "dimensions": 1536,
+      "maxInputTokens": 8191,
+      "costPer1kTokens": 0.00002,
+      "status": "active"
+    },
+    {
+      "id": "text-embedding-3-large",
+      "provider": "openai",
+      "name": "Embedding 3 Large",
+      "description": "Newer, larger OpenAI embedding model",
+      "dimensions": 3072,
+      "maxInputTokens": 8191,
+      "costPer1kTokens": 0.00013,
+      "status": "inactive"
+    },
+    {
+      "id": "voyage-2",
+      "provider": "voyage",
+      "name": "Voyage 2",
+      "description": "High-quality embeddings optimized for retrieval",
+      "dimensions": 1024,
+      "maxInputTokens": 4000,
+      "costPer1kTokens": 0.0001,
+      "status": "inactive"
+    },
+    {
+      "id": "embed-english-v3",
+      "provider": "cohere",
+      "name": "Cohere English v3",
+      "description": "Optimized for English text",
+      "dimensions": 1024,
+      "maxInputTokens": 512,
+      "costPer1kTokens": 0.0001,
+      "status": "inactive"
+    }
+  ]
+}

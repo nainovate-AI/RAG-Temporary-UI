@@ -145,7 +145,7 @@ export default function DocumentsPage() {
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
 
   const handleNewIngestion = () => {
-    router.push('/contexter/ingest/new')
+    router.push('/contexter/ingest')
   }
 
   const handleCollectionClick = (collectionId: string) => {

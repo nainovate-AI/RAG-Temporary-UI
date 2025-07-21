@@ -116,7 +116,7 @@ export default function CollectionsPage() {
         </div>
         <Button
           variant="outline"
-          onClick={() => router.push('/contexter/ingest/new')}
+          onClick={() => router.push('/contexter/ingest')}
         >
           <Plus className="h-4 w-4 mr-2" />
           Create New Collection

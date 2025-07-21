@@ -1,0 +1,38 @@
+{
+  "strategies": [
+    {
+      "id": "recursive",
+      "name": "Recursive Text Splitter",
+      "description": "Intelligently splits text preserving paragraph and sentence boundaries",
+      "icon": "FileText",
+      "recommended": true,
+      "pros": ["Maintains context", "Respects document structure", "Best for most use cases"],
+      "cons": ["May create uneven chunk sizes"],
+      "bestFor": "General documents, articles, documentation"
+    },
+    {
+      "id": "fixed",
+      "name": "Fixed Size",
+      "description": "Splits text into chunks of exact character count",
+      "icon": "Scissors",
+      "pros": ["Predictable chunk sizes", "Fast processing", "Memory efficient"],
+      "cons": ["May break sentences", "Loss of context at boundaries"],
+      "bestFor": "Large datasets, logs, structured data"
+    },
+    {
+      "id": "semantic",
+      "name": "Semantic Chunking",
+      "description": "Uses AI to identify meaningful semantic boundaries",
+      "icon": "Layers",
+      "pros": ["Best context preservation", "Topic-aware splitting", "High quality"],
+      "cons": ["Slower processing", "Higher cost", "Requires AI model"],
+      "bestFor": "Complex documents, research papers, legal texts"
+    }
+  ],
+  "preprocessingOptions": [
+    { "id": "lowercase", "label": "Convert to lowercase", "icon": "Type", "defaultEnabled": false },
+    { "id": "remove_html", "label": "Remove HTML tags", "icon": "Braces", "defaultEnabled": true },
+    { "id": "remove_urls", "label": "Remove URLs", "icon": "Hash", "defaultEnabled": false },
+    { "id": "extract_metadata", "label": "Extract metadata", "icon": "FileCode", "defaultEnabled": true }
+  ]
+}
