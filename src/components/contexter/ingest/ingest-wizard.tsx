@@ -43,7 +43,13 @@ export function IngestWizard() {
   }, [steps]);
 
   const handleComplete = async (formData: any) => {
-    await submitIngestion();
+    console.log('IngestWizard - handleComplete called with:', formData);
+    try {
+      await submitIngestion();
+      console.log('IngestWizard - submitIngestion completed');
+    } catch (error) {
+      console.error('IngestWizard - Error:', error);
+    }
   };
 
   const handleStepChange = (stepIndex: number, stepId: string) => {

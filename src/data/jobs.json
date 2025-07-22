@@ -1,3 +1,137 @@
 {
-  "jobs": []
+  "jobs": [
+    {
+      "id": "job_1753092132371_sebhafqaa",
+      "type": "ingestion",
+      "module": "ingest",
+      "targetId": "coll_fb78cb32-f427-4e61-aa1d-d3ee8ad877c7",
+      "status": "processing",
+      "state": "uploading",
+      "stateDetails": {
+        "message": "Uploading documents",
+        "startedAt": "2025-07-21T10:02:11.837Z",
+        "progress": {
+          "current": 0,
+          "total": 1
+        }
+      },
+      "config": {
+        "processing": {
+          "strategy": "recursive",
+          "chunkSize": 512,
+          "chunkOverlap": 64,
+          "preprocessing": [
+            "remove_html",
+            "extract_metadata"
+          ]
+        },
+        "embedding": {
+          "model": "text-embedding-ada-002",
+          "provider": "openai"
+        },
+        "vectorStore": {
+          "type": "qdrant",
+          "connectionType": "cloud",
+          "collectionName": "collection_1753092125972",
+          "namespace": ""
+        }
+      },
+      "createdAt": "2025-07-21T10:02:12.371Z",
+      "updatedAt": "2025-07-21T10:02:12.371Z"
+    },
+    {
+      "id": "job_1753093242770_b4dsxy9yq",
+      "type": "ingestion",
+      "module": "ingest",
+      "targetId": "coll_5d9d7f4c-1866-4e65-b075-27a87e494ccc",
+      "status": "completed",
+      "state": "completed",
+      "stateDetails": {
+        "message": "Ingestion complete",
+        "startedAt": "2025-07-21T10:20:42.742Z",
+        "progress": {
+          "current": 0,
+          "total": 1
+        },
+        "lastStateChange": "2025-07-22T06:58:43.053Z",
+        "completedAt": "2025-07-22T06:58:43.053Z"
+      },
+      "config": {
+        "processing": {
+          "strategy": "recursive",
+          "chunkSize": 512,
+          "chunkOverlap": 64,
+          "preprocessing": [
+            "remove_html",
+            "extract_metadata"
+          ]
+        },
+        "embedding": {
+          "model": "text-embedding-ada-002",
+          "provider": "openai"
+        },
+        "vectorStore": {
+          "type": "qdrant",
+          "connectionType": "cloud",
+          "collectionName": "collection_1753093234279",
+          "namespace": ""
+        }
+      },
+      "createdAt": "2025-07-21T10:20:42.770Z",
+      "updatedAt": "2025-07-22T06:58:43.053Z",
+      "results": {
+        "chunksCreated": 1234,
+        "embeddingsGenerated": 1234,
+        "indexedDocuments": 1,
+        "failedDocuments": 0
+      }
+    },
+    {
+      "id": "job_1753097808887_9ogbq0pzt",
+      "type": "ingestion",
+      "module": "ingest",
+      "targetId": "coll_66923460-924b-4d68-b69c-93eb01aa6320",
+      "status": "completed",
+      "state": "completed",
+      "stateDetails": {
+        "message": "Ingestion complete",
+        "startedAt": "2025-07-21T11:36:48.227Z",
+        "progress": {
+          "current": 0,
+          "total": 1
+        },
+        "lastStateChange": "2025-07-22T06:47:06.489Z",
+        "completedAt": "2025-07-22T06:47:06.489Z"
+      },
+      "config": {
+        "processing": {
+          "strategy": "recursive",
+          "chunkSize": 512,
+          "chunkOverlap": 64,
+          "preprocessing": [
+            "remove_html",
+            "extract_metadata"
+          ]
+        },
+        "embedding": {
+          "model": "text-embedding-ada-002",
+          "provider": "openai"
+        },
+        "vectorStore": {
+          "type": "qdrant",
+          "connectionType": "cloud",
+          "collectionName": "collection_1753097797467",
+          "namespace": ""
+        }
+      },
+      "createdAt": "2025-07-21T11:36:48.887Z",
+      "updatedAt": "2025-07-22T06:47:06.489Z",
+      "results": {
+        "chunksCreated": 1234,
+        "embeddingsGenerated": 1234,
+        "indexedDocuments": 1,
+        "failedDocuments": 0
+      }
+    }
+  ]
 }

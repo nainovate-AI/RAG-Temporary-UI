@@ -127,10 +127,14 @@ export function WizardContainer({
       return { isValid: false };
     }
 
-    // For now, just check if required fields are present
-    // You can add custom validation logic here
     const stepData = state.formData[currentStep.id];
-    
+
+    // Check for step-specific validation flag
+    if (stepData && '_isValid' in stepData) {
+      return { isValid: stepData._isValid };
+    }
+
+    // Original validation logic for other steps
     if (currentStep.required && (!stepData || Object.keys(stepData).length === 0)) {
       return {
         isValid: false,
@@ -163,9 +167,11 @@ export function WizardContainer({
 
     if (isLastStep) {
       // Handle completion
+      console.log('Wizard - Calling onComplete with data:', state.formData);
       dispatch({ type: 'SET_SUBMITTING', isSubmitting: true });
       try {
         await onComplete(state.formData);
+        console.log('Wizard - onComplete finished');
       } catch (error) {
         console.error('Error completing wizard:', error);
       } finally {

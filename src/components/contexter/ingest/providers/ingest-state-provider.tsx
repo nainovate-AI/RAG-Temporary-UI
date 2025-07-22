@@ -117,11 +117,13 @@ export function IngestStateProvider({ children }: { children: React.ReactNode })
   }, []);
 
   const submitIngestion = useCallback(async () => {
+    console.log('1. submitIngestion started');
     localDispatch({ type: 'SET_SUBMITTING', isSubmitting: true });
     localDispatch({ type: 'SET_ERROR', error: null });
 
     try {
       // Create collection
+      console.log('2. Creating collection...');
       const collectionData = {
         ...state.formData.collectionInfo!,
         documentCount: state.formData.documents?.files.length || 0,
@@ -154,8 +156,10 @@ export function IngestStateProvider({ children }: { children: React.ReactNode })
 
       // Add to Redux store
       dispatch(addCollection(collection));
+      console.log('4. Added to Redux');
 
       // Create ingestion job
+      console.log('5. Creating job...');
       const jobData = {
         type: 'ingestion' as const,
         module: 'ingest' as const,
@@ -178,24 +182,29 @@ export function IngestStateProvider({ children }: { children: React.ReactNode })
       };
 
       const { data: job, error: jobError } = await dataService.createJob(jobData);
-      
+      console.log('6. Job response:', { job, jobError });
+
       if (jobError || !job) {
         throw new Error(jobError || 'Failed to create job');
       }
 
       // Add to Redux store
       dispatch(addJob(job));
-
+      console.log('7. Job added to Redux');
+     
       // Navigate to job monitoring page
+      console.log('8. Redirecting to:', `/jobs/${job.id}`);
       router.push(`/jobs/${job.id}`);
+      console.log('9. Redirect called');
       
     } catch (error) {
-      console.error('Ingestion error:', error);
+      console.error('ERROR in submitIngestion:', error);
       localDispatch({ 
         type: 'SET_ERROR', 
         error: error instanceof Error ? error.message : 'Failed to start ingestion' 
       });
     } finally {
+      console.log('10. Resetting submitting state');
       localDispatch({ type: 'SET_SUBMITTING', isSubmitting: false });
     }
   }, [state.formData, dispatch, router]);

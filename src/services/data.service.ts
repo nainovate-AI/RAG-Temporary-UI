@@ -129,6 +129,7 @@ class DataService {
     });
   }
 
+  // Update job status
   async updateJobStatus(id: string, status: string, state: string) {
     return this.fetchData<any>(`/api/jobs/${id}/status`, {
       method: 'PATCH',

@@ -38,11 +38,27 @@ export function ReviewStep({
 }: WizardStepProps) {
   const { state } = useIngestState();
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  
+
+  // Validation: only allow proceed if agreedToTerms is true
+  const isValid = agreedToTerms;
+
+  // Notify parent about validation state
+  useEffect(() => {
+    console.log('Review step - agreedToTerms:', agreedToTerms);
+    onChange({ 
+      agreedToTerms,
+      _isValid: isValid // Using _isValid as a special key for validation
+    });
+    onChange({ 
+    agreedToTerms,
+    _isValid: agreedToTerms
+  });
+  }, [agreedToTerms, isValid, onChange]);
+
   // Get data from Redux for display names
   const embeddings = useAppSelector(state => state.embeddings.entities);
   const vectorStores = useAppSelector(state => state.vectorStores.entities);
-  
+
   const formData = state.formData;
   const selectedEmbedding = embeddings[formData.embedding?.model || ''];
   const selectedVectorStore = vectorStores[formData.vectorStore?.type || ''];
@@ -270,7 +286,12 @@ export function ReviewStep({
             <Switch
               id="terms"
               checked={agreedToTerms}
-              onCheckedChange={setAgreedToTerms}
+              onCheckedChange={
+                (checked) => {
+                  console.log('Toggle changed:', checked);
+                  setAgreedToTerms(checked);
+                }
+              }
             />
             <div className="space-y-1">
               <Label htmlFor="terms" className="font-normal cursor-pointer">

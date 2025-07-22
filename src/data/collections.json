@@ -1,0 +1,82 @@
+{
+  "collections": [
+    {
+      "name": "test",
+      "description": "",
+      "tags": [],
+      "accessLevel": "public",
+      "documentCount": 1,
+      "totalChunks": 1234,
+      "totalSize": 142746,
+      "embeddingModel": {
+        "id": "text-embedding-ada-002",
+        "name": "text-embedding-ada-002",
+        "provider": "openai",
+        "dimensions": 1536
+      },
+      "vectorStore": {
+        "type": "qdrant",
+        "connectionType": "cloud",
+        "collectionName": "collection_1753093234279",
+        "namespace": ""
+      },
+      "chunkingConfig": {
+        "strategy": "recursive",
+        "chunkSize": 512,
+        "chunkOverlap": 64
+      },
+      "status": "ready",
+      "metadata": {
+        "tags": [],
+        "accessLevel": "public"
+      },
+      "id": "coll_5d9d7f4c-1866-4e65-b075-27a87e494ccc",
+      "createdAt": "2025-07-21T10:20:42.730Z",
+      "updatedAt": "2025-07-22T06:58:45.353Z",
+      "progress": {
+        "current": 100,
+        "total": 100,
+        "stage": "completed"
+      }
+    },
+    {
+      "name": "Resume",
+      "description": "",
+      "tags": [],
+      "accessLevel": "public",
+      "documentCount": 1,
+      "totalChunks": 1234,
+      "totalSize": 1903599,
+      "embeddingModel": {
+        "id": "text-embedding-ada-002",
+        "name": "text-embedding-ada-002",
+        "provider": "openai",
+        "dimensions": 1536
+      },
+      "vectorStore": {
+        "type": "qdrant",
+        "connectionType": "cloud",
+        "collectionName": "collection_1753097797467",
+        "namespace": ""
+      },
+      "chunkingConfig": {
+        "strategy": "recursive",
+        "chunkSize": 512,
+        "chunkOverlap": 64
+      },
+      "status": "ready",
+      "metadata": {
+        "tags": [],
+        "accessLevel": "public"
+      },
+      "id": "coll_66923460-924b-4d68-b69c-93eb01aa6320",
+      "createdAt": "2025-07-21T11:36:48.201Z",
+      "updatedAt": "2025-07-22T06:47:06.751Z",
+      "progress": {
+        "current": 100,
+        "total": 100,
+        "stage": "completed"
+      }
+    }
+  ]
+}
