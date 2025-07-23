@@ -1,0 +1,141 @@
+{
+  "useCases": {
+    "rag": [
+      {
+        "id": "qa",
+        "label": "Q&A / Support",
+        "icon": "💬",
+        "description": "Answer questions based on your documents"
+      },
+      {
+        "id": "search",
+        "label": "Semantic Search",
+        "icon": "🔍",
+        "description": "Find relevant information in your data"
+      },
+      {
+        "id": "chat",
+        "label": "Conversational AI",
+        "icon": "🤖",
+        "description": "Build chatbots with domain knowledge"
+      },
+      {
+        "id": "analysis",
+        "label": "Document Analysis",
+        "icon": "📊",
+        "description": "Analyze and extract insights from documents"
+      },
+      {
+        "id": "extraction",
+        "label": "Information Extraction",
+        "icon": "📋",
+        "description": "Extract specific data from documents"
+      },
+      {
+        "id": "custom",
+        "label": "Custom",
+        "icon": "⚙️",
+        "description": "Build a custom RAG solution"
+      }
+    ],
+    "llm": [
+      {
+        "id": "content",
+        "label": "Content Generation",
+        "icon": "✍️",
+        "description": "Generate articles, blogs, and copy"
+      },
+      {
+        "id": "transform",
+        "label": "Text Transformation",
+        "icon": "🔄",
+        "description": "Rewrite, translate, or modify text"
+      },
+      {
+        "id": "code",
+        "label": "Code Generation",
+        "icon": "💻",
+        "description": "Generate code and technical documentation"
+      },
+      {
+        "id": "summarize",
+        "label": "Summarization",
+        "icon": "📝",
+        "description": "Create summaries of long content"
+      },
+      {
+        "id": "extract",
+        "label": "Data Extraction",
+        "icon": "📊",
+        "description": "Extract structured data from text"
+      },
+      {
+        "id": "custom",
+        "label": "Custom",
+        "icon": "⚙️",
+        "description": "Build a custom LLM solution"
+      }
+    ]
+  },
+  "defaultSystemPrompts": {
+    "rag": {
+      "qa": "You are a helpful assistant. Use the provided context to answer questions accurately. If you cannot find the answer in the context, say so.",
+      "search": "You are a search assistant. Help users find relevant information from the provided documents.",
+      "chat": "You are a conversational AI assistant. Use the context to have helpful conversations while staying accurate to the source material.",
+      "analysis": "You are a document analyst. Analyze the provided documents and extract key insights and patterns.",
+      "extraction": "You are a data extraction specialist. Extract the requested information from the provided documents accurately.",
+      "custom": "You are an AI assistant. Use the provided context to help users with their requests."
+    },
+    "llm": {
+      "content": "You are a creative content writer. Generate engaging and informative content based on the user's requirements.",
+      "transform": "You are a text transformation expert. Modify, rewrite, or translate text according to the user's needs.",
+      "code": "You are an expert programmer. Generate clean, efficient, and well-documented code.",
+      "summarize": "You are a summarization expert. Create concise and informative summaries while preserving key information.",
+      "extract": "You are a data extraction specialist. Extract and structure information from unstructured text.",
+      "custom": "You are a helpful AI assistant. Complete tasks according to the user's requirements."
+    }
+  },
+  "defaultUserPromptTemplates": {
+    "rag": "Context:\n{context}\n\nUser Query:\n{query}\n\nResponse:",
+    "llm": "{input}"
+  },
+  "searchMethods": [
+    {
+      "id": "vector",
+      "label": "Vector Search",
+      "description": "Semantic similarity search using embeddings"
+    },
+    {
+      "id": "hybrid",
+      "label": "Hybrid Search",
+      "description": "Combines vector and keyword search for best results"
+    },
+    {
+      "id": "keyword",
+      "label": "Keyword Search",
+      "description": "Traditional keyword-based search"
+    }
+  ],
+  "memoryTypes": [
+    {
+      "id": "none",
+      "label": "No Memory",
+      "description": "Each query is independent"
+    },
+    {
+      "id": "buffer",
+      "label": "Buffer Memory",
+      "description": "Remember last N messages"
+    },
+    {
+      "id": "summary",
+      "label": "Summary Memory",
+      "description": "Summarize conversation history"
+    },
+    {
+      "id": "kg",
+      "label": "Knowledge Graph",
+      "description": "Store facts and relationships"
+    }
+  ]
+}

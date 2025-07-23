@@ -35,7 +35,7 @@
               "id": "memory",
               "title": "Memory Config",
               "component": "MemoryStep",
-              "enabled": false,
+              "enabled": true,
               "required": false,
               "order": 4,
               "description": "Setup conversation memory"
@@ -44,7 +44,7 @@
               "id": "mcp",
               "title": "MCP Tools",
               "component": "MCPStep",
-              "enabled": false,
+              "enabled": true,
               "required": false,
               "order": 5,
               "description": "Configure external tools"
@@ -81,13 +81,31 @@
               "description": "Configure pipeline name and description"
             },
             {
+              "id": "memory",
+              "title": "Memory Config",
+              "component": "MemoryStep",
+              "enabled": true,
+              "required": false,
+              "order": 2,
+              "description": "Setup conversation memory"
+            },
+            {
+              "id": "mcp",
+              "title": "MCP Tools",
+              "component": "MCPStep",
+              "enabled": true,
+              "required": false,
+              "order": 3,
+              "description": "Configure external tools"
+            },
+            {
               "id": "llm",
-              "title": "LLM Configuration",
+              "title": "LLM & Prompts",
               "component": "LLMConfigStep",
               "enabled": true,
               "required": true,
-              "order": 2,
-              "description": "Select model and configure settings"
+              "order": 4,
+              "description": "Select model and configure prompts"
             },
             {
               "id": "review",
@@ -95,7 +113,7 @@
               "component": "ReviewDeployStep",
               "enabled": true,
               "required": true,
-              "order": 3,
+              "order": 5,
               "description": "Review configuration and deploy"
             }
           ]
