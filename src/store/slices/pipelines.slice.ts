@@ -1,9 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
+interface PipelineMetrics {
+  totalQueries: number;
+  avgLatency: number;
+  successRate: number;
+  costPerDay: number;
+}
+
 interface Pipeline {
   id: string;
   name: string;
+  description?: string;  // Add this
   type: 'rag' | 'llm';
   module: 'pipeline';
   status: string;
@@ -13,6 +21,7 @@ interface Pipeline {
     lastStateChange: string;
   };
   config: any;
+  metrics?: PipelineMetrics;  // Add this
   createdAt: string;
   updatedAt: string;
 }
