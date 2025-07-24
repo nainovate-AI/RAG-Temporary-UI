@@ -7,6 +7,12 @@ import { addPipeline } from '@/store/slices/pipelines.slice';
 import { addJob } from '@/store/slices/jobs.slice';
 import { dataService } from '@/services/data.service';
 
+// Add the props interface
+interface PipelineStateProviderProps {
+  children: React.ReactNode;
+  initialType?: 'rag' | 'llm';
+}
+
 interface PipelineFormData {
   basicInfo?: {
     name: string;
@@ -131,13 +137,23 @@ function pipelineReducer(state: PipelineState, action: PipelineAction): Pipeline
   }
 }
 
-export function PipelineStateProvider({ children }: { children: React.ReactNode }) {
+// Update the function signature to accept props
+export function PipelineStateProvider({ children, initialType = 'rag' }: PipelineStateProviderProps) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   
+  // Use initialType in the initial state
   const [state, localDispatch] = useReducer(pipelineReducer, {
-    formData: {},
-    pipelineType: 'rag',
+    formData: {
+      basicInfo: {
+        type: initialType,
+        name: '',
+        description: '',
+        useCase: '',
+        tags: []
+      }
+    },
+    pipelineType: initialType,
     currentStep: 0,
     isSubmitting: false,
     error: null,
@@ -180,10 +196,10 @@ export function PipelineStateProvider({ children }: { children: React.ReactNode 
             enabled: false,
             type: 'none',
           },
-          mcp: state.formData.mcp || {
-            enabled: false,
-            servers: [],
-          },
+          // mcp: state.formData.mcp || {
+          //   enabled: false,
+          //   servers: [],
+          // },
           llm: state.formData.llm || {
             provider: 'openai',
             model: 'gpt-3.5-turbo',
@@ -236,7 +252,7 @@ export function PipelineStateProvider({ children }: { children: React.ReactNode 
       dispatch(addJob(job));
 
       // Navigate to job monitoring page
-      router.push(`/jobs/${job.id}`);
+      router.push(`/inferencer`);
       
     } catch (error) {
       console.error('Error submitting pipeline:', error);

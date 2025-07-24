@@ -44,7 +44,7 @@
               "id": "mcp",
               "title": "MCP Tools",
               "component": "MCPStep",
-              "enabled": true,
+              "enabled": false,
               "required": false,
               "order": 5,
               "description": "Configure external tools"
@@ -93,7 +93,7 @@
               "id": "mcp",
               "title": "MCP Tools",
               "component": "MCPStep",
-              "enabled": true,
+              "enabled": false,
               "required": false,
               "order": 3,
               "description": "Configure external tools"

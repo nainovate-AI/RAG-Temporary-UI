@@ -77,6 +77,191 @@
         "total": 100,
         "stage": "completed"
       }
+    },
+    {
+      "name": "test",
+      "description": "test",
+      "tags": [],
+      "accessLevel": "public",
+      "documentCount": 1,
+      "totalChunks": 0,
+      "totalSize": 1903599,
+      "embeddingModel": {
+        "id": "text-embedding-ada-002",
+        "name": "text-embedding-ada-002",
+        "provider": "openai",
+        "dimensions": 1536
+      },
+      "vectorStore": {
+        "type": "qdrant",
+        "connectionType": "cloud",
+        "collectionName": "collection_1753270527304",
+        "namespace": ""
+      },
+      "chunkingConfig": {
+        "strategy": "recursive",
+        "chunkSize": 512,
+        "chunkOverlap": 64
+      },
+      "status": "processing",
+      "metadata": {
+        "tags": [],
+        "accessLevel": "public"
+      },
+      "id": "coll_ee48091a-6d68-4cef-ac9e-6978ddb75c17",
+      "createdAt": "2025-07-23T11:35:33.259Z",
+      "updatedAt": "2025-07-23T11:35:33.260Z"
+    },
+    {
+      "name": "test",
+      "description": "test",
+      "tags": [],
+      "accessLevel": "public",
+      "documentCount": 1,
+      "totalChunks": 1234,
+      "totalSize": 1903599,
+      "embeddingModel": {
+        "id": "text-embedding-ada-002",
+        "name": "text-embedding-ada-002",
+        "provider": "openai",
+        "dimensions": 1536
+      },
+      "vectorStore": {
+        "type": "qdrant",
+        "connectionType": "cloud",
+        "collectionName": "collection_1753270527304",
+        "namespace": ""
+      },
+      "chunkingConfig": {
+        "strategy": "recursive",
+        "chunkSize": 512,
+        "chunkOverlap": 64
+      },
+      "status": "ready",
+      "metadata": {
+        "tags": [],
+        "accessLevel": "public"
+      },
+      "id": "coll_89dc5e87-3878-4720-a720-4a47663dfe9e",
+      "createdAt": "2025-07-23T11:35:42.939Z",
+      "updatedAt": "2025-07-23T11:39:04.440Z",
+      "progress": {
+        "current": 100,
+        "total": 100,
+        "stage": "completed"
+      }
+    },
+    {
+      "name": "test",
+      "description": "qws",
+      "tags": [],
+      "accessLevel": "public",
+      "documentCount": 1,
+      "totalChunks": 0,
+      "totalSize": 142746,
+      "embeddingModel": {
+        "id": "text-embedding-3-small",
+        "name": "text-embedding-3-small",
+        "provider": "openai",
+        "dimensions": 1536
+      },
+      "vectorStore": {
+        "type": "qdrant",
+        "connectionType": "cloud",
+        "collectionName": "collection_1753271359247",
+        "namespace": ""
+      },
+      "chunkingConfig": {
+        "strategy": "recursive",
+        "chunkSize": 512,
+        "chunkOverlap": 64
+      },
+      "status": "processing",
+      "metadata": {
+        "tags": [],
+        "accessLevel": "public"
+      },
+      "id": "coll_50947314-a202-41d9-84bd-5cbabdde0f2e",
+      "createdAt": "2025-07-23T11:49:52.251Z",
+      "updatedAt": "2025-07-23T11:49:52.251Z"
+    },
+    {
+      "name": "wsd",
+      "description": "wed",
+      "tags": [],
+      "accessLevel": "public",
+      "documentCount": 0,
+      "totalChunks": 1234,
+      "totalSize": 0,
+      "embeddingModel": {
+        "id": "text-embedding-ada-002",
+        "name": "text-embedding-ada-002",
+        "provider": "openai",
+        "dimensions": 1536
+      },
+      "vectorStore": {
+        "type": "qdrant",
+        "connectionType": "cloud",
+        "collectionName": "collection_1753272158676",
+        "namespace": ""
+      },
+      "chunkingConfig": {
+        "strategy": "recursive",
+        "chunkSize": 896,
+        "chunkOverlap": 64
+      },
+      "status": "ready",
+      "metadata": {
+        "tags": [],
+        "accessLevel": "public"
+      },
+      "id": "coll_d50e3a6b-d5c4-42c0-8b6f-0dec066590dc",
+      "createdAt": "2025-07-23T12:03:39.844Z",
+      "updatedAt": "2025-07-23T12:05:47.211Z",
+      "progress": {
+        "current": 100,
+        "total": 100,
+        "stage": "completed"
+      }
+    },
+    {
+      "name": "asdxc",
+      "description": "sd",
+      "tags": [],
+      "accessLevel": "public",
+      "documentCount": 0,
+      "totalChunks": 1234,
+      "totalSize": 0,
+      "embeddingModel": {
+        "id": "text-embedding-ada-002",
+        "name": "text-embedding-ada-002",
+        "provider": "openai",
+        "dimensions": 1536
+      },
+      "vectorStore": {
+        "type": "qdrant",
+        "connectionType": "cloud",
+        "collectionName": "collection_1753339497011",
+        "namespace": ""
+      },
+      "chunkingConfig": {
+        "strategy": "recursive",
+        "chunkSize": 512,
+        "chunkOverlap": 64
+      },
+      "status": "ready",
+      "metadata": {
+        "tags": [],
+        "accessLevel": "public"
+      },
+      "id": "coll_ae229b6d-a482-4496-b276-a50b3fefe351",
+      "createdAt": "2025-07-24T06:45:01.607Z",
+      "updatedAt": "2025-07-24T06:47:04.353Z",
+      "progress": {
+        "current": 100,
+        "total": 100,
+        "stage": "completed"
+      }
     }
   ]
 }

@@ -170,111 +170,111 @@ export default function InferencerPage() {
 
   return (
     <MainLayout>
-      <PageHeader
+        <PageHeader
         title="AI Pipelines"
         description="Manage your AI pipelines for content generation and retrieval"
-      >
+        >
         <Button onClick={handleCreatePipeline} className="gap-2">
-          <Plus className="h-4 w-4" />
-          New Pipeline
+            <Plus className="h-4 w-4" />
+            New Pipeline
         </Button>
-      </PageHeader>
-      
-      <PageContent>
+        </PageHeader>
+        
+        <PageContent>
         <div className="space-y-6">
-          {/* Stats */}
-          <div className="grid gap-4 md:grid-cols-5">
+            {/* Stats */}
+            <div className="grid gap-4 md:grid-cols-5">
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Pipelines</CardTitle>
-                    <Layers className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Total Pipelines</CardTitle>
+                <Layers className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{stats.total}</div>
-                    <p className="text-xs text-muted-foreground">All pipeline types</p>
+                <div className="text-2xl font-bold">{stats.total}</div>
+                <p className="text-xs text-muted-foreground">All pipeline types</p>
                 </CardContent>
             </Card>
             
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Active</CardTitle>
-                    <Activity className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Active</CardTitle>
+                <Activity className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold text-green-600">{stats.active}</div>
-                    <p className="text-xs text-muted-foreground">Currently running</p>
+                <div className="text-2xl font-bold text-green-600">{stats.active}</div>
+                <p className="text-xs text-muted-foreground">Currently running</p>
                 </CardContent>
             </Card>
             
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">RAG Pipelines</CardTitle>
-                    <FileText className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">RAG Pipelines</CardTitle>
+                <FileText className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{stats.rag}</div>
-                    <p className="text-xs text-muted-foreground">Retrieval-augmented</p>
+                <div className="text-2xl font-bold">{stats.rag}</div>
+                <p className="text-xs text-muted-foreground">Retrieval-augmented</p>
                 </CardContent>
             </Card>
             
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">LLM Pipelines</CardTitle>
-                    <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">LLM Pipelines</CardTitle>
+                <MessageSquare className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{stats.llm}</div>
-                    <p className="text-xs text-muted-foreground">Language model only</p>
+                <div className="text-2xl font-bold">{stats.llm}</div>
+                <p className="text-xs text-muted-foreground">Language model only</p>
                 </CardContent>
             </Card>
             
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Queries</CardTitle>
-                    <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Total Queries</CardTitle>
+                <BarChart3 className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{stats.totalQueries.toLocaleString()}</div>
-                    <p className="text-xs text-muted-foreground">All time queries</p>
+                <div className="text-2xl font-bold">{stats.totalQueries.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground">All time queries</p>
                 </CardContent>
             </Card>
-        </div>
+            </div>
 
-          {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-4">
+            {/* Filters */}
+            <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search pipelines..."
                 className="pl-10"
-              />
+                />
             </div>
             <div className="flex gap-2">
-              <select
+                <select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
                 className="px-3 py-2 border border-input bg-background rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              >
+                >
                 <option value="all">All Types</option>
                 <option value="rag">RAG Pipelines</option>
                 <option value="llm">LLM Pipelines</option>
-              </select>
-              <select
+                </select>
+                <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 border border-input bg-background rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              >
+                >
                 <option value="all">All Status</option>
                 {Object.entries(statusConfigs).map(([key, config]) => (
-                  <option key={key} value={key}>{config.label}</option>
+                    <option key={key} value={key}>{config.label}</option>
                 ))}
-              </select>
+                </select>
             </div>
-          </div>
+            </div>
 
-          {/* Pipelines Grid */}
+            {/* Pipelines Grid */}
             {filteredPipelines.length === 0 ? (
             <Card>
                 <CardContent className="flex flex-col items-center justify-center py-12 text-center">
@@ -304,12 +304,19 @@ export default function InferencerPage() {
                     className="group cursor-pointer transition-all hover:shadow-lg"
                     onClick={() => handlePipelineClick(pipeline.id)}
                     >
-                    <CardHeader className="pb-3">
-                        <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                            <CardTitle className="text-lg line-clamp-1">
-                            {pipeline.name}
-                            </CardTitle>
+                    <CardContent className="p-5">
+                        {/* Title */}
+                        <h3 className="text-lg font-semibold text-foreground mb-3">
+                        {pipeline.name}
+                        </h3>
+
+                        {/* Pipeline Type & Status Row */}
+                        <div className="flex items-center gap-3 mb-3">
+                        <div className="flex items-center gap-2">
+                            <TypeIcon className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm font-medium text-muted-foreground">
+                            {pipeline.type.toUpperCase()} Pipeline
+                            </span>
                         </div>
                         <StatusBadge
                             status={pipeline.status}
@@ -318,71 +325,69 @@ export default function InferencerPage() {
                             onClick={(e) => handleStatusToggle(e, pipeline.id, pipeline.status)}
                         />
                         </div>
+
+                        {/* Description if exists */}
                         {pipeline.description && (
-                        <CardDescription className="text-sm line-clamp-2 mt-1">
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                             {pipeline.description}
-                        </CardDescription>
+                        </p>
                         )}
-                    </CardHeader>
-                    
-                    <CardContent className="space-y-4">
-                        {/* Pipeline Type & Model Info */}
-                        <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                            <TypeIcon className="h-4 w-4 text-muted-foreground" />
-                            <Badge variant="secondary" className="text-xs">
-                            {pipeline.type.toUpperCase()} Pipeline
-                            </Badge>
+
+                        {/* Model Info Row */}
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground mb-1">
+                            {modelInfo?.model || 'No model'}
+                            </p>
                         </div>
-                        
-                        {/* Model Info */}
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <span className="font-medium">{modelInfo?.model || 'Unknown model'}</span>
-                            <span className="text-xs">•</span>
-                            <span>{modelInfo?.provider || 'unknown'}</span>
+                        <div className="text-right">
+                            <p className="text-sm font-medium">
+                            {modelInfo?.provider || 'unknown'}
+                            </p>
                         </div>
                         </div>
 
                         {/* Metrics Grid */}
-                        <div className="grid grid-cols-2 gap-3">
-                        {/* Collections/Documents for RAG, or Direct LLM indicator */}
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                        {/* Collections/Documents for RAG */}
                         {pipeline.type === 'rag' && ragStats ? (
                             <>
-                            <div className="bg-muted/50 rounded-lg p-3 text-center">
-                                <p className="text-xs text-muted-foreground">Collections</p>
-                                <p className="text-lg font-semibold">{ragStats.collectionsCount}</p>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Collections</p>
+                                <p className="text-xl font-semibold">{ragStats.collectionsCount}</p>
                             </div>
-                            <div className="bg-muted/50 rounded-lg p-3 text-center">
-                                <p className="text-xs text-muted-foreground">Documents</p>
-                                <p className="text-lg font-semibold">{ragStats.documentsCount.toLocaleString()}</p>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Documents</p>
+                                <p className="text-xl font-semibold">{ragStats.documentsCount.toLocaleString()}</p>
                             </div>
                             </>
                         ) : (
-                            <div className="col-span-2 bg-muted/50 rounded-lg p-3 text-center">
-                            <p className="text-sm text-muted-foreground">Direct LLM</p>
-                            <p className="text-xs">No document retrieval</p>
+                            <div className="col-span-2">
+                            <Badge variant="outline" className="w-full justify-center">
+                                <Zap className="h-3 w-3 mr-1" />
+                                Direct LLM - No retrieval
+                            </Badge>
                             </div>
                         )}
                         
-                        {/* Queries and Latency */}
-                        <div className="bg-muted/50 rounded-lg p-3 text-center">
-                            <p className="text-xs text-muted-foreground">Queries/day</p>
-                            <p className="text-lg font-semibold">{pipeline.metrics?.totalQueries || 0}</p>
+                        <div>
+                            <p className="text-sm text-muted-foreground">Queries/day</p>
+                            <p className="text-xl font-semibold">{(pipeline.metrics?.totalQueries || 0).toLocaleString()}</p>
                         </div>
-                        <div className="bg-muted/50 rounded-lg p-3 text-center">
-                            <p className="text-xs text-muted-foreground">Latency</p>
-                            <p className="text-lg font-semibold">{pipeline.metrics?.avgLatency || 0}ms</p>
+                        <div>
+                            <p className="text-sm text-muted-foreground">Latency</p>
+                            <p className="text-xl font-semibold">{pipeline.metrics?.avgLatency || 0}ms</p>
                         </div>
                         </div>
 
                         {/* Footer */}
-                        <div className="flex items-center justify-between pt-2">
-                        <span className="text-xs text-muted-foreground">
+                        <div className="flex items-center justify-between pt-3 border-t">
+                        <span className="text-sm text-muted-foreground">
                             Last used {formatDate(pipeline.updatedAt)}
                         </span>
                         
                         {/* Action Buttons */}
-                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Button
                             size="icon"
                             variant="ghost"
@@ -391,6 +396,7 @@ export default function InferencerPage() {
                                 e.stopPropagation();
                                 router.push(`/playground?pipeline=${pipeline.id}`);
                             }}
+                            title="Open in Playground"
                             >
                             <Play className="h-4 w-4" />
                             </Button>
@@ -402,6 +408,7 @@ export default function InferencerPage() {
                                 e.stopPropagation();
                                 router.push(`/inferencer/pipelines/${pipeline.id}/settings`);
                             }}
+                            title="Pipeline Settings"
                             >
                             <Settings className="h-4 w-4" />
                             </Button>
@@ -414,7 +421,7 @@ export default function InferencerPage() {
             </div>
             )}
         </div>
-      </PageContent>
+        </PageContent>
     </MainLayout>
-  );
+    );
 }

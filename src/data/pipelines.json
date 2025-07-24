@@ -1,7 +1,7 @@
 {
   "pipelines": [
     {
-      "id": "pipe_1",
+      "id": "pipe_001",
       "name": "Customer Support RAG",
       "description": "Multi-language support chatbot with product knowledge",
       "type": "rag",
@@ -10,17 +10,13 @@
       "state": "running",
       "stateDetails": {
         "message": "Processing queries",
-        "lastStateChange": "2024-01-15T14:30:00Z"
+        "lastStateChange": "2024-01-15T10:30:00Z"
       },
       "config": {
-        "basicInfo": {
-          "name": "Customer Support RAG",
-          "description": "Multi-language support chatbot with product knowledge",
-          "type": "rag",
-          "useCase": "qa",
-          "tags": ["support", "customer-service", "production"]
-        },
-        "collections": ["coll_1", "coll_2"],
+        "collections": [
+          "col_001",
+          "col_002"
+        ],
         "retrieval": {
           "searchMethod": "hybrid",
           "topK": 5,
@@ -28,7 +24,7 @@
           "hybridAlpha": 0.5,
           "reranker": {
             "enabled": true,
-            "model": "cross-encoder/ms-marco-MiniLM-L-12-v2",
+            "model": "cohere-rerank-english-v2.0",
             "topN": 3
           }
         },
@@ -36,7 +32,8 @@
           "enabled": true,
           "type": "buffer",
           "windowSize": 10,
-          "storageBackend": "memory"
+          "storageBackend": "redis",
+          "ttl": 3600
         },
         "mcp": {
           "enabled": false,
@@ -47,8 +44,8 @@
           "model": "gpt-4-turbo",
           "temperature": 0.7,
           "maxTokens": 1000,
-          "systemPrompt": "You are a helpful customer support assistant. Use the provided context to answer questions accurately.",
-          "userPromptTemplate": "Context: {context}\n\nQuestion: {query}\n\nAnswer:",
+          "systemPrompt": "You are a helpful customer support assistant with access to product documentation.",
+          "userPromptTemplate": "Context: {context}\n\nQuestion: {query}\n\nProvide a helpful and accurate answer based on the context.",
           "streaming": true
         }
       },
@@ -56,30 +53,107 @@
         "totalQueries": 1234,
         "avgLatency": 98,
         "successRate": 98.5,
-        "costPerDay": 10.5
+        "costPerDay": 12.5
       },
-      "createdAt": "2024-01-10T10:00:00Z",
+      "createdAt": "2024-01-10T08:00:00Z",
       "updatedAt": "2024-01-15T14:30:00Z"
     },
     {
-      "id": "pipe_2",
-      "name": "Content Writer AI",
-      "description": "AI-powered content generation for blog posts",
-      "type": "llm",
+      "id": "pipe_002",
+      "name": "Legal Document Analysis",
+      "description": "Contract review and legal document Q&A system",
+      "type": "rag",
       "module": "pipeline",
       "status": "active",
-      "state": "ready",
+      "state": "running",
       "stateDetails": {
-        "message": "Pipeline is ready for use",
+        "message": "Processing queries",
         "lastStateChange": "2024-01-14T09:00:00Z"
       },
       "config": {
-        "basicInfo": {
-          "name": "Content Writer AI",
-          "description": "AI-powered content generation for blog posts",
-          "type": "llm",
-          "useCase": "content",
-          "tags": ["content", "marketing", "blog"]
+        "collections": [
+          "col_003"
+        ],
+        "retrieval": {
+          "searchMethod": "vector",
+          "topK": 10,
+          "scoreThreshold": 0.8,
+          "reranker": {
+            "enabled": true,
+            "model": "cohere-rerank-multilingual-v2.0",
+            "topN": 5
+          }
+        },
+        "memory": {
+          "enabled": true,
+          "type": "summary",
+          "windowSize": 20,
+          "storageBackend": "postgresql",
+          "ttl": 7200,
+          "summaryModel": "gpt-3.5-turbo"
+        },
+        "mcp": {
+          "enabled": true,
+          "servers": [
+            {
+              "id": "database",
+              "name": "Legal Database",
+              "type": "database",
+              "status": "connected",
+              "config": {
+                "connectionString": "postgresql://...",
+                "allowedTables": [
+                  "contracts",
+                  "cases"
+                ]
+              }
+            }
+          ]
+        },
+        "llm": {
+          "provider": "anthropic",
+          "model": "claude-3-opus",
+          "temperature": 0.3,
+          "maxTokens": 2000,
+          "systemPrompt": "You are a legal analysis assistant. Provide accurate legal insights based on the documents provided. Always cite your sources.",
+          "userPromptTemplate": "Legal Context: {context}\n\nQuery: {query}\n\nProvide a detailed legal analysis with citations.",
+          "streaming": true
+        }
+      },
+      "metrics": {
+        "totalQueries": 567,
+        "avgLatency": 145,
+        "successRate": 99.1,
+        "costPerDay": 25.8
+      },
+      "createdAt": "2024-01-05T10:00:00Z",
+      "updatedAt": "2024-01-14T16:45:00Z"
+    },
+    {
+      "id": "pipe_003",
+      "name": "Code Documentation Assistant",
+      "description": "Technical documentation and code explanation bot",
+      "type": "rag",
+      "module": "pipeline",
+      "status": "paused",
+      "state": "ready",
+      "stateDetails": {
+        "message": "Pipeline is ready for use",
+        "lastStateChange": "2024-01-13T11:00:00Z"
+      },
+      "config": {
+        "collections": [
+          "col_004",
+          "col_005"
+        ],
+        "retrieval": {
+          "searchMethod": "hybrid",
+          "topK": 7,
+          "scoreThreshold": 0.75,
+          "hybridAlpha": 0.7,
+          "reranker": {
+            "enabled": false
+          }
         },
         "memory": {
           "enabled": false,
@@ -89,31 +163,94 @@
           "enabled": true,
           "servers": [
             {
-              "id": "serv_1",
+              "id": "web-search",
               "name": "Web Search",
               "type": "web",
-              "status": "connected"
+              "status": "connected",
+              "config": {
+                "apiKey": "***",
+                "searchEngine": "google"
+              }
+            },
+            {
+              "id": "file-system",
+              "name": "Code Repository",
+              "type": "filesystem",
+              "status": "connected",
+              "config": {
+                "basePath": "/repos",
+                "permissions": "read"
+              }
             }
           ]
         },
         "llm": {
           "provider": "openai",
           "model": "gpt-4",
-          "temperature": 0.8,
-          "maxTokens": 2000,
-          "systemPrompt": "You are a creative content writer. Generate engaging and informative content.",
-          "userPromptTemplate": "{input}",
+          "temperature": 0.5,
+          "maxTokens": 1500,
+          "systemPrompt": "You are a technical documentation assistant. Help developers understand code and technical concepts.",
+          "userPromptTemplate": "Documentation: {context}\n\nDeveloper Question: {query}\n\nProvide a clear technical explanation.",
           "streaming": true
         }
       },
       "metrics": {
         "totalQueries": 892,
-        "avgLatency": 45,
-        "successRate": 99.2,
-        "costPerDay": 8.2
+        "avgLatency": 120,
+        "successRate": 97.8,
+        "costPerDay": 18.3
       },
-      "createdAt": "2024-01-05T08:00:00Z",
-      "updatedAt": "2024-01-14T09:00:00Z"
+      "createdAt": "2024-01-08T14:00:00Z",
+      "updatedAt": "2024-01-13T11:00:00Z"
+    },
+    {
+      "id": "pipe_c268fe84-0a5f-4483-a115-565f00a168f1",
+      "name": "",
+      "description": "",
+      "type": "rag",
+      "module": "pipeline",
+      "status": "draft",
+      "state": "configuring",
+      "stateDetails": {
+        "message": "Setting up pipeline configuration",
+        "lastStateChange": "2025-07-24T06:42:52.149Z"
+      },
+      "config": {
+        "basicInfo": {
+          "type": "rag",
+          "name": "",
+          "description": "",
+          "useCase": "",
+          "tags": []
+        },
+        "collections": [],
+        "retrieval": {
+          "searchMethod": "hybrid",
+          "topK": 5,
+          "scoreThreshold": 0.7
+        },
+        "memory": {
+          "enabled": false,
+          "type": "none"
+        },
+        "llm": {
+          "provider": "openai",
+          "model": "gpt-3.5-turbo",
+          "temperature": 0.7,
+          "maxTokens": 1000,
+          "systemPrompt": "",
+          "userPromptTemplate": "",
+          "streaming": true
+        }
+      },
+      "metrics": {
+        "totalQueries": 0,
+        "avgLatency": 0,
+        "successRate": 0,
+        "costPerDay": 0
+      },
+      "createdAt": "2025-07-24T06:42:52.149Z",
+      "updatedAt": "2025-07-24T06:42:52.149Z"
     }
   ]
 }

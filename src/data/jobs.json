@@ -132,6 +132,363 @@
         "indexedDocuments": 1,
         "failedDocuments": 0
       }
+    },
+    {
+      "id": "job_1753270536196_cp5izt09k",
+      "type": "ingestion",
+      "module": "ingest",
+      "targetId": "coll_ee48091a-6d68-4cef-ac9e-6978ddb75c17",
+      "status": "completed",
+      "state": "completed",
+      "stateDetails": {
+        "message": "Ingestion complete",
+        "startedAt": "2025-07-23T11:35:33.349Z",
+        "progress": {
+          "current": 0,
+          "total": 1
+        },
+        "lastStateChange": "2025-07-24T06:44:33.262Z",
+        "completedAt": "2025-07-24T06:44:33.262Z"
+      },
+      "config": {
+        "processing": {
+          "strategy": "recursive",
+          "chunkSize": 512,
+          "chunkOverlap": 64,
+          "preprocessing": [
+            "remove_html",
+            "extract_metadata"
+          ]
+        },
+        "embedding": {
+          "model": "text-embedding-ada-002",
+          "provider": "openai"
+        },
+        "vectorStore": {
+          "type": "qdrant",
+          "connectionType": "cloud",
+          "collectionName": "collection_1753270527304",
+          "namespace": ""
+        }
+      },
+      "createdAt": "2025-07-23T11:35:36.196Z",
+      "updatedAt": "2025-07-24T06:44:33.262Z",
+      "results": {
+        "chunksCreated": 1234,
+        "embeddingsGenerated": 1234,
+        "indexedDocuments": 1,
+        "failedDocuments": 0
+      }
+    },
+    {
+      "id": "job_1753270544049_m9jju2fv4",
+      "type": "ingestion",
+      "module": "ingest",
+      "targetId": "coll_89dc5e87-3878-4720-a720-4a47663dfe9e",
+      "status": "completed",
+      "state": "completed",
+      "stateDetails": {
+        "message": "Ingestion complete",
+        "startedAt": "2025-07-23T11:35:43.055Z",
+        "progress": {
+          "current": 0,
+          "total": 1
+        },
+        "lastStateChange": "2025-07-23T11:38:57.862Z",
+        "completedAt": "2025-07-23T11:38:57.862Z"
+      },
+      "config": {
+        "processing": {
+          "strategy": "recursive",
+          "chunkSize": 512,
+          "chunkOverlap": 64,
+          "preprocessing": [
+            "remove_html",
+            "extract_metadata"
+          ]
+        },
+        "embedding": {
+          "model": "text-embedding-ada-002",
+          "provider": "openai"
+        },
+        "vectorStore": {
+          "type": "qdrant",
+          "connectionType": "cloud",
+          "collectionName": "collection_1753270527304",
+          "namespace": ""
+        }
+      },
+      "createdAt": "2025-07-23T11:35:44.049Z",
+      "updatedAt": "2025-07-23T11:38:57.862Z",
+      "results": {
+        "chunksCreated": 1234,
+        "embeddingsGenerated": 1234,
+        "indexedDocuments": 1,
+        "failedDocuments": 0
+      }
+    },
+    {
+      "id": "job_1753271392644_x9auzfng7",
+      "type": "ingestion",
+      "module": "ingest",
+      "targetId": "coll_50947314-a202-41d9-84bd-5cbabdde0f2e",
+      "status": "processing",
+      "state": "uploading",
+      "stateDetails": {
+        "message": "Uploading documents",
+        "startedAt": "2025-07-23T11:49:52.297Z",
+        "progress": {
+          "current": 0,
+          "total": 1
+        }
+      },
+      "config": {
+        "processing": {
+          "strategy": "recursive",
+          "chunkSize": 512,
+          "chunkOverlap": 64,
+          "preprocessing": [
+            "remove_html",
+            "extract_metadata"
+          ]
+        },
+        "embedding": {
+          "model": "text-embedding-3-small",
+          "provider": "openai"
+        },
+        "vectorStore": {
+          "type": "qdrant",
+          "connectionType": "cloud",
+          "collectionName": "collection_1753271359247",
+          "namespace": ""
+        }
+      },
+      "createdAt": "2025-07-23T11:49:52.644Z",
+      "updatedAt": "2025-07-23T11:49:52.644Z"
+    },
+    {
+      "id": "job_1753272220520_gtbta74wp",
+      "type": "ingestion",
+      "module": "ingest",
+      "targetId": "coll_d50e3a6b-d5c4-42c0-8b6f-0dec066590dc",
+      "status": "completed",
+      "state": "completed",
+      "stateDetails": {
+        "message": "Ingestion complete",
+        "startedAt": "2025-07-23T12:03:39.908Z",
+        "progress": {
+          "current": 0,
+          "total": 0
+        },
+        "lastStateChange": "2025-07-23T12:05:46.278Z",
+        "completedAt": "2025-07-23T12:05:46.278Z"
+      },
+      "config": {
+        "processing": {
+          "strategy": "recursive",
+          "chunkSize": 896,
+          "chunkOverlap": 64,
+          "preprocessing": [
+            "extract_metadata",
+            "remove_html",
+            "remove_urls"
+          ]
+        },
+        "embedding": {
+          "model": "text-embedding-ada-002",
+          "provider": "openai"
+        },
+        "vectorStore": {
+          "type": "qdrant",
+          "connectionType": "cloud",
+          "collectionName": "collection_1753272158676",
+          "namespace": ""
+        }
+      },
+      "createdAt": "2025-07-23T12:03:40.520Z",
+      "updatedAt": "2025-07-23T12:05:46.278Z",
+      "results": {
+        "chunksCreated": 1234,
+        "embeddingsGenerated": 1234,
+        "indexedDocuments": 1,
+        "failedDocuments": 0
+      }
+    },
+    {
+      "id": "job_1753338882634_8agwkxlsp",
+      "type": "pipeline-deployment",
+      "status": "processing",
+      "state": "deploying",
+      "targetId": "pipe_0a0236d1-eacc-4c12-a1b1-2308b3de582a",
+      "targetType": "pipeline",
+      "name": "Deploy ",
+      "description": "Deploying pipeline resources and configurations",
+      "metadata": {
+        "pipelineType": "rag",
+        "pipelineName": "",
+        "steps": [
+          {
+            "id": "validate",
+            "name": "Validating configuration",
+            "status": "pending"
+          },
+          {
+            "id": "resources",
+            "name": "Allocating resources",
+            "status": "pending"
+          },
+          {
+            "id": "deploy",
+            "name": "Deploying pipeline",
+            "status": "pending"
+          },
+          {
+            "id": "test",
+            "name": "Running tests",
+            "status": "pending"
+          },
+          {
+            "id": "activate",
+            "name": "Activating pipeline",
+            "status": "pending"
+          }
+        ]
+      },
+      "createdAt": "2025-07-24T06:34:42.634Z",
+      "updatedAt": "2025-07-24T06:34:42.634Z"
+    },
+    {
+      "id": "job_1753338921904_81m76f8mt",
+      "type": "pipeline-deployment",
+      "status": "processing",
+      "state": "deploying",
+      "targetId": "pipe_be41dcd7-5beb-437a-b9cc-4718f78534cc",
+      "targetType": "pipeline",
+      "name": "Deploy ",
+      "description": "Deploying pipeline resources and configurations",
+      "metadata": {
+        "pipelineType": "llm",
+        "pipelineName": "",
+        "steps": [
+          {
+            "id": "validate",
+            "name": "Validating configuration",
+            "status": "pending"
+          },
+          {
+            "id": "resources",
+            "name": "Allocating resources",
+            "status": "pending"
+          },
+          {
+            "id": "deploy",
+            "name": "Deploying pipeline",
+            "status": "pending"
+          },
+          {
+            "id": "test",
+            "name": "Running tests",
+            "status": "pending"
+          },
+          {
+            "id": "activate",
+            "name": "Activating pipeline",
+            "status": "pending"
+          }
+        ]
+      },
+      "createdAt": "2025-07-24T06:35:21.904Z",
+      "updatedAt": "2025-07-24T06:35:21.904Z"
+    },
+    {
+      "id": "job_1753339372736_e6e7mf7wk",
+      "type": "pipeline-deployment",
+      "status": "processing",
+      "state": "deploying",
+      "targetId": "pipe_c268fe84-0a5f-4483-a115-565f00a168f1",
+      "targetType": "pipeline",
+      "name": "Deploy ",
+      "description": "Deploying pipeline resources and configurations",
+      "metadata": {
+        "pipelineType": "rag",
+        "pipelineName": "",
+        "steps": [
+          {
+            "id": "validate",
+            "name": "Validating configuration",
+            "status": "pending"
+          },
+          {
+            "id": "resources",
+            "name": "Allocating resources",
+            "status": "pending"
+          },
+          {
+            "id": "deploy",
+            "name": "Deploying pipeline",
+            "status": "pending"
+          },
+          {
+            "id": "test",
+            "name": "Running tests",
+            "status": "pending"
+          },
+          {
+            "id": "activate",
+            "name": "Activating pipeline",
+            "status": "pending"
+          }
+        ]
+      },
+      "createdAt": "2025-07-24T06:42:52.736Z",
+      "updatedAt": "2025-07-24T06:42:52.736Z"
+    },
+    {
+      "id": "job_1753339502124_1rvdb0i3e",
+      "type": "ingestion",
+      "module": "ingest",
+      "targetId": "coll_ae229b6d-a482-4496-b276-a50b3fefe351",
+      "status": "completed",
+      "state": "completed",
+      "stateDetails": {
+        "message": "Ingestion complete",
+        "startedAt": "2025-07-24T06:45:01.673Z",
+        "progress": {
+          "current": 0,
+          "total": 0
+        },
+        "lastStateChange": "2025-07-24T06:46:58.176Z",
+        "completedAt": "2025-07-24T06:46:58.176Z"
+      },
+      "config": {
+        "processing": {
+          "strategy": "recursive",
+          "chunkSize": 512,
+          "chunkOverlap": 64,
+          "preprocessing": [
+            "remove_html",
+            "extract_metadata"
+          ]
+        },
+        "embedding": {
+          "model": "text-embedding-ada-002",
+          "provider": "openai"
+        },
+        "vectorStore": {
+          "type": "qdrant",
+          "connectionType": "cloud",
+          "collectionName": "collection_1753339497011",
+          "namespace": ""
+        }
+      },
+      "createdAt": "2025-07-24T06:45:02.124Z",
+      "updatedAt": "2025-07-24T06:46:58.176Z",
+      "results": {
+        "chunksCreated": 1234,
+        "embeddingsGenerated": 1234,
+        "indexedDocuments": 1,
+        "failedDocuments": 0
+      }
     }
   ]
 }

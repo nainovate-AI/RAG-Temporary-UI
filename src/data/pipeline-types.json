@@ -1,0 +1,74 @@
+{
+  "pipelineTypes": [
+    {
+      "type": "rag",
+      "title": "RAG Pipeline",
+      "description": "Retrieval-Augmented Generation combines your documents with AI to answer questions based on your specific data.",
+      "icon": "FileText",
+      "recommended": true,
+      "features": [
+        "Connect to document collections",
+        "Semantic search & retrieval",
+        "Source attribution",
+        "Custom knowledge base",
+        "Hybrid search options"
+      ],
+      "useCases": [
+        "Customer support chatbots",
+        "Documentation Q&A",
+        "Knowledge management",
+        "Contract analysis",
+        "Research assistance"
+      ],
+      "requirements": [
+        {
+          "icon": "Database",
+          "text": "Requires document collections"
+        },
+        {
+          "icon": "Brain",
+          "text": "Answers based on your data"
+        },
+        {
+          "icon": "Zap",
+          "text": "Higher accuracy for domain-specific questions"
+        }
+      ]
+    },
+    {
+      "type": "llm",
+      "title": "LLM Pipeline",
+      "description": "Direct language model pipeline for creative generation, transformation, and general AI tasks without document retrieval.",
+      "icon": "MessageSquare",
+      "recommended": false,
+      "features": [
+        "Direct AI generation",
+        "No document setup needed",
+        "Creative content",
+        "Text transformation",
+        "General purpose AI"
+      ],
+      "useCases": [
+        "Content generation",
+        "Creative writing",
+        "Code generation",
+        "Language translation",
+        "Text summarization"
+      ],
+      "requirements": [
+        {
+          "icon": "Sparkles",
+          "text": "No document setup required"
+        },
+        {
+          "icon": "Brain",
+          "text": "General AI capabilities"
+        },
+        {
+          "icon": "Zap",
+          "text": "Faster setup and deployment"
+        }
+      ]
+    }
+  ]
+}
