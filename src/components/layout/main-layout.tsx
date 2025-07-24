@@ -30,9 +30,9 @@ export function MainLayout({ children, className }: MainLayoutProps) {
 
 // Page header component for consistent page layouts
 interface PageHeaderProps {
-  title: string
-  description?: string
-  children?: ReactNode
+  title: React.ReactNode;
+  description?: string;
+  children?: ReactNode;
 }
 
 export function PageHeader({ title, description, children }: PageHeaderProps) {
