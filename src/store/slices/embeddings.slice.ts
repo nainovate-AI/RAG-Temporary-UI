@@ -1,14 +1,41 @@
+// src/store/slices/embeddings.slice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface EmbeddingModel {
   id: string;
   provider: string;
+  type: 'local' | 'cloud';  // NEW
   name: string;
   description: string;
   dimensions: number;
   maxInputTokens: number;
-  costPer1kTokens: number;
-  status: 'active' | 'inactive';  // Add this
+  costPer1kTokens?: number;  // Make optional since local models don't have this
+  status: 'active' | 'inactive';
+  modelSize?: number;  // NEW - for local models
+  requirements?: {     // NEW - for local models
+    gpu: number;
+    ram: number;
+    cpu: number;
+  };
+  resourceUsage?: {    // NEW - for active local models
+    gpu: number;
+    ram: number;
+    cpu: number;
+    cpuPercent: number;
+  };
+  performance?: {      // NEW - for active models
+    embeddingsPerSec: number;
+    avgLatency: number;
+    uptime: string;
+  };
+  usage?: {           // NEW - for cloud models
+    embeddingsToday: number;
+    costToday: number;
+  };
+  collections?: Array<{  // NEW
+    name: string;
+    embeddings: number;
+  }>;
 }
 
 interface EmbeddingsState {

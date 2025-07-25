@@ -1,18 +1,138 @@
 {
   "embeddings": [
     {
+      "id": "bge-large-en-v1.5",
+      "provider": "local",
+      "type": "local",
+      "name": "BGE Large English v1.5",
+      "description": "High-performance English embedding model",
+      "dimensions": 1024,
+      "maxInputTokens": 512,
+      "status": "active",
+      "modelSize": 1395864371,
+      "requirements": {
+        "gpu": 2254857830,
+        "ram": 4509715661,
+        "cpu": 2
+      },
+      "resourceUsage": {
+        "gpu": 2254857830,
+        "ram": 4509715661,
+        "cpu": 2,
+        "cpuPercent": 12
+      },
+      "performance": {
+        "embeddingsPerSec": 450,
+        "avgLatency": 2.2,
+        "uptime": "3d 14h"
+      },
+      "collections": [
+        { "name": "Customer Support KB", "embeddings": 500000 },
+        { "name": "Technical Docs", "embeddings": 400000 },
+        { "name": "Legal Contracts", "embeddings": 300000 }
+      ]
+    },
+    {
+      "id": "all-mpnet-base-v2",
+      "provider": "local",
+      "type": "local",
+      "name": "All MPNet Base v2",
+      "description": "Sentence transformer model for general use",
+      "dimensions": 768,
+      "maxInputTokens": 384,
+      "status": "active",
+      "modelSize": 440401920,
+      "requirements": {
+        "gpu": 1932735283,
+        "ram": 3758096384,
+        "cpu": 2
+      },
+      "resourceUsage": {
+        "gpu": 1932735283,
+        "ram": 3758096384,
+        "cpu": 2,
+        "cpuPercent": 10
+      },
+      "performance": {
+        "embeddingsPerSec": 620,
+        "avgLatency": 1.6,
+        "uptime": "7d 2h"
+      },
+      "collections": [
+        { "name": "Product Reviews", "embeddings": 750000 }
+      ]
+    },
+    {
+      "id": "all-MiniLM-L6-v2",
+      "provider": "local",
+      "type": "local",
+      "name": "All MiniLM L6 v2",
+      "description": "Lightweight and fast embedding model",
+      "dimensions": 384,
+      "maxInputTokens": 256,
+      "status": "inactive",
+      "modelSize": 94371840,
+      "requirements": {
+        "gpu": 1610612736,
+        "ram": 4294967296,
+        "cpu": 2
+      }
+    },
+    {
+      "id": "e5-large-v2",
+      "provider": "local",
+      "type": "local",
+      "name": "E5 Large v2",
+      "description": "State-of-the-art multilingual embedding model",
+      "dimensions": 1024,
+      "maxInputTokens": 512,
+      "status": "inactive",
+      "modelSize": 1438449664,
+      "requirements": {
+        "gpu": 3221225472,
+        "ram": 6442450944,
+        "cpu": 4
+      }
+    },
+    {
+      "id": "multilingual-e5-base",
+      "provider": "local",
+      "type": "local",
+      "name": "Multilingual E5 Base",
+      "description": "Multilingual embedding model supporting 100+ languages",
+      "dimensions": 768,
+      "maxInputTokens": 512,
+      "status": "inactive",
+      "modelSize": 597688320,
+      "requirements": {
+        "gpu": 2147483648,
+        "ram": 4294967296,
+        "cpu": 2
+      }
+    },
+    {
       "id": "text-embedding-ada-002",
       "provider": "openai",
+      "type": "cloud",
       "name": "Ada 002",
       "description": "Most capable OpenAI embedding model",
       "dimensions": 1536,
       "maxInputTokens": 8191,
       "costPer1kTokens": 0.0001,
-      "status": "active"
+      "status": "active",
+      "usage": {
+        "embeddingsToday": 1234567,
+        "costToday": 123.46
+      },
+      "collections": [
+        { "name": "Customer Support KB", "embeddings": 250000 },
+        { "name": "Marketing Content", "embeddings": 180000 }
+      ]
     },
     {
       "id": "text-embedding-3-small",
       "provider": "openai",
+      "type": "cloud",
       "name": "Embedding 3 Small",
       "description": "Newer, smaller OpenAI embedding model",
       "dimensions": 1536,
@@ -23,6 +143,7 @@
     {
       "id": "text-embedding-3-large",
       "provider": "openai",
+      "type": "cloud",
       "name": "Embedding 3 Large",
       "description": "Newer, larger OpenAI embedding model",
       "dimensions": 3072,
@@ -33,6 +154,7 @@
     {
       "id": "voyage-2",
       "provider": "voyage",
+      "type": "cloud",
       "name": "Voyage 2",
       "description": "High-quality embeddings optimized for retrieval",
       "dimensions": 1024,
@@ -43,12 +165,20 @@
     {
       "id": "embed-english-v3",
       "provider": "cohere",
+      "type": "cloud",
       "name": "Cohere English v3",
       "description": "Optimized for English text",
       "dimensions": 1024,
       "maxInputTokens": 512,
       "costPer1kTokens": 0.0001,
-      "status": "inactive"
+      "status": "active",
+      "usage": {
+        "embeddingsToday": 890123,
+        "costToday": 89.01
+      },
+      "collections": [
+        { "name": "Technical Docs", "embeddings": 340000 }
+      ]
     }
   ]
 }

@@ -1,0 +1,25 @@
+{
+  "systemResources": {
+    "gpu": {
+      "total": 25769803776,
+      "used": 17179869184,
+      "models": [
+        { "name": "bge-large-en-v1.5", "usage": 2254857830 },
+        { "name": "all-mpnet-base-v2", "usage": 1932735283 }
+      ]
+    },
+    "cpu": {
+      "usage": 45,
+      "cores": 16,
+      "usedCores": 7
+    },
+    "ram": {
+      "total": 68719476736,
+      "used": 34359738368
+    },
+    "storage": {
+      "total": 2199023255552,
+      "used": 858993459200
+    }
+  }
+}
