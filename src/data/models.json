@@ -1,69 +1,232 @@
 {
   "models": [
     {
-      "id": "gpt-4-turbo-preview",
+      "id": "gpt-4-turbo",
       "provider": "openai",
+      "type": "cloud",
       "name": "GPT-4 Turbo",
-      "description": "Most capable GPT-4 model with 128K context window",
+      "description": "Most capable GPT-4 model, optimized for performance",
       "contextWindow": 128000,
+      "maxOutputTokens": 4096,
       "costPer1kTokens": {
         "input": 0.01,
         "output": 0.03
       },
-      "features": ["Function calling", "JSON mode", "Vision", "128K context"],
-      "status": "available"
-    },
-    {
-      "id": "gpt-4",
-      "provider": "openai",
-      "name": "GPT-4",
-      "description": "Standard GPT-4 model with 8K context",
-      "contextWindow": 8192,
-      "costPer1kTokens": {
-        "input": 0.03,
-        "output": 0.06
-      },
-      "features": ["Function calling", "JSON mode"],
-      "status": "available"
+      "features": ["function-calling", "vision", "json-mode"],
+      "status": "active",
+      "usage": {
+        "tokensToday": {
+          "input": 2456789,
+          "output": 1234567
+        },
+        "costToday": 61.46,
+        "requestsToday": 3421
+      }
     },
     {
       "id": "gpt-3.5-turbo",
-      "provider": "openai",
+      "provider": "openai", 
+      "type": "cloud",
       "name": "GPT-3.5 Turbo",
-      "description": "Fast and cost-effective model",
-      "contextWindow": 16384,
+      "description": "Fast and efficient model for most tasks",
+      "contextWindow": 16385,
+      "maxOutputTokens": 4096,
       "costPer1kTokens": {
         "input": 0.0005,
         "output": 0.0015
       },
-      "features": ["Function calling", "JSON mode"],
-      "status": "available"
+      "features": ["function-calling", "json-mode"],
+      "status": "active",
+      "usage": {
+        "tokensToday": {
+          "input": 5678901,
+          "output": 2345678
+        },
+        "costToday": 6.36,
+        "requestsToday": 8765
+      }
     },
     {
       "id": "claude-3-opus",
       "provider": "anthropic",
+      "type": "cloud",
       "name": "Claude 3 Opus",
-      "description": "Most capable Claude model",
+      "description": "Most capable Claude model for complex tasks",
       "contextWindow": 200000,
+      "maxOutputTokens": 4096,
       "costPer1kTokens": {
         "input": 0.015,
         "output": 0.075
       },
-      "features": ["200K context", "Vision", "Low hallucination"],
-      "status": "available"
+      "features": ["vision"],
+      "status": "active",
+      "usage": {
+        "tokensToday": {
+          "input": 876543,
+          "output": 432109
+        },
+        "costToday": 45.56,
+        "requestsToday": 1234
+      }
     },
     {
       "id": "claude-3-sonnet",
       "provider": "anthropic",
+      "type": "cloud",
       "name": "Claude 3 Sonnet",
       "description": "Balanced performance and cost",
       "contextWindow": 200000,
+      "maxOutputTokens": 4096,
       "costPer1kTokens": {
         "input": 0.003,
         "output": 0.015
       },
-      "features": ["200K context", "Vision"],
-      "status": "available"
+      "features": ["vision"],
+      "status": "inactive"
+    },
+    {
+      "id": "claude-3-haiku",
+      "provider": "anthropic",
+      "type": "cloud",
+      "name": "Claude 3 Haiku",
+      "description": "Fast and affordable for simple tasks",
+      "contextWindow": 200000,
+      "maxOutputTokens": 4096,
+      "costPer1kTokens": {
+        "input": 0.00025,
+        "output": 0.00125
+      },
+      "features": [],
+      "status": "inactive"
+    },
+    {
+      "id": "command-r-plus",
+      "provider": "cohere",
+      "type": "cloud",
+      "name": "Command R+",
+      "description": "Cohere's most powerful model with RAG capabilities",
+      "contextWindow": 128000,
+      "maxOutputTokens": 4096,
+      "costPer1kTokens": {
+        "input": 0.003,
+        "output": 0.015
+      },
+      "features": ["rag-mode", "citations"],
+      "status": "inactive"
+    },
+    {
+      "id": "llama-3-70b",
+      "provider": "local",
+      "type": "local",
+      "name": "Llama 3 70B",
+      "description": "Meta's largest open model with excellent performance",
+      "contextWindow": 8192,
+      "maxOutputTokens": 4096,
+      "status": "active",
+      "modelSize": 140737488355,
+      "quantization": "Q4_K_M",
+      "requirements": {
+        "gpu": 42949672960,
+        "ram": 51539607552,
+        "cpu": 8
+      },
+      "resourceUsage": {
+        "gpu": 42949672960,
+        "ram": 51539607552,
+        "cpu": 8,
+        "cpuPercent": 45
+      },
+      "performance": {
+        "tokensPerSec": 24,
+        "avgLatency": 42,
+        "uptime": "2d 8h",
+        "requestsProcessed": 1543
+      },
+      "features": []
+    },
+    {
+      "id": "mistral-7b-instruct",
+      "provider": "local",
+      "type": "local",
+      "name": "Mistral 7B Instruct",
+      "description": "Efficient 7B parameter model with good performance",
+      "contextWindow": 32768,
+      "maxOutputTokens": 4096,
+      "status": "active",
+      "modelSize": 14958886912,
+      "quantization": "Q5_K_M",
+      "requirements": {
+        "gpu": 8589934592,
+        "ram": 10737418240,
+        "cpu": 4
+      },
+      "resourceUsage": {
+        "gpu": 8589934592,
+        "ram": 10737418240,
+        "cpu": 4,
+        "cpuPercent": 25
+      },
+      "performance": {
+        "tokensPerSec": 56,
+        "avgLatency": 18,
+        "uptime": "5d 14h",
+        "requestsProcessed": 4321
+      },
+      "features": []
+    },
+    {
+      "id": "phi-3-mini",
+      "provider": "local",
+      "type": "local",
+      "name": "Phi-3 Mini",
+      "description": "Microsoft's efficient small language model",
+      "contextWindow": 4096,
+      "maxOutputTokens": 2048,
+      "status": "inactive",
+      "modelSize": 7516192768,
+      "quantization": "Q4_0",
+      "requirements": {
+        "gpu": 4294967296,
+        "ram": 6442450944,
+        "cpu": 2
+      },
+      "features": []
+    },
+    {
+      "id": "qwen-2-72b",
+      "provider": "local",
+      "type": "local",
+      "name": "Qwen 2 72B",
+      "description": "Alibaba's multilingual large model",
+      "contextWindow": 32768,
+      "maxOutputTokens": 8192,
+      "status": "inactive",
+      "modelSize": 145098260480,
+      "quantization": "Q3_K_M",
+      "requirements": {
+        "gpu": 48318382080,
+        "ram": 64424509440,
+        "cpu": 8
+      },
+      "features": ["multilingual"]
+    },
+    {
+      "id": "deepseek-coder-33b",
+      "provider": "local",
+      "type": "local",
+      "name": "DeepSeek Coder 33B",
+      "description": "Specialized model for code generation",
+      "contextWindow": 16384,
+      "maxOutputTokens": 4096,
+      "status": "inactive",
+      "modelSize": 67359526912,
+      "quantization": "Q4_K_M",
+      "requirements": {
+        "gpu": 21474836480,
+        "ram": 25769803776,
+        "cpu": 6
+      },
+      "features": ["code-specialized"]
     }
   ]
 }

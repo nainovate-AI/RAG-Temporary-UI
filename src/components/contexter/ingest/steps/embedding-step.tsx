@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { WizardStepProps } from '@/types/wizard.types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { 
   Brain,
   Zap,
@@ -12,7 +14,8 @@ import {
   CheckCircle,
   TrendingUp,
   AlertCircle,
-  Sparkles
+  Sparkles,
+  Settings
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIngestState } from '../providers/ingest-state-provider';
@@ -28,6 +31,7 @@ export function EmbeddingStep({
   onChange,
   errors 
 }: WizardStepProps) {
+  const router = useRouter();
   const { updateStepData } = useIngestState();
   const embeddings = useAppSelector(state => state.embeddings.entities);
   console.log('Embeddings from store:', embeddings);
@@ -55,13 +59,25 @@ export function EmbeddingStep({
   
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h3 className="text-lg font-medium mb-1">Select Embedding Model</h3>
-        <p className="text-sm text-muted-foreground">
-          Choose how to convert your documents into searchable vectors
-        </p>
-      </div>
+      <CardHeader>
+        <div className="flex items-start justify-between">
+          <div>
+            <h3 className="text-lg font-medium mb-1">Select Embedding Model</h3>
+            <p className="text-sm text-muted-foreground">
+              Choose how to convert your documents into searchable vectors
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push('/config/embeddings')}
+            type="button"
+          >
+            <Settings className="mr-1 h-3 w-3" />
+            Configure Models
+          </Button>
+        </div>
+      </CardHeader>
 
       {/* Check if there are any active embeddings */}
       {activeEmbeddings.length === 0 ? (

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,7 +24,9 @@ import {
   Sparkles,
   AlertCircle,
   Copy,
-  RefreshCw
+  RefreshCw,
+  Settings,
+  Cpu
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import pipelineConfigData from '@/config/pipeline-config.json';
@@ -51,8 +54,9 @@ interface LLMData {
 }
 
 export function LLMConfigStep({ data, onChange }: WizardStepProps) {
+  const router = useRouter();
   const { entities: availableModels } = useAppSelector(state => state.models);
-  const modelsArray = Object.values(availableModels);
+  const modelsArray = Object.values(availableModels).filter(m => m.status === 'active');
   
   // Get pipeline type and use case from context
   const { state: pipelineState } = usePipelineState();
@@ -150,10 +154,21 @@ export function LLMConfigStep({ data, onChange }: WizardStepProps) {
       {/* Model Selection */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Brain className="h-4 w-4" />
-            Model Selection
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Brain className="h-4 w-4" />
+              Model Selection
+            </CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push('/config/llm')}
+              type="button"
+            >
+              <Settings className="mr-1 h-3 w-3" />
+              Configure Models
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Provider Selection */}
@@ -174,33 +189,46 @@ export function LLMConfigStep({ data, onChange }: WizardStepProps) {
             </RadioGroup>
           </div>
 
-          {/* Model Selection */}
+          {/* Model Selection - Grouped by Provider */}
           <div className="space-y-2">
             <Label>Model</Label>
             <RadioGroup
               value={localData.model}
               onValueChange={(value) => updateField('model', value)}
             >
+              {providerModels.length === 0 && (
+                <div className="text-sm text-muted-foreground">No models available for this provider.</div>
+              )}
               {providerModels.map((model) => (
-                <div key={model.id} className="flex items-start space-x-3 mb-3">
+                <div key={model.id} className="flex items-start space-x-3 mb-3 border border-border rounded-lg p-3 bg-muted/30">
                   <RadioGroupItem value={model.id} id={model.id} className="mt-1" />
                   <Label htmlFor={model.id} className="flex-1 cursor-pointer">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <p className="font-medium">{model.name}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium">{model.name}</p>
+                          {/* Quantization badge for local models */}
+                          {model.type === 'local' && model.quantization && (
+                            <Badge variant="outline" className="text-xs">{model.quantization}</Badge>
+                          )}
+                        </div>
                         <p className="text-sm text-muted-foreground">{model.description}</p>
                         <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <MessageSquare className="h-3 w-3" />
                             {model.contextWindow.toLocaleString()} tokens
                           </span>
-                          <span className="flex items-center gap-1">
-                            <DollarSign className="h-3 w-3" />
-                            ${model.costPer1kTokens.input}/1k in, ${model.costPer1kTokens.output}/1k out
-                          </span>
+                          {/* Cost info for cloud models only */}
+                          {model.type === 'cloud' && (
+                            <span className="flex items-center gap-1">
+                              <DollarSign className="h-3 w-3" />
+                              ${model.costPer1kTokens.input}/1k in, ${model.costPer1kTokens.output}/1k out
+                            </span>
+                          )}
                         </div>
                       </div>
-                      {model.features && model.features.length > 0 && (
+                      {/* Features badges, handle missing features gracefully */}
+                      {Array.isArray(model.features) && model.features.length > 0 && (
                         <div className="flex gap-1 ml-2">
                           {model.features.includes('function-calling') && (
                             <Badge variant="outline" className="text-xs">Functions</Badge>
@@ -409,8 +437,8 @@ export function LLMConfigStep({ data, onChange }: WizardStepProps) {
         </CardContent>
       </Card>
 
-      {/* Cost Estimation */}
-      {currentModel && (
+      {/* Cost Estimation - Only for cloud models */}
+      {currentModel && currentModel.type === 'cloud' && (
         <div className="flex items-start gap-2 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
           <Zap className="h-4 w-4 text-blue-600 mt-0.5" />
           <div className="text-sm">

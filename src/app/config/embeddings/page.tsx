@@ -45,6 +45,7 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks'
 import { dataService } from '@/services/data.service'
 import { setEmbeddings } from '@/store/slices/embeddings.slice'
 import systemResourcesData from '@/data/system-resources.json'
+import { SystemResources } from '@/components/config/system-resources'
 
 export default function EmbeddingsConfigPage() {
   const dispatch = useAppDispatch()
@@ -144,95 +145,7 @@ export default function EmbeddingsConfigPage() {
       </PageHeader>
 
       <PageContent>
-        {/* System Resources */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Server className="h-5 w-5" />
-              System Resources
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-6 md:grid-cols-4">
-              {/* GPU Memory */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-1">
-                    <Cpu className="h-4 w-4" />
-                    GPU Memory
-                  </span>
-                  <span className="font-medium">
-                    {formatBytes(systemResources.gpu.used)} / {formatBytes(systemResources.gpu.total)}
-                  </span>
-                </div>
-                <Progress 
-                  value={(systemResources.gpu.used / systemResources.gpu.total) * 100} 
-                  className="h-2" 
-                />
-                <div className="text-xs text-muted-foreground">
-                  {formatBytes(availableGPU)} available
-                </div>
-              </div>
-
-              {/* CPU Usage */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-1">
-                    <Activity className="h-4 w-4" />
-                    CPU Usage
-                  </span>
-                  <span className="font-medium">
-                    {systemResources.cpu.usage}%
-                  </span>
-                </div>
-                <Progress value={systemResources.cpu.usage} className="h-2" />
-                <div className="text-xs text-muted-foreground">
-                  {systemResources.cpu.usedCores} / {systemResources.cpu.cores} cores
-                </div>
-              </div>
-
-              {/* RAM */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-1">
-                    <MemoryStick className="h-4 w-4" />
-                    System RAM
-                  </span>
-                  <span className="font-medium">
-                    {formatBytes(systemResources.ram.used)} / {formatBytes(systemResources.ram.total)}
-                  </span>
-                </div>
-                <Progress 
-                  value={(systemResources.ram.used / systemResources.ram.total) * 100} 
-                  className="h-2" 
-                />
-                <div className="text-xs text-muted-foreground">
-                  {formatBytes(availableRAM)} available
-                </div>
-              </div>
-
-              {/* Storage */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-1">
-                    <HardDrive className="h-4 w-4" />
-                    Storage
-                  </span>
-                  <span className="font-medium">
-                    {formatBytes(systemResources.storage.used)} / {formatBytes(systemResources.storage.total)}
-                  </span>
-                </div>
-                <Progress 
-                  value={(systemResources.storage.used / systemResources.storage.total) * 100} 
-                  className="h-2" 
-                />
-                <div className="text-xs text-muted-foreground">
-                  {formatBytes(systemResources.storage.total - systemResources.storage.used)} available
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <SystemResources systemResources={systemResources} />
 
         {/* Model Tabs */}
         <Tabs defaultValue="local" className="space-y-4">

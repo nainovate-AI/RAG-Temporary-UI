@@ -12,15 +12,15 @@ interface MainLayoutProps {
 
 export function MainLayout({ children, className }: MainLayoutProps) {
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex h-screen  bg-background">
       <Sidebar />
       
       {/* Main content area */}
       <main className={cn(
-        "flex-1 overflow-y-auto",
+        "flex-1 overflow-y",
         className
       )}>
-        <div className="h-full ml-64">
+        <div className="h-screen ml-64">
           {children}
         </div>
       </main>

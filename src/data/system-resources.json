@@ -1,25 +1,27 @@
 {
   "systemResources": {
     "gpu": {
-      "total": 25769803776,
-      "used": 17179869184,
+      "total": 68719476736,
+      "used": 56375128192,
       "models": [
-        { "name": "bge-large-en-v1.5", "usage": 2254857830 },
-        { "name": "all-mpnet-base-v2", "usage": 1932735283 }
+        { "name": "bge-large-en-v1.5", "usage": 2254857830, "type": "embedding" },
+        { "name": "all-mpnet-base-v2", "usage": 1932735283, "type": "embedding" },
+        { "name": "llama-3-70b", "usage": 42949672960, "type": "llm" },
+        { "name": "mistral-7b-instruct", "usage": 8589934592, "type": "llm" }
       ]
     },
     "cpu": {
-      "usage": 45,
+      "usage": 70,
       "cores": 16,
-      "usedCores": 7
+      "usedCores": 14
     },
     "ram": {
-      "total": 68719476736,
-      "used": 34359738368
+      "total": 137438953472,
+      "used": 89934370816
     },
     "storage": {
       "total": 2199023255552,
-      "used": 858993459200
+      "used": 1073741824000
     }
   }
 }

@@ -1,325 +1,165 @@
+// src/app/config/llm/page.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MainLayout, PageHeader, PageContent } from '@/components/layout/main-layout'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Progress } from '@/components/ui/progress'
 import { 
   Brain,
   Plus,
   Settings,
-  Activity,
   DollarSign,
-  Zap,
+  Activity,
   AlertCircle,
-  CheckCircle2,
-  X,
+  CheckCircle,
   Loader2,
-  TrendingUp,
-  TrendingDown,
-  Info,
-  Link2,
-  BarChart3,
-  Clock,
+  Key,
   Hash,
-  Sparkles,
-  Globe,
-  Shield,
+  Zap,
+  X,
+  Save,
+  TestTube,
+  Cpu,
+  HardDrive,
+  MemoryStick,
+  Cloud,
+  Server,
+  Play,
+  Square,
+  RefreshCw,
+  FileText,
+  ChevronDown,
   ChevronRight,
-  ArrowUp,
-  ArrowDown,
-  Minus
+  AlertTriangle,
+  MessageSquare,
+  Eye,
+  Code,
+  Globe,
+  TrendingUp
 } from 'lucide-react'
-import { cn, formatNumber } from '@/lib/utils'
+import { formatNumber, formatBytes } from '@/lib/utils'
+import { cn } from '@/lib/utils'
+import { useAppSelector, useAppDispatch } from '@/store/hooks'
+import { dataService } from '@/services/data.service'
+import { setModels } from '@/store/slices/models.slice'
+import systemResourcesData from '@/data/system-resources.json'
+import { SystemResources } from '@/components/config/system-resources'
 
-// Provider configuration
-const providerInfo = {
-  openai: {
-    name: 'OpenAI',
-    icon: '🤖',
-    color: 'text-green-500',
-    bgColor: 'bg-green-500/10',
-    features: ['GPT-4 Turbo', 'Function calling', 'Vision', 'JSON mode', 'Assistants API'],
-  },
-  anthropic: {
-    name: 'Anthropic',
-    icon: '🧠',
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-500/10',
-    features: ['Claude 3 Opus', '200K context', 'Constitutional AI', 'Low hallucination'],
-  },
-  cohere: {
-    name: 'Cohere',
-    icon: '🎯',
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-500/10',
-    features: ['Command R+', 'Multilingual', 'RAG optimized', 'Grounded generation'],
-  },
-  google: {
-    name: 'Google',
-    icon: '🌐',
-    color: 'text-yellow-500',
-    bgColor: 'bg-yellow-500/10',
-    features: ['Gemini Pro', 'Gemini Ultra', 'Multimodal', 'Long context'],
-  },
-  local: {
-    name: 'Local Models',
-    icon: '💻',
-    color: 'text-orange-500',
-    bgColor: 'bg-orange-500/10',
-    features: ['Ollama', 'vLLM', 'Privacy-first', 'No API costs'],
-  }
-}
-
-// Mock data with enhanced information
-const mockProviders = [
-  {
-    id: 'openai-prod',
-    provider: 'openai',
-    name: 'OpenAI Production',
-    status: 'active' as const,
-    models: [
-      { 
-        id: 'gpt-4-turbo-preview', 
-        name: 'GPT-4 Turbo', 
-        contextWindow: 128000, 
-        costPer1kTokens: { input: 0.01, output: 0.03 },
-        available: true,
-        performance: { latency: 1.2, reliability: 99.5 },
-        usageByPipeline: [
-          { pipelineId: '1', pipelineName: 'Customer Support', percentage: 45 },
-          { pipelineId: '2', pipelineName: 'Technical Docs', percentage: 30 },
-          { pipelineId: '3', pipelineName: 'Legal Analysis', percentage: 25 }
-        ]
-      },
-      { 
-        id: 'gpt-3.5-turbo', 
-        name: 'GPT-3.5 Turbo', 
-        contextWindow: 16384, 
-        costPer1kTokens: { input: 0.0005, output: 0.0015 },
-        available: true,
-        performance: { latency: 0.8, reliability: 99.8 },
-        usageByPipeline: [
-          { pipelineId: '1', pipelineName: 'Customer Support', percentage: 80 },
-          { pipelineId: '4', pipelineName: 'Quick Queries', percentage: 20 }
-        ]
-      },
-    ],
-    usage: {
-      tokensToday: 2456789,
-      costToday: 45.67,
-      costTrend: 12.5, // percentage change
-      requestsToday: 12345,
-      avgLatency: 1.1,
-      errorRate: 0.02,
-      peakHour: 14, // 2 PM
-    },
-    limits: {
-      rateLimit: 10000, // requests per minute
-      dailyTokenLimit: 10000000,
-      monthlyBudget: 2000,
-    },
-    config: {
-      apiKey: 'sk-...',
-      organization: 'org-...',
-      maxRetries: 3,
-      timeout: 30,
-    },
-    lastUsed: '2024-01-15T11:30:00Z',
-  },
-  {
-    id: 'anthropic-main',
-    provider: 'anthropic',
-    name: 'Anthropic Claude',
-    status: 'active' as const,
-    models: [
-      { 
-        id: 'claude-3-opus', 
-        name: 'Claude 3 Opus', 
-        contextWindow: 200000, 
-        costPer1kTokens: { input: 0.015, output: 0.075 },
-        available: true,
-        performance: { latency: 2.1, reliability: 99.2 },
-        usageByPipeline: [
-          { pipelineId: '3', pipelineName: 'Legal Analysis', percentage: 60 },
-          { pipelineId: '5', pipelineName: 'Research Assistant', percentage: 40 }
-        ]
-      },
-      { 
-        id: 'claude-3-sonnet', 
-        name: 'Claude 3 Sonnet', 
-        contextWindow: 200000, 
-        costPer1kTokens: { input: 0.003, output: 0.015 },
-        available: true,
-        performance: { latency: 1.5, reliability: 99.4 },
-        usageByPipeline: [
-          { pipelineId: '2', pipelineName: 'Technical Docs', percentage: 100 }
-        ]
-      },
-    ],
-    usage: {
-      tokensToday: 892345,
-      costToday: 28.90,
-      costTrend: -5.2,
-      requestsToday: 4567,
-      avgLatency: 1.8,
-      errorRate: 0.01,
-      peakHour: 10,
-    },
-    limits: {
-      rateLimit: 1000,
-      dailyTokenLimit: 5000000,
-      monthlyBudget: 1000,
-    },
-    config: {
-      apiKey: 'sk-ant-...',
-      maxRetries: 2,
-      timeout: 60,
-    },
-    lastUsed: '2024-01-15T11:25:00Z',
-  },
-  {
-    id: 'local-ollama',
-    provider: 'local',
-    name: 'Ollama Local',
-    status: 'degraded' as const,
-    models: [
-      { 
-        id: 'mixtral-8x7b', 
-        name: 'Mixtral 8x7B', 
-        contextWindow: 32768, 
-        costPer1kTokens: { input: 0, output: 0 },
-        available: true,
-        performance: { latency: 3.5, reliability: 95.0 },
-        usageByPipeline: [
-          { pipelineId: '6', pipelineName: 'Development', percentage: 100 }
-        ]
-      },
-      { 
-        id: 'llama2-70b', 
-        name: 'Llama 2 70B', 
-        contextWindow: 4096, 
-        costPer1kTokens: { input: 0, output: 0 },
-        available: false,
-        performance: { latency: 5.2, reliability: 92.0 },
-        usageByPipeline: []
-      },
-    ],
-    usage: {
-      tokensToday: 234567,
-      costToday: 0,
-      costTrend: 0,
-      requestsToday: 1234,
-      avgLatency: 4.2,
-      errorRate: 0.05,
-      peakHour: 16,
-    },
-    limits: {
-      rateLimit: 100,
-      dailyTokenLimit: -1, // unlimited
-      monthlyBudget: 0,
-    },
-    config: {
-      endpoint: 'http://localhost:11434',
-      timeout: 120,
-    },
-    lastUsed: '2024-01-15T10:45:00Z',
-  }
-]
-
-export default function EnhancedLLMProvidersPage() {
-  const [providers, setProviders] = useState(mockProviders)
-  const [showAddModal, setShowAddModal] = useState(false)
-  const [selectedProvider, setSelectedProvider] = useState('')
-  const [expandedProvider, setExpandedProvider] = useState<string | null>(null)
-  const [testStatus, setTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle')
+export default function LLMProvidersPage() {
+  const dispatch = useAppDispatch()
+  const { entities: models, loading } = useAppSelector(state => state.models)
+  const modelsArray = Object.values(models)
   
-  // New provider form state
-  const [newProvider, setNewProvider] = useState({
-    name: '',
-    provider: '',
-    apiKey: '',
-    endpoint: '',
-    organization: '',
-    rateLimit: '',
-    monthlyBudget: '',
-  })
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [showActivationModal, setShowActivationModal] = useState(false)
+  const [selectedModel, setSelectedModel] = useState<any>(null)
+  const [activatingModel, setActivatingModel] = useState<string | null>(null)
+  const [activationProgress, setActivationProgress] = useState(0)
+  const [expandedLocal, setExpandedLocal] = useState(true)
+  const [expandedInactive, setExpandedInactive] = useState(false)
+  const [expandedModels, setExpandedModels] = useState<string[]>([])
+  const [systemResources, setSystemResources] = useState(systemResourcesData.systemResources)
 
-  // Calculate totals
-  const totalStats = {
-    totalProviders: providers.length,
-    activeProviders: providers.filter(p => p.status === 'active').length,
-    totalCostToday: providers.reduce((acc, p) => acc + p.usage.costToday, 0),
-    totalTokensToday: providers.reduce((acc, p) => acc + p.usage.tokensToday, 0),
-    totalRequests: providers.reduce((acc, p) => acc + p.usage.requestsToday, 0),
-    avgLatency: providers.reduce((acc, p) => acc + p.usage.avgLatency, 0) / providers.length,
-  }
+  // Load models data on mount
+  useEffect(() => {
+    loadModels()
+  }, [])
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'active':
-        return <Activity className="h-4 w-4 text-green-500" />
-      case 'degraded':
-        return <AlertCircle className="h-4 w-4 text-yellow-500" />
-      case 'error':
-        return <X className="h-4 w-4 text-red-500" />
-      default:
-        return <Minus className="h-4 w-4 text-gray-500" />
+  const loadModels = async () => {
+    try {
+      const response = await dataService.getModels()
+      if (response.data) {
+        dispatch(setModels(response.data.models))
+      }
+    } catch (error) {
+      console.error('Failed to load models:', error)
     }
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'text-green-500 bg-green-500/10'
-      case 'degraded':
-        return 'text-yellow-500 bg-yellow-500/10'
-      case 'error':
-        return 'text-red-500 bg-red-500/10'
-      default:
-        return 'text-gray-500 bg-gray-500/10'
+  // Filter models by type and status
+  const localActiveModels = modelsArray.filter(m => m.type === 'local' && m.status === 'active')
+  const localInactiveModels = modelsArray.filter(m => m.type === 'local' && m.status === 'inactive')
+  const cloudModels = modelsArray.filter(m => m.type === 'cloud')
+
+  // Calculate available resources (considering both embeddings and LLMs)
+  const totalGPUUsed = systemResources.gpu.models.reduce((sum, model) => sum + model.usage, 0)
+  const availableGPU = systemResources.gpu.total - totalGPUUsed
+  const availableRAM = systemResources.ram.total - systemResources.ram.used
+  const availableCPU = systemResources.cpu.cores - systemResources.cpu.usedCores
+
+  const handleActivateModel = (model: any) => {
+    setSelectedModel(model)
+    setShowActivationModal(true)
+  }
+
+  const confirmActivation = async () => {
+    if (!selectedModel) return
+    
+    setShowActivationModal(false)
+    setActivatingModel(selectedModel.id)
+    setActivationProgress(0)
+    
+    // Simulate activation process
+    const interval = setInterval(() => {
+      setActivationProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval)
+          setActivatingModel(null)
+          // In real app, update model status via API
+          loadModels()
+          return 100
+        }
+        return prev + 10
+      })
+    }, 500)
+  }
+
+  const toggleModelExpanded = (modelId: string) => {
+    setExpandedModels(prev => 
+      prev.includes(modelId) 
+        ? prev.filter(id => id !== modelId)
+        : [...prev, modelId]
+    )
+  }
+
+  const canActivateModel = (model: any) => {
+    if (!model.requirements) return true
+    return (
+      model.requirements.gpu <= availableGPU &&
+      model.requirements.ram <= availableRAM &&
+      model.requirements.cpu <= availableCPU
+    )
+  }
+
+  const getFeatureIcon = (feature: string) => {
+    switch (feature) {
+      case 'function-calling': return <Code className="h-3 w-3" />
+      case 'vision': return <Eye className="h-3 w-3" />
+      case 'json-mode': return <FileText className="h-3 w-3" />
+      case 'multilingual': return <Globe className="h-3 w-3" />
+      case 'code-specialized': return <Code className="h-3 w-3" />
+      case 'rag-mode': return <MessageSquare className="h-3 w-3" />
+      default: return <Zap className="h-3 w-3" />
     }
   }
 
-  const getTrendIcon = (trend: number) => {
-    if (trend > 0) return <ArrowUp className="h-3 w-3 text-red-500" />
-    if (trend < 0) return <ArrowDown className="h-3 w-3 text-green-500" />
-    return <Minus className="h-3 w-3 text-gray-500" />
-  }
-
-  const handleTestConnection = async () => {
-    setTestStatus('testing')
-    setTimeout(() => {
-      setTestStatus('success')
-    }, 2000)
-  }
-
-  const handleSaveProvider = () => {
-    console.log('Saving provider:', newProvider)
-    setShowAddModal(false)
-    // Reset form
-    setNewProvider({
-      name: '',
-      provider: '',
-      apiKey: '',
-      endpoint: '',
-      organization: '',
-      rateLimit: '',
-      monthlyBudget: '',
-    })
-    setSelectedProvider('')
-    setTestStatus('idle')
-  }
+  // Calculate total costs for cloud models
+  const totalCostToday = cloudModels
+    .filter(m => m.status === 'active' && m.usage)
+    .reduce((sum, m) => sum + (m.usage?.costToday || 0), 0)
 
   return (
     <MainLayout>
       <PageHeader
         title="LLM Providers"
-        description="Manage language model providers and monitor usage"
+        description="Manage language models for text generation"
       >
         <Button onClick={() => setShowAddModal(true)}>
           <Plus className="mr-2 h-4 w-4" />
@@ -328,493 +168,413 @@ export default function EnhancedLLMProvidersPage() {
       </PageHeader>
 
       <PageContent>
-        {/* Stats Overview */}
-        <div className="grid gap-4 md:grid-cols-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Providers</CardTitle>
-              <Brain className="h-4 w-4 text-muted-foreground" />
+        <SystemResources 
+          systemResources={systemResources}
+          showBreakdown={true}
+          // gpuModels={systemResources.gpu.models}
+        />
+
+        {/* Cost Overview for Cloud Models
+        {totalCostToday > 0 && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <DollarSign className="h-5 w-5" />
+                Today's Usage
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{totalStats.activeProviders}/{totalStats.totalProviders}</div>
-              <p className="text-xs text-muted-foreground">Active providers</p>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Cost</p>
+                  <p className="text-2xl font-bold">${totalCostToday.toFixed(2)}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Requests</p>
+                  <p className="text-2xl font-bold">
+                    {formatNumber(cloudModels.reduce((sum, m) => sum + (m.usage?.requestsToday || 0), 0))}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Tokens</p>
+                  <p className="text-2xl font-bold">
+                    {formatNumber(cloudModels.reduce((sum, m) => 
+                      sum + (m.usage?.tokensToday?.input || 0) + (m.usage?.tokensToday?.output || 0), 0
+                    ))}
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
+        )} */}
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Cost Today</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">${totalStats.totalCostToday.toFixed(2)}</div>
-              <p className="text-xs text-muted-foreground">Total spending</p>
-            </CardContent>
-          </Card>
+        {/* Model Tabs */}
+        <Tabs defaultValue="local" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="local" className="flex items-center gap-2">
+              <Server className="h-4 w-4" />
+              Local Models
+            </TabsTrigger>
+            <TabsTrigger value="cloud" className="flex items-center gap-2">
+              <Cloud className="h-4 w-4" />
+              Cloud Models
+            </TabsTrigger>
+          </TabsList>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Tokens Used</CardTitle>
-              <Hash className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatNumber(totalStats.totalTokensToday)}</div>
-              <p className="text-xs text-muted-foreground">Today's usage</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Requests</CardTitle>
-              <Activity className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatNumber(totalStats.totalRequests)}</div>
-              <p className="text-xs text-muted-foreground">API calls today</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Avg Latency</CardTitle>
-              <Zap className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{totalStats.avgLatency.toFixed(1)}s</div>
-              <p className="text-xs text-muted-foreground">Response time</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Health Score</CardTitle>
-              <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">98.5%</div>
-              <p className="text-xs text-muted-foreground">Overall reliability</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Providers List */}
-        <div className="space-y-4">
-          {providers.map((provider) => {
-            const info = providerInfo[provider.provider as keyof typeof providerInfo]
-            const isExpanded = expandedProvider === provider.id
-
-            return (
-              <Card key={provider.id} className="overflow-hidden">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-4">
-                      <div className={cn(
-                        "p-3 rounded-lg",
-                        info.bgColor
-                      )}>
-                        <span className="text-2xl">{info.icon}</span>
-                      </div>
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-3">
-                          <CardTitle>{provider.name}</CardTitle>
-                          <Badge className={getStatusColor(provider.status)}>
-                            <span className="flex items-center gap-1">
-                              {getStatusIcon(provider.status)}
-                              {provider.status}
-                            </span>
-                          </Badge>
-                        </div>
-                        <CardDescription className="flex items-center gap-2">
-                          <span>{info.name}</span>
-                          <span className="text-muted-foreground">•</span>
-                          <span>{provider.models.length} models</span>
-                          <span className="text-muted-foreground">•</span>
-                          <span>Last used {new Date(provider.lastUsed).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
-                        </CardDescription>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setExpandedProvider(isExpanded ? null : provider.id)}
-                      >
-                        {isExpanded ? 'Hide Details' : 'View Details'}
-                        <ChevronRight className={cn(
-                          "ml-2 h-4 w-4 transition-transform",
-                          isExpanded && "rotate-90"
-                        )} />
-                      </Button>
-                      <Button variant="ghost" size="icon">
-                        <Settings className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Provider Metrics */}
-                  <div className="grid grid-cols-6 gap-4 mt-4 pt-4 border-t">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Cost Today</p>
-                      <p className="font-medium flex items-center gap-1">
-                        ${provider.usage.costToday.toFixed(2)}
-                        {getTrendIcon(provider.usage.costTrend)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Tokens</p>
-                      <p className="font-medium">{formatNumber(provider.usage.tokensToday)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Requests</p>
-                      <p className="font-medium">{formatNumber(provider.usage.requestsToday)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Avg Latency</p>
-                      <p className="font-medium">{provider.usage.avgLatency}s</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Error Rate</p>
-                      <p className="font-medium">{(provider.usage.errorRate * 100).toFixed(2)}%</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Peak Hour</p>
-                      <p className="font-medium">{provider.usage.peakHour}:00</p>
-                    </div>
-                  </div>
-                </CardHeader>
-
-                {/* Expanded Details */}
-                {isExpanded && (
-                  <CardContent className="pt-0">
-                    {/* Models List */}
-                    <div className="space-y-4">
-                      <h4 className="text-sm font-medium mb-3">Available Models</h4>
-                      {provider.models.map((model) => (
-                        <div
-                          key={model.id}
-                          className="border rounded-lg p-4 space-y-3"
-                        >
-                          <div className="flex items-center justify-between">
+          {/* Local Models Tab */}
+          <TabsContent value="local" className="space-y-4">
+            {/* Active Models */}
+            <div className="space-y-3">
+              <button
+                onClick={() => setExpandedLocal(!expandedLocal)}
+                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {expandedLocal ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                <span className="flex items-center gap-2">
+                  Active Models ({localActiveModels.length})
+                  <div className="w-2 h-2 bg-green-500 rounded-full" />
+                </span>
+              </button>
+              
+              {expandedLocal && (
+                <div className="space-y-3">
+                  {localActiveModels.map((model) => (
+                    <div
+                      key={model.id}
+                      className={cn(
+                        "border rounded-lg transition-all",
+                        activatingModel === model.id && "opacity-50"
+                      )}
+                    >
+                      <div className="p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
                             <div className="flex items-center gap-3">
-                              <span className="font-medium">{model.name}</span>
-                              <Badge variant={model.available ? 'secondary' : 'outline'}>
-                                {model.available ? 'Available' : 'Unavailable'}
+                              <h4 className="font-medium">{model.name}</h4>
+                              <Badge className="bg-green-500/10 text-green-500">
+                                <Activity className="mr-1 h-3 w-3" />
+                                Active
                               </Badge>
-                              <Badge variant="outline">
-                                {model.contextWindow.toLocaleString()} tokens
-                              </Badge>
+                              {model.quantization && (
+                                <Badge variant="outline" className="text-xs">
+                                  {model.quantization}
+                                </Badge>
+                              )}
                             </div>
-                            <div className="flex items-center gap-4 text-sm">
-                              <span className="text-muted-foreground">
-                                Input: ${model.costPer1kTokens.input}/1K
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {model.contextWindow.toLocaleString()} context • Using {formatBytes(model.resourceUsage?.gpu || 0)} GPU
+                            </p>
+                            <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <Zap className="h-3 w-3" />
+                                {model.performance?.tokensPerSec || 0} tok/s
                               </span>
-                              <span className="text-muted-foreground">
-                                Output: ${model.costPer1kTokens.output}/1K
-                              </span>
+                              <span>•</span>
+                              <span>Latency: {model.performance?.avgLatency || 0}ms</span>
+                              <span>•</span>
+                              <span>Requests: {formatNumber(model.performance?.requestsProcessed || 0)}</span>
+                              <span>•</span>
+                              <span>Uptime: {model.performance?.uptime || 'N/A'}</span>
                             </div>
                           </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleModelExpanded(model.id)}
+                          >
+                            {expandedModels.includes(model.id) ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                          </Button>
+                        </div>
 
-                          {/* Model Performance */}
-                          <div className="flex items-center gap-6 text-sm">
-                            <div className="flex items-center gap-2">
-                              <Zap className="h-3 w-3 text-muted-foreground" />
-                              <span>Latency: {model.performance.latency}s</span>
+                        {/* Expanded Details */}
+                        {expandedModels.includes(model.id) && model.performance && (
+                          <div className="mt-4 pt-4 border-t space-y-4">
+                            {/* Performance Metrics */}
+                            <div>
+                              <h5 className="text-sm font-medium mb-2">Performance</h5>
+                              <div className="grid grid-cols-4 gap-4">
+                                <div>
+                                  <p className="text-xs text-muted-foreground">Tokens/sec</p>
+                                  <p className="text-lg font-semibold">{model.performance.tokensPerSec}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-muted-foreground">Avg Latency</p>
+                                  <p className="text-lg font-semibold">{model.performance.avgLatency}ms</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-muted-foreground">CPU Usage</p>
+                                  <p className="text-lg font-semibold">{model.resourceUsage?.cpuPercent || 0}%</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-muted-foreground">Requests</p>
+                                  <p className="text-lg font-semibold">{formatNumber(model.performance.requestsProcessed)}</p>
+                                </div>
+                              </div>
                             </div>
+
+                            {/* Actions */}
                             <div className="flex items-center gap-2">
-                              <CheckCircle2 className="h-3 w-3 text-muted-foreground" />
-                              <span>Reliability: {model.performance.reliability}%</span>
+                              <Button variant="outline" size="sm">
+                                <Settings className="mr-1 h-3 w-3" />
+                                Configure
+                              </Button>
+                              <Button variant="outline" size="sm">
+                                <TestTube className="mr-1 h-3 w-3" />
+                                Test
+                              </Button>
+                              <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                                <Square className="mr-1 h-3 w-3" />
+                                Stop
+                              </Button>
                             </div>
                           </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
-                          {/* Usage by Pipeline */}
-                          {model.usageByPipeline.length > 0 && (
-                            <div className="space-y-2">
-                              <p className="text-xs font-medium text-muted-foreground">Usage by Pipeline</p>
-                              <div className="space-y-1">
-                                {model.usageByPipeline.map((usage) => (
-                                  <div key={usage.pipelineId} className="flex items-center gap-2">
-                                    <div className="flex-1 bg-secondary rounded-full h-2 overflow-hidden">
-                                      <div
-                                        className="h-full bg-primary transition-all"
-                                        style={{ width: `${usage.percentage}%` }}
-                                      />
-                                    </div>
-                                    <span className="text-xs text-muted-foreground w-32">
-                                      {usage.pipelineName}
-                                    </span>
-                                    <span className="text-xs font-medium w-10 text-right">
-                                      {usage.percentage}%
-                                    </span>
-                                  </div>
-                                ))}
+            {/* Inactive Models */}
+            <div className="space-y-3">
+              <button
+                onClick={() => setExpandedInactive(!expandedInactive)}
+                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {expandedInactive ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                <span>Available Models ({localInactiveModels.length})</span>
+              </button>
+
+              {expandedInactive && (
+                <div className="space-y-3">
+                  {localInactiveModels.map((model) => (
+                    <div key={model.id} className="border rounded-lg p-4">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-medium">{model.name}</h4>
+                            {model.quantization && (
+                              <Badge variant="outline" className="text-xs">
+                                {model.quantization}
+                              </Badge>
+                            )}
+                            {model.features && model.features.map((feature) => (
+                              <Badge key={feature} variant="secondary" className="text-xs">
+                                {getFeatureIcon(feature)}
+                                <span className="ml-1">{feature}</span>
+                              </Badge>
+                            ))}
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">{model.description}</p>
+                          <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                            <span>{model.contextWindow.toLocaleString()} context</span>
+                            <span>•</span>
+                            <span>Size: {formatBytes(model.modelSize || 0)}</span>
+                          </div>
+
+                          {/* Resource Requirements */}
+                          {model.requirements && (
+                            <div className="flex items-center gap-4 mt-2">
+                              <div className="flex items-center gap-1 text-xs">
+                                <Cpu className="h-3 w-3" />
+                                <span>{formatBytes(model.requirements.gpu)} GPU</span>
+                              </div>
+                              <div className="flex items-center gap-1 text-xs">
+                                <MemoryStick className="h-3 w-3" />
+                                <span>{formatBytes(model.requirements.ram)} RAM</span>
+                              </div>
+                              <div className="flex items-center gap-1 text-xs">
+                                <Activity className="h-3 w-3" />
+                                <span>{model.requirements.cpu} CPU cores</span>
                               </div>
                             </div>
                           )}
                         </div>
-                      ))}
-                    </div>
 
-                    {/* Limits & Configuration */}
-                    <div className="grid grid-cols-2 gap-4 mt-6 pt-4 border-t">
-                      <div className="space-y-3">
-                        <h4 className="text-sm font-medium">Limits & Quotas</h4>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Rate Limit</span>
-                            <span>{provider.limits.rateLimit.toLocaleString()} req/min</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Daily Token Limit</span>
-                            <span>
-                              {provider.limits.dailyTokenLimit === -1 
-                                ? 'Unlimited' 
-                                : formatNumber(provider.limits.dailyTokenLimit)}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Monthly Budget</span>
-                            <span>${provider.limits.monthlyBudget.toLocaleString()}</span>
-                          </div>
-                        </div>
+                        <Button
+                          onClick={() => handleActivateModel(model)}
+                          disabled={!canActivateModel(model)}
+                          size="sm"
+                        >
+                          <Play className="mr-1 h-3 w-3" />
+                          Activate
+                        </Button>
                       </div>
 
-                      <div className="space-y-3">
-                        <h4 className="text-sm font-medium">Configuration</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {provider.config.apiKey && (
-                            <Badge variant="outline">
-                              <Shield className="mr-1 h-3 w-3" />
-                              API Key Configured
-                            </Badge>
-                          )}
-                          {provider.config.organization && (
-                            <Badge variant="outline">
-                              <Globe className="mr-1 h-3 w-3" />
-                              Organization Set
-                            </Badge>
-                          )}
-                          {provider.config.endpoint && (
-                            <Badge variant="outline">
-                              <Link2 className="mr-1 h-3 w-3" />
-                              Custom Endpoint
-                            </Badge>
-                          )}
-                          <Badge variant="outline">
-                            <Clock className="mr-1 h-3 w-3" />
-                            {provider.config.timeout}s timeout
+                      {!canActivateModel(model) && (
+                        <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-md">
+                          <p className="text-xs text-yellow-700 dark:text-yellow-400 flex items-center gap-1">
+                            <AlertTriangle className="h-3 w-3" />
+                            Insufficient resources to activate this model
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          {/* Cloud Models Tab */}
+          <TabsContent value="cloud" className="space-y-4">
+            {cloudModels.map((model) => (
+              <Card key={model.id}>
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        {model.name}
+                        {model.status === 'active' && (
+                          <Badge className="bg-green-500/10 text-green-500">
+                            <CheckCircle className="mr-1 h-3 w-3" />
+                            Connected
                           </Badge>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Features */}
-                    <div className="mt-4 pt-4 border-t">
-                      <h4 className="text-sm font-medium mb-3">Provider Features</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {info.features.map((feature) => (
-                          <Badge key={feature} variant="secondary">
-                            {feature}
+                        )}
+                        {model.features && model.features.map((feature) => (
+                          <Badge key={feature} variant="outline" className="text-xs">
+                            {getFeatureIcon(feature)}
+                            <span className="ml-1">{feature}</span>
                           </Badge>
                         ))}
-                      </div>
+                      </CardTitle>
+                      <CardDescription className="mt-1">
+                        {model.provider} • {model.contextWindow.toLocaleString()} context • {model.maxOutputTokens} max output
+                      </CardDescription>
                     </div>
-                  </CardContent>
-                )}
-              </Card>
-            )
-          })}
-        </div>
-
-        {/* Add Provider Modal */}
-        {showAddModal && (
-          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50">
-            <div className="fixed left-[50%] top-[50%] max-h-[90vh] w-[90vw] max-w-[600px] translate-x-[-50%] translate-y-[-50%] overflow-y-auto">
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle>Add LLM Provider</CardTitle>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setShowAddModal(false)}
-                    >
-                      <X className="h-4 w-4" />
+                    <Button variant="outline" size="sm">
+                      <Key className="mr-1 h-3 w-3" />
+                      Configure
                     </Button>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Provider Selection */}
-                  <div className="space-y-2">
-                    <Label>Provider Type</Label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {Object.entries(providerInfo).map(([key, info]) => (
-                        <div
-                          key={key}
-                          className={cn(
-                            "border rounded-lg p-3 cursor-pointer transition-all",
-                            selectedProvider === key
-                              ? "border-primary bg-primary/5"
-                              : "border-border hover:border-primary/50"
-                          )}
-                          onClick={() => setSelectedProvider(key)}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="text-2xl">{info.icon}</span>
-                            <span className="font-medium">{info.name}</span>
-                          </div>
-                        </div>
-                      ))}
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">{model.description}</p>
                     </div>
+                    
+                    {/* Pricing */}
+                    <div className="flex items-center gap-4 text-sm">
+                      <span className="flex items-center gap-1">
+                        <DollarSign className="h-3 w-3" />
+                        ${model.costPer1kTokens.input}/1k input
+                      </span>
+                      <span>•</span>
+                      <span>${model.costPer1kTokens.output}/1k output</span>
+                    </div>
+
+                    {/* Usage Stats */}
+                    {model.usage && model.status === 'active' && (
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 pt-4 border-t">
+                        <div>
+                          <p className="text-xs text-muted-foreground">Requests Today</p>
+                          <p className="text-lg font-semibold">{formatNumber(model.usage.requestsToday)}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">Input Tokens</p>
+                          <p className="text-lg font-semibold">{formatNumber(model.usage.tokensToday.input)}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">Output Tokens</p>
+                          <p className="text-lg font-semibold">{formatNumber(model.usage.tokensToday.output)}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">Avg Response</p>
+                          <p className="text-lg font-semibold">
+                            {Math.round(model.usage.tokensToday.output / model.usage.requestsToday)} tok
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">Today's Cost</p>
+                          <p className="text-lg font-semibold">${model.usage.costToday.toFixed(2)}</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
-
-                  {selectedProvider && (
-                    <>
-                      {/* Provider Configuration */}
-                      <div className="space-y-4 pt-4 border-t">
-                        <div className="space-y-2">
-                          <Label htmlFor="provider-name">Configuration Name</Label>
-                          <Input
-                            id="provider-name"
-                            placeholder="e.g., Production GPT-4"
-                            value={newProvider.name}
-                            onChange={(e) => setNewProvider({ ...newProvider, name: e.target.value })}
-                          />
-                        </div>
-
-                        {selectedProvider !== 'local' && (
-                          <>
-                            <div className="space-y-2">
-                              <Label htmlFor="api-key">API Key</Label>
-                              <Input
-                                id="api-key"
-                                type="password"
-                                placeholder={`Enter your ${providerInfo[selectedProvider as keyof typeof providerInfo].name} API key`}
-                                value={newProvider.apiKey}
-                                onChange={(e) => setNewProvider({ ...newProvider, apiKey: e.target.value })}
-                              />
-                            </div>
-
-                            {selectedProvider === 'openai' && (
-                              <div className="space-y-2">
-                                <Label htmlFor="organization">Organization ID (Optional)</Label>
-                                <Input
-                                  id="organization"
-                                  placeholder="org-..."
-                                  value={newProvider.organization}
-                                  onChange={(e) => setNewProvider({ ...newProvider, organization: e.target.value })}
-                                />
-                              </div>
-                            )}
-                          </>
-                        )}
-
-                        {selectedProvider === 'local' && (
-                          <div className="space-y-2">
-                            <Label htmlFor="endpoint">Endpoint URL</Label>
-                            <Input
-                              id="endpoint"
-                              placeholder="e.g., http://localhost:11434"
-                              value={newProvider.endpoint}
-                              onChange={(e) => setNewProvider({ ...newProvider, endpoint: e.target.value })}
-                            />
-                          </div>
-                        )}
-
-                        {/* Limits Configuration */}
-                        <div className="space-y-4 pt-4 border-t">
-                          <h4 className="text-sm font-medium">Limits & Quotas</h4>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="rate-limit">Rate Limit (req/min)</Label>
-                              <Input
-                                id="rate-limit"
-                                type="number"
-                                placeholder="e.g., 1000"
-                                value={newProvider.rateLimit}
-                                onChange={(e) => setNewProvider({ ...newProvider, rateLimit: e.target.value })}
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="monthly-budget">Monthly Budget ($)</Label>
-                              <Input
-                                id="monthly-budget"
-                                type="number"
-                                placeholder="e.g., 1000"
-                                value={newProvider.monthlyBudget}
-                                onChange={(e) => setNewProvider({ ...newProvider, monthlyBudget: e.target.value })}
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Test Connection */}
-                        <div className="pt-4 border-t">
-                          <div className="flex items-center justify-between">
-                            <div className="space-y-0.5">
-                              <p className="text-sm font-medium">Test Connection</p>
-                              <p className="text-xs text-muted-foreground">
-                                Verify API key and settings
-                              </p>
-                            </div>
-                            <Button
-                              variant="outline"
-                              onClick={handleTestConnection}
-                              disabled={testStatus === 'testing'}
-                            >
-                              {testStatus === 'testing' && (
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                              )}
-                              {testStatus === 'success' && (
-                                <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
-                              )}
-                              {testStatus === 'error' && (
-                                <AlertCircle className="mr-2 h-4 w-4 text-red-500" />
-                              )}
-                              {testStatus === 'idle' ? 'Test' : 
-                               testStatus === 'testing' ? 'Testing...' :
-                               testStatus === 'success' ? 'Connected' : 'Failed'}
-                            </Button>
-                          </div>
-                          {testStatus === 'success' && (
-                            <p className="text-xs text-green-600 mt-2">
-                              Successfully connected and verified models
-                            </p>
-                          )}
-                          {testStatus === 'error' && (
-                            <p className="text-xs text-red-600 mt-2">
-                              Failed to connect. Please check your API key.
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex justify-end gap-3 pt-4 border-t">
-                        <Button
-                          variant="outline"
-                          onClick={() => setShowAddModal(false)}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          onClick={handleSaveProvider}
-                          disabled={
-                            !newProvider.name || 
-                            (selectedProvider !== 'local' && !newProvider.apiKey) ||
-                            (selectedProvider === 'local' && !newProvider.endpoint) ||
-                            testStatus !== 'success'
-                          }
-                        >
-                          Add Provider
-                        </Button>
-                      </div>
-                    </>
-                  )}
                 </CardContent>
               </Card>
+            ))}
+          </TabsContent>
+        </Tabs>
+
+        {/* Activation Progress */}
+        {activatingModel && (
+          <div className="fixed bottom-4 right-4 bg-background border rounded-lg shadow-lg p-4 w-80">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium">Activating model...</span>
+              <Loader2 className="h-4 w-4 animate-spin" />
             </div>
+            <Progress value={activationProgress} className="h-2" />
+            <p className="text-xs text-muted-foreground mt-2">
+              {activationProgress}% complete
+            </p>
           </div>
         )}
+
+        {/* Activation Confirmation Modal */}
+        <Dialog open={showActivationModal} onOpenChange={setShowActivationModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Activate Model</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to activate {selectedModel?.name}? This will allocate the following resources:
+              </DialogDescription>
+            </DialogHeader>
+            {selectedModel?.requirements && (
+              <div className="space-y-2 py-4">
+                <div className="flex justify-between text-sm">
+                  <span>GPU Memory:</span>
+                  <span>{formatBytes(selectedModel.requirements.gpu)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>System RAM:</span>
+                  <span>{formatBytes(selectedModel.requirements.ram)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>CPU Cores:</span>
+                  <span>{selectedModel.requirements.cpu}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Model Size:</span>
+                  <span>{formatBytes(selectedModel.modelSize)}</span>
+                </div>
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowActivationModal(false)}>
+                Cancel
+              </Button>
+              <Button onClick={confirmActivation}>
+                Activate Model
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Add Provider Modal (placeholder) */}
+        <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add LLM Provider</DialogTitle>
+              <DialogDescription>
+                Configure a new LLM provider or model.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <p className="text-sm text-muted-foreground">
+                Provider configuration form would go here...
+              </p>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowAddModal(false)}>
+                Cancel
+              </Button>
+              <Button>Add Provider</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </PageContent>
     </MainLayout>
   )
