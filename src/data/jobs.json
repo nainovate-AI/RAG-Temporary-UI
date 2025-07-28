@@ -489,6 +489,268 @@
         "indexedDocuments": 1,
         "failedDocuments": 0
       }
+    },
+    {
+      "id": "job_1753449655700_140wy1wv8",
+      "type": "ingestion",
+      "module": "ingest",
+      "targetId": "coll_7b6c810f-be13-4297-a064-f01a72ead77e",
+      "status": "processing",
+      "state": "uploading",
+      "stateDetails": {
+        "message": "Uploading documents",
+        "startedAt": "2025-07-25T13:20:53.817Z",
+        "progress": {
+          "current": 0,
+          "total": 0
+        }
+      },
+      "config": {
+        "processing": {
+          "strategy": "recursive",
+          "chunkSize": 512,
+          "chunkOverlap": 64,
+          "preprocessing": [
+            "remove_html",
+            "extract_metadata"
+          ]
+        },
+        "embedding": {
+          "model": "bge-large-en-v1.5",
+          "provider": "local"
+        },
+        "vectorStore": {
+          "type": "qdrant",
+          "connectionType": "cloud",
+          "collectionName": "collection_1753449553054",
+          "namespace": ""
+        }
+      },
+      "createdAt": "2025-07-25T13:20:55.700Z",
+      "updatedAt": "2025-07-25T13:20:55.700Z"
+    },
+    {
+      "id": "job_1753449661905_i5c865ojs",
+      "type": "ingestion",
+      "module": "ingest",
+      "targetId": "coll_c81b6e09-0d2b-409b-8200-b17cfa95a636",
+      "status": "completed",
+      "state": "completed",
+      "stateDetails": {
+        "message": "Ingestion complete",
+        "startedAt": "2025-07-25T13:21:01.616Z",
+        "progress": {
+          "current": 0,
+          "total": 0
+        },
+        "lastStateChange": "2025-07-25T13:21:49.252Z",
+        "completedAt": "2025-07-25T13:21:49.253Z"
+      },
+      "config": {
+        "processing": {
+          "strategy": "recursive",
+          "chunkSize": 512,
+          "chunkOverlap": 64,
+          "preprocessing": [
+            "remove_html",
+            "extract_metadata"
+          ]
+        },
+        "embedding": {
+          "model": "bge-large-en-v1.5",
+          "provider": "local"
+        },
+        "vectorStore": {
+          "type": "qdrant",
+          "connectionType": "cloud",
+          "collectionName": "collection_1753449553054",
+          "namespace": ""
+        }
+      },
+      "createdAt": "2025-07-25T13:21:01.905Z",
+      "updatedAt": "2025-07-25T13:21:49.253Z",
+      "results": {
+        "chunksCreated": 1234,
+        "embeddingsGenerated": 1234,
+        "indexedDocuments": 1,
+        "failedDocuments": 0
+      }
+    },
+    {
+      "id": "job_1753450124049_flx526hj4",
+      "type": "pipeline-deployment",
+      "status": "processing",
+      "state": "deploying",
+      "targetId": "pipe_83ebec27-a857-456c-9bd1-5d37b5e20287",
+      "targetType": "pipeline",
+      "name": "Deploy ",
+      "description": "Deploying pipeline resources and configurations",
+      "metadata": {
+        "pipelineType": "rag",
+        "pipelineName": "",
+        "steps": [
+          {
+            "id": "validate",
+            "name": "Validating configuration",
+            "status": "pending"
+          },
+          {
+            "id": "resources",
+            "name": "Allocating resources",
+            "status": "pending"
+          },
+          {
+            "id": "deploy",
+            "name": "Deploying pipeline",
+            "status": "pending"
+          },
+          {
+            "id": "test",
+            "name": "Running tests",
+            "status": "pending"
+          },
+          {
+            "id": "activate",
+            "name": "Activating pipeline",
+            "status": "pending"
+          }
+        ]
+      },
+      "createdAt": "2025-07-25T13:28:44.049Z",
+      "updatedAt": "2025-07-25T13:28:44.049Z"
+    },
+    {
+      "id": "job_1753527143812_gyxwtl8yo",
+      "type": "pipeline-deployment",
+      "status": "processing",
+      "state": "deploying",
+      "targetId": "pipe_8059ab38-5b10-4e52-ac86-89e6f6e1780b",
+      "targetType": "pipeline",
+      "name": "Deploy ",
+      "description": "Deploying pipeline resources and configurations",
+      "metadata": {
+        "pipelineType": "llm",
+        "pipelineName": "",
+        "steps": [
+          {
+            "id": "validate",
+            "name": "Validating configuration",
+            "status": "pending"
+          },
+          {
+            "id": "resources",
+            "name": "Allocating resources",
+            "status": "pending"
+          },
+          {
+            "id": "deploy",
+            "name": "Deploying pipeline",
+            "status": "pending"
+          },
+          {
+            "id": "test",
+            "name": "Running tests",
+            "status": "pending"
+          },
+          {
+            "id": "activate",
+            "name": "Activating pipeline",
+            "status": "pending"
+          }
+        ]
+      },
+      "createdAt": "2025-07-26T10:52:23.812Z",
+      "updatedAt": "2025-07-26T10:52:23.812Z"
+    },
+    {
+      "id": "job_1753527176038_rsjunaftx",
+      "type": "pipeline-deployment",
+      "status": "processing",
+      "state": "deploying",
+      "targetId": "pipe_fcb46684-9646-404e-b685-bc36a8c4b48d",
+      "targetType": "pipeline",
+      "name": "Deploy ",
+      "description": "Deploying pipeline resources and configurations",
+      "metadata": {
+        "pipelineType": "llm",
+        "pipelineName": "",
+        "steps": [
+          {
+            "id": "validate",
+            "name": "Validating configuration",
+            "status": "pending"
+          },
+          {
+            "id": "resources",
+            "name": "Allocating resources",
+            "status": "pending"
+          },
+          {
+            "id": "deploy",
+            "name": "Deploying pipeline",
+            "status": "pending"
+          },
+          {
+            "id": "test",
+            "name": "Running tests",
+            "status": "pending"
+          },
+          {
+            "id": "activate",
+            "name": "Activating pipeline",
+            "status": "pending"
+          }
+        ]
+      },
+      "createdAt": "2025-07-26T10:52:56.038Z",
+      "updatedAt": "2025-07-26T10:52:56.038Z"
+    },
+    {
+      "id": "job_1753527318140_gm8adrcie",
+      "type": "ingestion",
+      "module": "ingest",
+      "targetId": "coll_acfce4e3-264e-4a41-9927-b8a6fe741592",
+      "status": "completed",
+      "state": "completed",
+      "stateDetails": {
+        "message": "Ingestion complete",
+        "startedAt": "2025-07-26T10:55:18.094Z",
+        "progress": {
+          "current": 0,
+          "total": 0
+        },
+        "lastStateChange": "2025-07-26T10:55:29.325Z",
+        "completedAt": "2025-07-26T10:55:29.325Z"
+      },
+      "config": {
+        "processing": {
+          "strategy": "fixed",
+          "chunkSize": 512,
+          "chunkOverlap": 64,
+          "preprocessing": [
+            "remove_html",
+            "extract_metadata"
+          ]
+        },
+        "embedding": {
+          "model": "bge-large-en-v1.5",
+          "provider": "local"
+        },
+        "vectorStore": {
+          "type": "qdrant",
+          "connectionType": "cloud",
+          "collectionName": "collection_1753527314012",
+          "namespace": ""
+        }
+      },
+      "createdAt": "2025-07-26T10:55:18.140Z",
+      "updatedAt": "2025-07-26T10:55:29.325Z",
+      "results": {
+        "chunksCreated": 1234,
+        "embeddingsGenerated": 1234,
+        "indexedDocuments": 1,
+        "failedDocuments": 0
+      }
     }
   ]
 }

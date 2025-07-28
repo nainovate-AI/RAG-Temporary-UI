@@ -262,6 +262,118 @@
         "total": 100,
         "stage": "completed"
       }
+    },
+    {
+      "name": "",
+      "description": "",
+      "tags": [],
+      "accessLevel": "public",
+      "documentCount": 0,
+      "totalChunks": 0,
+      "totalSize": 0,
+      "embeddingModel": {
+        "id": "bge-large-en-v1.5",
+        "name": "bge-large-en-v1.5",
+        "provider": "local",
+        "dimensions": 1536
+      },
+      "vectorStore": {
+        "type": "qdrant",
+        "connectionType": "cloud",
+        "collectionName": "collection_1753449553054",
+        "namespace": ""
+      },
+      "chunkingConfig": {
+        "strategy": "recursive",
+        "chunkSize": 512,
+        "chunkOverlap": 64
+      },
+      "status": "processing",
+      "metadata": {
+        "tags": [],
+        "accessLevel": "public"
+      },
+      "id": "coll_7b6c810f-be13-4297-a064-f01a72ead77e",
+      "createdAt": "2025-07-25T13:20:53.775Z",
+      "updatedAt": "2025-07-25T13:20:53.775Z"
+    },
+    {
+      "name": "",
+      "description": "",
+      "tags": [],
+      "accessLevel": "public",
+      "documentCount": 0,
+      "totalChunks": 1234,
+      "totalSize": 0,
+      "embeddingModel": {
+        "id": "bge-large-en-v1.5",
+        "name": "bge-large-en-v1.5",
+        "provider": "local",
+        "dimensions": 1536
+      },
+      "vectorStore": {
+        "type": "qdrant",
+        "connectionType": "cloud",
+        "collectionName": "collection_1753449553054",
+        "namespace": ""
+      },
+      "chunkingConfig": {
+        "strategy": "recursive",
+        "chunkSize": 512,
+        "chunkOverlap": 64
+      },
+      "status": "ready",
+      "metadata": {
+        "tags": [],
+        "accessLevel": "public"
+      },
+      "id": "coll_c81b6e09-0d2b-409b-8200-b17cfa95a636",
+      "createdAt": "2025-07-25T13:21:01.367Z",
+      "updatedAt": "2025-07-25T13:21:51.392Z",
+      "progress": {
+        "current": 100,
+        "total": 100,
+        "stage": "completed"
+      }
+    },
+    {
+      "name": "",
+      "description": "",
+      "tags": [],
+      "accessLevel": "public",
+      "documentCount": 0,
+      "totalChunks": 1234,
+      "totalSize": 0,
+      "embeddingModel": {
+        "id": "bge-large-en-v1.5",
+        "name": "bge-large-en-v1.5",
+        "provider": "local",
+        "dimensions": 1536
+      },
+      "vectorStore": {
+        "type": "qdrant",
+        "connectionType": "cloud",
+        "collectionName": "collection_1753527314012",
+        "namespace": ""
+      },
+      "chunkingConfig": {
+        "strategy": "fixed",
+        "chunkSize": 512,
+        "chunkOverlap": 64
+      },
+      "status": "ready",
+      "metadata": {
+        "tags": [],
+        "accessLevel": "public"
+      },
+      "id": "coll_acfce4e3-264e-4a41-9927-b8a6fe741592",
+      "createdAt": "2025-07-26T10:55:18.063Z",
+      "updatedAt": "2025-07-26T10:55:31.150Z",
+      "progress": {
+        "current": 100,
+        "total": 100,
+        "stage": "completed"
+      }
     }
   ]
 }

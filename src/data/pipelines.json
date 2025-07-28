@@ -251,6 +251,153 @@
       },
       "createdAt": "2025-07-24T06:42:52.149Z",
       "updatedAt": "2025-07-24T06:42:52.149Z"
+    },
+    {
+      "id": "pipe_83ebec27-a857-456c-9bd1-5d37b5e20287",
+      "name": "",
+      "description": "",
+      "type": "rag",
+      "module": "pipeline",
+      "status": "draft",
+      "state": "configuring",
+      "stateDetails": {
+        "message": "Setting up pipeline configuration",
+        "lastStateChange": "2025-07-25T13:28:42.776Z"
+      },
+      "config": {
+        "basicInfo": {
+          "type": "rag",
+          "name": "",
+          "description": "",
+          "useCase": "",
+          "tags": []
+        },
+        "collections": [],
+        "retrieval": {
+          "searchMethod": "hybrid",
+          "topK": 5,
+          "scoreThreshold": 0.7
+        },
+        "memory": {
+          "enabled": false,
+          "type": "none"
+        },
+        "llm": {
+          "provider": "openai",
+          "model": "gpt-3.5-turbo",
+          "temperature": 0.7,
+          "maxTokens": 1000,
+          "systemPrompt": "",
+          "userPromptTemplate": "",
+          "streaming": true
+        }
+      },
+      "metrics": {
+        "totalQueries": 0,
+        "avgLatency": 0,
+        "successRate": 0,
+        "costPerDay": 0
+      },
+      "createdAt": "2025-07-25T13:28:42.776Z",
+      "updatedAt": "2025-07-25T13:28:42.776Z"
+    },
+    {
+      "id": "pipe_8059ab38-5b10-4e52-ac86-89e6f6e1780b",
+      "name": "",
+      "description": "",
+      "type": "llm",
+      "module": "pipeline",
+      "status": "draft",
+      "state": "configuring",
+      "stateDetails": {
+        "message": "Setting up pipeline configuration",
+        "lastStateChange": "2025-07-26T10:52:22.949Z"
+      },
+      "config": {
+        "basicInfo": {
+          "type": "llm",
+          "name": "",
+          "description": "",
+          "useCase": "",
+          "tags": []
+        },
+        "collections": [],
+        "retrieval": {
+          "searchMethod": "hybrid",
+          "topK": 5,
+          "scoreThreshold": 0.7
+        },
+        "memory": {
+          "enabled": false,
+          "type": "none"
+        },
+        "llm": {
+          "provider": "openai",
+          "model": "gpt-3.5-turbo",
+          "temperature": 0.7,
+          "maxTokens": 1000,
+          "systemPrompt": "",
+          "userPromptTemplate": "",
+          "streaming": true
+        }
+      },
+      "metrics": {
+        "totalQueries": 0,
+        "avgLatency": 0,
+        "successRate": 0,
+        "costPerDay": 0
+      },
+      "createdAt": "2025-07-26T10:52:22.949Z",
+      "updatedAt": "2025-07-26T10:52:22.949Z"
+    },
+    {
+      "id": "pipe_fcb46684-9646-404e-b685-bc36a8c4b48d",
+      "name": "",
+      "description": "",
+      "type": "llm",
+      "module": "pipeline",
+      "status": "draft",
+      "state": "configuring",
+      "stateDetails": {
+        "message": "Setting up pipeline configuration",
+        "lastStateChange": "2025-07-26T10:52:55.961Z"
+      },
+      "config": {
+        "basicInfo": {
+          "type": "llm",
+          "name": "",
+          "description": "",
+          "useCase": "",
+          "tags": []
+        },
+        "collections": [],
+        "retrieval": {
+          "searchMethod": "hybrid",
+          "topK": 5,
+          "scoreThreshold": 0.7
+        },
+        "memory": {
+          "enabled": false,
+          "type": "none"
+        },
+        "llm": {
+          "provider": "openai",
+          "model": "gpt-3.5-turbo",
+          "temperature": 0.7,
+          "maxTokens": 1000,
+          "systemPrompt": "",
+          "userPromptTemplate": "",
+          "streaming": true
+        }
+      },
+      "metrics": {
+        "totalQueries": 0,
+        "avgLatency": 0,
+        "successRate": 0,
+        "costPerDay": 0
+      },
+      "createdAt": "2025-07-26T10:52:55.961Z",
+      "updatedAt": "2025-07-26T10:52:55.961Z"
     }
   ]
 }
