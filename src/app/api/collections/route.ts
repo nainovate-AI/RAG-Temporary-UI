@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { storageService } from '@/services/storage.service';
 import { v4 as uuidv4 } from 'uuid';
 
+
 export async function GET() {
   try {
     const data = await storageService.readJSON('collections.json');

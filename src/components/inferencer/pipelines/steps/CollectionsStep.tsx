@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { StatusBadge } from '@/components/ui/badge';
 import { WizardStepProps } from '@/types/wizard.types';
-import { useAppSelector } from '@/store/hooks';
+import { useCollectionsStore, useActiveCollections } from '@/stores';
 import { 
   Search, 
   Database, 
@@ -25,8 +25,9 @@ interface CollectionsData {
 }
 
 export function CollectionsStep({ data, onChange }: WizardStepProps) {
-  const { entities: allCollections } = useAppSelector(state => state.collections);
-  const collectionsArray = Object.values(allCollections).filter(c => c.status === 'ready');
+  // ✅ Replace Redux with Zustand - much cleaner!
+  const { entities: allCollections } = useCollectionsStore();
+  const collectionsArray = useActiveCollections(); // Use the selector hook directly
   
   const [selectedCollections, setSelectedCollections] = useState<string[]>(() => {
     const initialData = data as CollectionsData;
@@ -39,7 +40,7 @@ export function CollectionsStep({ data, onChange }: WizardStepProps) {
     onChange({ collections: selectedCollections, _isValid: isValid });
   }, [selectedCollections, onChange]);
 
-  // Rest of the component remains the same...
+  // Rest of the component logic stays the same
   const filteredCollections = collectionsArray.filter(collection =>
     collection.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     collection.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -57,7 +58,7 @@ export function CollectionsStep({ data, onChange }: WizardStepProps) {
   const selectedStats = {
     totalDocuments: selectedCollections.reduce((acc, id) => {
         const collection = allCollections[id];
-        return acc + (collection?.documentCount || 0);  // Fixed: use documentCount directly
+        return acc + (collection?.documentCount || 0);
     }, 0),
     totalChunks: selectedCollections.reduce((acc, id) => {
         const collection = allCollections[id];
@@ -67,7 +68,7 @@ export function CollectionsStep({ data, onChange }: WizardStepProps) {
         const collection = allCollections[id];
         return acc + (collection?.totalSize || 0);
     }, 0),
-    };
+  };
 
   return (
     <div className="space-y-6">

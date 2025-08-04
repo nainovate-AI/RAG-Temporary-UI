@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIngestState } from '../providers/ingest-state-provider';
-import { useAppSelector } from '@/store/hooks';
+import { useEmbeddingsStore } from '@/stores';
 
 interface EmbeddingData {
   model: string;
@@ -33,15 +33,11 @@ export function EmbeddingStep({
 }: WizardStepProps) {
   const router = useRouter();
   const { updateStepData } = useIngestState();
-  const embeddings = useAppSelector(state => state.embeddings.entities);
-  console.log('Embeddings from store:', embeddings);
-  const embeddingIds = useAppSelector(state => state.embeddings.ids);
   
-  // Filter only active embeddings
-  const activeEmbeddings = embeddingIds
-    .map(id => embeddings[id])
-    .filter(embedding => embedding && embedding.status === 'active');
-
+  // ✅ Fixed: Get both entities and active embeddings
+  const { entities: embeddings, getActiveEmbeddings, getEmbeddingById } = useEmbeddingsStore();
+  const activeEmbeddings = getActiveEmbeddings();
+  
   const [formData, setFormData] = useState<EmbeddingData>({
     model: activeEmbeddings[0]?.id || '',
     provider: activeEmbeddings[0]?.provider || '',
@@ -53,10 +49,9 @@ export function EmbeddingStep({
     updateStepData('embedding', formData);
   }, [formData]);
 
-  const selectedEmbedding = embeddings[formData.model];
+  // ✅ Fixed: Use getEmbeddingById for object lookup
+  const selectedEmbedding = getEmbeddingById(formData.model);
 
-  // Rest of your component code stays the same...
-  
   return (
     <div className="space-y-6">
       <CardHeader>
@@ -113,7 +108,6 @@ export function EmbeddingStep({
                     provider: embedding.provider 
                   })}
                 >
-                  {/* Rest of the card content stays the same */}
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
@@ -187,15 +181,35 @@ export function EmbeddingStep({
             })}
           </div>
 
-          {/* Recommendation Box - stays the same */}
+          {/* Recommendation Box */}
           <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-            {/* ... existing recommendation content ... */}
+            <CardHeader>
+              <CardTitle className="text-sm flex items-center gap-2 text-blue-700 dark:text-blue-400">
+                <Info className="h-4 w-4" />
+                Recommendation
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-blue-700 dark:text-blue-400">
+                For most use cases, we recommend OpenAI's text-embedding-ada-002 for its balance of performance and cost.
+              </p>
+            </CardContent>
           </Card>
 
-          {/* Cost Estimation - stays the same */}
+          {/* Cost Estimation */}
           {selectedEmbedding && (
             <Card className="bg-muted/30">
-              {/* ... existing cost estimation content ... */}
+              <CardHeader>
+                <CardTitle className="text-sm">Estimated Cost</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Based on selected model: <span className="font-medium">{selectedEmbedding.name}</span>
+                </p>
+                <p className="text-lg font-semibold mt-2">
+                  ${selectedEmbedding.costPer1kTokens} per 1K tokens
+                </p>
+              </CardContent>
             </Card>
           )}
         </>
@@ -204,7 +218,7 @@ export function EmbeddingStep({
   );
 }
 
-// Helper functions
+// Helper functions stay the same
 const getProviderBadgeColor = (provider: string) => {
   switch (provider) {
     case 'openai':

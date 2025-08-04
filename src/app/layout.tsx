@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { ReduxProvider } from '@/providers/redux-provider'
+// import { ReduxProvider } from '@/providers/redux-provider'
 import { AppStateProvider } from '@/providers/app-state-provider'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -36,13 +36,13 @@ export default function RootLayout({
             `,
           }}
         />
-        <ReduxProvider>
+        {/* <ReduxProvider> */}
           <AppStateProvider>
             <div className="min-h-screen bg-background">
               {children}
             </div>
           </AppStateProvider>
-        </ReduxProvider>
+        {/* </ReduxProvider> */}
       </body>
     </html>
   )

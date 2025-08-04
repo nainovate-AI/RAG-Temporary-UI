@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useAppSelector } from '@/store/hooks';
+// import { useAppSelector } from '@/store/hooks';
+import { useCollectionsStore } from '@/stores';
 import { MainLayout, PageHeader, PageContent } from '@/components/layout/main-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { 
+import {
   ArrowLeft,
   FileText,
   Search,
@@ -30,10 +31,12 @@ export default function CollectionDetailPage() {
   const router = useRouter();
   const collectionId = params.id as string;
   const [loading, setLoading] = useState(true);
-  
+
   // Get collection from Redux store
-  const collection = useAppSelector(state => state.collections.entities[collectionId]);
-  
+  // const collection = useAppSelector(state => state.collections.entities[collectionId]);
+  const { getCollectionById } = useCollectionsStore();
+  const collection = getCollectionById(collectionId);
+
   useEffect(() => {
     const checkCollectionStatus = async () => {
       try {
@@ -41,12 +44,12 @@ export default function CollectionDetailPage() {
         if (collection?.status === 'processing') {
           const jobsResponse = await dataService.getJobs();
           if (jobsResponse.data) {
-            const activeJob = jobsResponse.data.jobs.find((job: any) => 
-              job.targetId === collectionId && 
+            const activeJob = jobsResponse.data.jobs.find((job: any) =>
+              job.targetId === collectionId &&
               job.type === 'ingestion' &&
               job.status === 'processing'
             );
-            
+
             if (activeJob) {
               // Redirect to job monitoring page
               router.replace(`/jobs/${activeJob.id}`);
@@ -54,7 +57,7 @@ export default function CollectionDetailPage() {
             }
           }
         }
-        
+
         // Collection is ready, show the page
         setLoading(false);
       } catch (error) {
@@ -62,7 +65,7 @@ export default function CollectionDetailPage() {
         setLoading(false);
       }
     };
-    
+
     if (collection) {
       checkCollectionStatus();
     } else {
@@ -70,7 +73,7 @@ export default function CollectionDetailPage() {
       router.replace('/contexter');
     }
   }, [collectionId, collection, router]);
-  
+
   if (loading) {
     return (
       <MainLayout>
@@ -82,11 +85,11 @@ export default function CollectionDetailPage() {
       </MainLayout>
     );
   }
-  
+
   if (!collection) {
     return null;
   }
-  
+
   return (
     <MainLayout>
       <PageHeader
@@ -111,7 +114,7 @@ export default function CollectionDetailPage() {
           </Button>
         </div>
       </PageHeader>
-      
+
       <PageContent>
         <div className="space-y-6">
           {/* Collection Stats */}
@@ -126,7 +129,7 @@ export default function CollectionDetailPage() {
                 <p className="text-xs text-muted-foreground">Total documents</p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Chunks</CardTitle>
@@ -137,7 +140,7 @@ export default function CollectionDetailPage() {
                 <p className="text-xs text-muted-foreground">Vector embeddings</p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Storage</CardTitle>
@@ -148,7 +151,7 @@ export default function CollectionDetailPage() {
                 <p className="text-xs text-muted-foreground">Total size</p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Created</CardTitle>
@@ -160,7 +163,7 @@ export default function CollectionDetailPage() {
               </CardContent>
             </Card>
           </div>
-          
+
           {/* Search and Actions */}
           <Card>
             <CardHeader>
@@ -189,7 +192,7 @@ export default function CollectionDetailPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Collection Info */}
           <div className="grid gap-6 md:grid-cols-2">
             <Card>
@@ -214,7 +217,7 @@ export default function CollectionDetailPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div>
                   <h4 className="text-sm font-medium mb-2">Chunking Strategy</h4>
                   <div className="text-sm space-y-1">
@@ -234,7 +237,7 @@ export default function CollectionDetailPage() {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Vector Store</CardTitle>
@@ -258,7 +261,7 @@ export default function CollectionDetailPage() {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="pt-4">
                   <h4 className="text-sm font-medium mb-2">Metadata</h4>
                   <div className="flex flex-wrap gap-1">
@@ -272,7 +275,7 @@ export default function CollectionDetailPage() {
               </CardContent>
             </Card>
           </div>
-          
+
           {/* Documents Placeholder */}
           <Card>
             <CardHeader>

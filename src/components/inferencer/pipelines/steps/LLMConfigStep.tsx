@@ -13,7 +13,11 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { WizardStepProps } from '@/types/wizard.types';
-import { useAppSelector } from '@/store/hooks';
+// ❌ Remove Redux import:
+// import { useAppSelector } from '@/store/hooks';
+
+// ✅ Add Zustand import:
+import { useActiveModels } from '@/stores';
 import { usePipelineState } from '@/components/inferencer/pipelines/providers/pipeline-state-provider';
 import { 
   Info, 
@@ -55,8 +59,9 @@ interface LLMData {
 
 export function LLMConfigStep({ data, onChange }: WizardStepProps) {
   const router = useRouter();
-  const { entities: availableModels } = useAppSelector(state => state.models);
-  const modelsArray = Object.values(availableModels).filter(m => m.status === 'active');
+  
+  // ✅ Replace Redux with Zustand - much cleaner!
+  const modelsArray = useActiveModels(); // Direct active models, no manual filtering needed
   
   // Get pipeline type and use case from context
   const { state: pipelineState } = usePipelineState();

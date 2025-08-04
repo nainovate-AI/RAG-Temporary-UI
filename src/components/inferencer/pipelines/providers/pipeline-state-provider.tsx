@@ -2,9 +2,7 @@
 
 import React, { createContext, useContext, useReducer, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAppDispatch } from '@/store/hooks';
-import { addPipeline } from '@/store/slices/pipelines.slice';
-import { addJob } from '@/store/slices/jobs.slice';
+import { usePipelinesStore, useJobsStore } from '@/stores';
 import { dataService } from '@/services/data.service';
 
 // Add the props interface
@@ -140,8 +138,11 @@ function pipelineReducer(state: PipelineState, action: PipelineAction): Pipeline
 // Update the function signature to accept props
 export function PipelineStateProvider({ children, initialType = 'rag' }: PipelineStateProviderProps) {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   
+  // ✅ Fixed: Get store actions properly
+  const { addPipeline } = usePipelinesStore();
+  const { addJob } = useJobsStore();
+
   // Use initialType in the initial state
   const [state, localDispatch] = useReducer(pipelineReducer, {
     formData: {
@@ -184,6 +185,10 @@ export function PipelineStateProvider({ children, initialType = 'rag' }: Pipelin
         module: 'pipeline' as const,
         status: 'draft',
         state: 'configuring',
+        stateDetails: {
+          message: 'Pipeline created, preparing for deployment',
+          lastStateChange: new Date().toISOString(),
+        },
         config: {
           basicInfo: state.formData.basicInfo,
           collections: state.formData.collections || [],
@@ -196,10 +201,10 @@ export function PipelineStateProvider({ children, initialType = 'rag' }: Pipelin
             enabled: false,
             type: 'none',
           },
-          // mcp: state.formData.mcp || {
-          //   enabled: false,
-          //   servers: [],
-          // },
+          mcp: state.formData.mcp || {
+            enabled: false,
+            servers: [],
+          },
           llm: state.formData.llm || {
             provider: 'openai',
             model: 'gpt-3.5-turbo',
@@ -218,19 +223,25 @@ export function PipelineStateProvider({ children, initialType = 'rag' }: Pipelin
         throw new Error(pipelineResponse.error || 'Failed to create pipeline');
       }
 
-      // Add to Redux store
-      dispatch(addPipeline(pipelineResponse.data));
+      // ✅ Add to Zustand store - much simpler than Redux!
+      addPipeline(pipelineResponse.data);
 
-      // Create deployment job
+      // ✅ Fixed: Create deployment job with correct type and structure
       const jobData = {
-        type: 'pipeline-deployment',
+        type: 'pipeline_deployment' as const, // Fixed: underscore, not dash
+        module: 'pipeline' as const,
+        targetId: pipelineResponse.data.id,
         status: 'processing',
         state: 'deploying',
-        targetId: pipelineResponse.data.id,
-        targetType: 'pipeline',
-        name: `Deploy ${pipelineResponse.data.name}`,
-        description: 'Deploying pipeline resources and configurations',
-        metadata: {
+        stateDetails: {
+          message: 'Deploying pipeline resources and configurations',
+          startedAt: new Date().toISOString(),
+          progress: {
+            current: 0,
+            total: 5,
+          },
+        },
+        config: {
           pipelineType: state.pipelineType,
           pipelineName: pipelineResponse.data.name,
           steps: [
@@ -248,22 +259,22 @@ export function PipelineStateProvider({ children, initialType = 'rag' }: Pipelin
         throw new Error(jobError || 'Failed to create deployment job');
       }
 
-      // Add job to Redux store
-      dispatch(addJob(job));
+      // ✅ Add job to Zustand store
+      addJob(job);
 
       // Navigate to job monitoring page
       router.push(`/inferencer`);
-      
+
     } catch (error) {
       console.error('Error submitting pipeline:', error);
-      localDispatch({ 
-        type: 'SET_ERROR', 
-        error: error instanceof Error ? error.message : 'Failed to create pipeline' 
+      localDispatch({
+        type: 'SET_ERROR',
+        error: error instanceof Error ? error.message : 'Failed to create pipeline'
       });
     } finally {
       localDispatch({ type: 'SET_SUBMITTING', isSubmitting: false });
     }
-  }, [state.formData, state.pipelineType, dispatch, router]);
+  }, [state.formData, state.pipelineType, router, addPipeline, addJob]); // ✅ Fixed: removed dispatch, added correct dependencies
 
   const reset = useCallback(() => {
     localDispatch({ type: 'RESET' });

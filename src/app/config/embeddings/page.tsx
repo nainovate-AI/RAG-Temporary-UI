@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
-import { 
+import {
   Brain,
   Plus,
   Settings,
@@ -41,17 +41,21 @@ import {
 } from 'lucide-react'
 import { formatNumber, formatBytes } from '@/lib/utils'
 import { cn } from '@/lib/utils'
-import { useAppSelector, useAppDispatch } from '@/store/hooks'
+// import { useAppSelector, useAppDispatch } from '@/store/hooks'
 import { dataService } from '@/services/data.service'
-import { setEmbeddings } from '@/store/slices/embeddings.slice'
+// import { setEmbeddings } from '@/store/slices/embeddings.slice'
 import systemResourcesData from '@/data/system-resources.json'
 import { SystemResources } from '@/components/config/system-resources'
+import { useEmbeddingsStore, useEmbeddingsActions } from '@/stores';
+
 
 export default function EmbeddingsConfigPage() {
-  const dispatch = useAppDispatch()
-  const { entities: embeddings, loading } = useAppSelector(state => state.embeddings)
+  // const dispatch = useAppDispatch()
+  // const { entities: embeddings, loading } = useAppSelector(state => state.embeddings)
+  const { entities: embeddings, loading } = useEmbeddingsStore();
+  const { loadEmbeddings } = useEmbeddingsActions();
   const embeddingsArray = Object.values(embeddings)
-  
+
   const [showAddModal, setShowAddModal] = useState(false)
   const [showActivationModal, setShowActivationModal] = useState(false)
   const [selectedModel, setSelectedModel] = useState<any>(null)
@@ -67,16 +71,16 @@ export default function EmbeddingsConfigPage() {
     loadEmbeddings()
   }, [])
 
-  const loadEmbeddings = async () => {
-    try {
-      const response = await dataService.getEmbeddings()
-      if (response.data) {
-        dispatch(setEmbeddings(response.data.embeddings))
-      }
-    } catch (error) {
-      console.error('Failed to load embeddings:', error)
-    }
-  }
+  // const loadEmbeddings = async () => {
+  //   try {
+  //     const response = await dataService.getEmbeddings()
+  //     if (response.data) {
+  //       dispatch(setEmbeddings(response.data.embeddings))
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to load embeddings:', error)
+  //   }
+  // }
 
   // Filter embeddings by type and status
   const localActiveModels = embeddingsArray.filter(m => m.type === 'local' && m.status === 'active')
@@ -95,11 +99,11 @@ export default function EmbeddingsConfigPage() {
 
   const confirmActivation = async () => {
     if (!selectedModel) return
-    
+
     setShowActivationModal(false)
     setActivatingModel(selectedModel.id)
     setActivationProgress(0)
-    
+
     // Simulate activation process
     const interval = setInterval(() => {
       setActivationProgress(prev => {
@@ -116,8 +120,8 @@ export default function EmbeddingsConfigPage() {
   }
 
   const toggleModelExpanded = (modelId: string) => {
-    setExpandedModels(prev => 
-      prev.includes(modelId) 
+    setExpandedModels(prev =>
+      prev.includes(modelId)
         ? prev.filter(id => id !== modelId)
         : [...prev, modelId]
     )
@@ -174,7 +178,7 @@ export default function EmbeddingsConfigPage() {
                   <div className="w-2 h-2 bg-green-500 rounded-full" />
                 </span>
               </button>
-              
+
               {expandedLocal && (
                 <div className="space-y-3">
                   {localActiveModels.map((model) => (

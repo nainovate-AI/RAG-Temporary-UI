@@ -15,30 +15,28 @@ import {
   Clock,
   HardDrive,
   Hash,
-  Filter,
   Database,
   Loader2,
-  AlertCircle
 } from 'lucide-react';
 import { cn, formatDate, formatFileSize } from '@/lib/utils';
-import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { setCollections } from '@/store/slices/collections.slice';
-import { dataService } from '@/services/data.service';
+import { 
+  useCollectionsStore, 
+  useCollectionsActions 
+} from '@/stores';
 import { useModuleService } from '@/hooks/useModuleService';
 
 export default function ContexterPage() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const moduleService = useModuleService();
   
   // Get collections from Redux store
-  const { entities: collections, loading, error } = useAppSelector(state => state.collections);
-  const collectionsArray = Object.values(collections);
+  const { entities: collections, loading, error } = useCollectionsStore();
+const { loadCollections } = useCollectionsActions();
+const collectionsArray = Object.values(collections);
   
   // Local state
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [isLoading, setIsLoading] = useState(false);
   
   // Get status configurations from module service
   const statusConfigs = moduleService.getModuleStatuses('ingest');
@@ -47,20 +45,7 @@ export default function ContexterPage() {
   useEffect(() => {
     loadCollections();
   }, []);
-  
-  const loadCollections = async () => {
-    setIsLoading(true);
-    try {
-      const response = await dataService.getCollections();
-      if (response.data) {
-        dispatch(setCollections(response.data.collections));
-      }
-    } catch (error) {
-      console.error('Failed to load collections:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
   
   // Filter collections based on search and status
   const filteredCollections = collectionsArray.filter(collection => {
@@ -97,7 +82,7 @@ export default function ContexterPage() {
     };
   };
 
-  if (isLoading && collectionsArray.length === 0) {
+  if (loading && collectionsArray.length === 0) {
     return (
       <MainLayout>
         <PageHeader

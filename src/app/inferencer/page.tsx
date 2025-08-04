@@ -29,27 +29,36 @@ import {
   BarChart3
 } from 'lucide-react';
 import { cn, formatDate } from '@/lib/utils';
-import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { setPipelines, updatePipelineStatus } from '@/store/slices/pipelines.slice';
+// import { useAppSelector, useAppDispatch } from '@/store/hooks';
+// import { setPipelines, updatePipelineStatus } from '@/store/slices/pipelines.slice';
+import { 
+  usePipelinesStore, 
+  usePipelinesActions,
+  // useActivePipelines,
+  useCollectionsStore,
+} from '@/stores';
 import { dataService } from '@/services/data.service';
 import { useModuleService } from '@/hooks/useModuleService';
 
 export default function InferencerPage() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const moduleService = useModuleService();
+  const { entities: pipelines, loading, error } = usePipelinesStore();
+const { entities: collectionsStore } = useCollectionsStore();
+const { loadPipelines, stopPipeline } = usePipelinesActions();
   
   // Get pipelines from Redux store
-  const { entities: pipelines, loading, error } = useAppSelector(state => state.pipelines);
+  // const { entities: pipelines, loading, error } = useAppSelector(state => state.pipelines);
   const pipelinesArray = Object.values(pipelines);
   // Get collections from Redux store
-  const { entities: collectionsStore } = useAppSelector(state => state.collections);
+  // const { entities: collectionsStore } = useAppSelector(state => state.collections);
   
   // Local state
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   
   // Get status configurations from module service
   const statusConfigs = moduleService.getModuleStatuses('pipeline');
@@ -59,19 +68,19 @@ export default function InferencerPage() {
     loadPipelines();
   }, []);
   
-  const loadPipelines = async () => {
-    setIsLoading(true);
-    try {
-      const response = await dataService.getPipelines();
-      if (response.data) {
-        dispatch(setPipelines(response.data.pipelines));
-      }
-    } catch (error) {
-      console.error('Failed to load pipelines:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const loadPipelines = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await dataService.getPipelines();
+  //     if (response.data) {
+  //       dispatch(setPipelines(response.data.pipelines));
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to load pipelines:', error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
   
   // Filter pipelines based on search and filters
   const filteredPipelines = pipelinesArray.filter(pipeline => {
@@ -100,12 +109,12 @@ export default function InferencerPage() {
         });
         
         if (response.data) {
-            dispatch(updatePipelineStatus({
+            stopPipeline({
                 id: pipelineId,
                 status: newStatus,
                 state: newState,
                 message: moduleService.getStateDescription('pipeline', newState) || ''
-            }));
+            });
         }
         } catch (error) {
             console.error('Failed to update pipeline status:', error);
@@ -152,7 +161,7 @@ export default function InferencerPage() {
     return type === 'rag' ? FileText : MessageSquare;
   };
 
-  if (isLoading && pipelinesArray.length === 0) {
+  if (loading && pipelinesArray.length === 0) {
     return (
       <MainLayout>
         <PageHeader

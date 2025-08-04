@@ -46,15 +46,20 @@ import {
 } from 'lucide-react'
 import { formatNumber, formatBytes } from '@/lib/utils'
 import { cn } from '@/lib/utils'
-import { useAppSelector, useAppDispatch } from '@/store/hooks'
+// ❌ Remove Redux imports:
+// import { useAppSelector, useAppDispatch } from '@/store/hooks'
+// import { setModels } from '@/store/slices/models.slice'
+
+// ✅ Add Zustand imports:
+import { useModelsStore } from '@/stores'
 import { dataService } from '@/services/data.service'
-import { setModels } from '@/store/slices/models.slice'
 import systemResourcesData from '@/data/system-resources.json'
 import { SystemResources } from '@/components/config/system-resources'
 
 export default function LLMProvidersPage() {
-  const dispatch = useAppDispatch()
-  const { entities: models, loading } = useAppSelector(state => state.models)
+  // ✅ Replace Redux with Zustand
+  const { getModelsArray, loading, setModels } = useModelsStore();
+  const models = getModelsArray()
   const modelsArray = Object.values(models)
   
   const [showAddModal, setShowAddModal] = useState(false)
@@ -76,7 +81,8 @@ export default function LLMProvidersPage() {
     try {
       const response = await dataService.getModels()
       if (response.data) {
-        dispatch(setModels(response.data.models))
+        // ✅ Use Zustand setter instead of Redux dispatch
+        setModels(response.data.models)
       }
     } catch (error) {
       console.error('Failed to load models:', error)

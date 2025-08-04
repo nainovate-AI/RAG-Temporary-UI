@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIngestState } from '../providers/ingest-state-provider';
-import { useAppSelector } from '@/store/hooks';
+import { useVectorStoresStore } from '@/stores';
 
 interface VectorStoreData {
   type: string;
@@ -37,9 +37,8 @@ export function VectorStoreStep({
   errors 
 }: WizardStepProps) {
   const { updateStepData } = useIngestState();
-  const vectorStores = useAppSelector(state => state.vectorStores.entities);
-  const vectorStoreIds = useAppSelector(state => state.vectorStores.ids);
-  const loading = useAppSelector(state => state.vectorStores.loading);
+  const { entities: vectorStores, ids: vectorStoreIds, loading } = useVectorStoresStore();
+
   
   // Filter only active vector stores
   const activeStores = vectorStoreIds

@@ -398,6 +398,59 @@
       },
       "createdAt": "2025-07-26T10:52:55.961Z",
       "updatedAt": "2025-07-26T10:52:55.961Z"
+    },
+    {
+      "id": "pipe_1c79f191-4019-42e3-bfac-b0cc10282833",
+      "name": "",
+      "description": "",
+      "type": "rag",
+      "module": "pipeline",
+      "status": "draft",
+      "state": "configuring",
+      "stateDetails": {
+        "message": "Setting up pipeline configuration",
+        "lastStateChange": "2025-08-04T10:23:39.524Z"
+      },
+      "config": {
+        "basicInfo": {
+          "type": "rag",
+          "name": "",
+          "description": "",
+          "useCase": "",
+          "tags": []
+        },
+        "collections": [],
+        "retrieval": {
+          "searchMethod": "hybrid",
+          "topK": 5,
+          "scoreThreshold": 0.7
+        },
+        "memory": {
+          "enabled": false,
+          "type": "none"
+        },
+        "mcp": {
+          "enabled": false,
+          "servers": []
+        },
+        "llm": {
+          "provider": "openai",
+          "model": "gpt-3.5-turbo",
+          "temperature": 0.7,
+          "maxTokens": 1000,
+          "systemPrompt": "",
+          "userPromptTemplate": "",
+          "streaming": true
+        }
+      },
+      "metrics": {
+        "totalQueries": 0,
+        "avgLatency": 0,
+        "successRate": 0,
+        "costPerDay": 0
+      },
+      "createdAt": "2025-08-04T10:23:39.525Z",
+      "updatedAt": "2025-08-04T10:23:39.525Z"
     }
   ]
 }

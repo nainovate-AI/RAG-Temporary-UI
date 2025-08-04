@@ -25,8 +25,11 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIngestState } from '../providers/ingest-state-provider';
-import { useAppSelector } from '@/store/hooks';
+// ❌ Remove Redux import:
+// import { useAppSelector } from '@/store/hooks';
 
+// ✅ Add Zustand imports:
+import { useEmbeddingsStore, useVectorStoresStore } from '@/stores';
 
 export function ReviewStep({ 
   data, 
@@ -37,31 +40,30 @@ export function ReviewStep({
   isLastStep 
 }: WizardStepProps) {
   const { state } = useIngestState();
+  
+  // ✅ Fixed: Use Zustand for both embeddings and vector stores
+  const { getEmbeddingById } = useEmbeddingsStore();
+  const { getVectorStoreById } = useVectorStoresStore();
+
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   // Validation: only allow proceed if agreedToTerms is true
   const isValid = agreedToTerms;
 
-  // Notify parent about validation state
+  // ✅ Fixed: Remove duplicate onChange calls
   useEffect(() => {
     console.log('Review step - agreedToTerms:', agreedToTerms);
     onChange({ 
       agreedToTerms,
       _isValid: isValid // Using _isValid as a special key for validation
     });
-    onChange({ 
-    agreedToTerms,
-    _isValid: agreedToTerms
-  });
   }, [agreedToTerms, isValid, onChange]);
 
-  // Get data from Redux for display names
-  const embeddings = useAppSelector(state => state.embeddings.entities);
-  const vectorStores = useAppSelector(state => state.vectorStores.entities);
-
   const formData = state.formData;
-  const selectedEmbedding = embeddings[formData.embedding?.model || ''];
-  const selectedVectorStore = vectorStores[formData.vectorStore?.type || ''];
+  
+  // ✅ Fixed: Use getById methods for object lookup
+  const selectedEmbedding = getEmbeddingById(formData.embedding?.model || '');
+  const selectedVectorStore = getVectorStoreById(formData.vectorStore?.type || '');
 
   // Calculate estimates
   const estimates = {

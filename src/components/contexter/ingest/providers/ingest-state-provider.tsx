@@ -2,9 +2,11 @@
 
 import React, { createContext, useContext, useReducer, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAppDispatch } from '@/store/hooks';
-import { addCollection } from '@/store/slices/collections.slice';
-import { addJob } from '@/store/slices/jobs.slice';
+// import { useAppDispatch } from '@/store/hooks';
+// import { addCollection } from '@/store/slices/collections.slice';
+// import { addJob } from '@/store/slices/jobs.slice';
+import { useCollectionsStore, useJobsStore } from '@/stores';
+
 import { dataService } from '@/services/data.service';
 
 interface IngestFormData {
@@ -99,7 +101,9 @@ function ingestReducer(state: IngestState, action: IngestAction): IngestState {
 
 export function IngestStateProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
+  const { addCollection } = useCollectionsStore.getState();
+const { addJob } = useJobsStore.getState();
   
   const [state, localDispatch] = useReducer(ingestReducer, {
     formData: {},
@@ -155,8 +159,7 @@ export function IngestStateProvider({ children }: { children: React.ReactNode })
       }
 
       // Add to Redux store
-      dispatch(addCollection(collection));
-      console.log('4. Added to Redux');
+      addCollection(collection);
 
       // Create ingestion job
       console.log('5. Creating job...');
@@ -189,7 +192,7 @@ export function IngestStateProvider({ children }: { children: React.ReactNode })
       }
 
       // Add to Redux store
-      dispatch(addJob(job));
+      addJob(job);
       console.log('7. Job added to Redux');
      
       // Navigate to job monitoring page
@@ -207,7 +210,7 @@ export function IngestStateProvider({ children }: { children: React.ReactNode })
       console.log('10. Resetting submitting state');
       localDispatch({ type: 'SET_SUBMITTING', isSubmitting: false });
     }
-  }, [state.formData, dispatch, router]);
+  }, [state.formData, router]);
 
   const reset = useCallback(() => {
     localDispatch({ type: 'RESET' });

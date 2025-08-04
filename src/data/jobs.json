@@ -751,6 +751,94 @@
         "indexedDocuments": 1,
         "failedDocuments": 0
       }
+    },
+    {
+      "id": "job_1754300672674_qzzhskoab",
+      "type": "ingestion",
+      "module": "ingest",
+      "targetId": "coll_7b7c297e-94dd-457c-81fc-a35c3e268c9b",
+      "status": "processing",
+      "state": "uploading",
+      "stateDetails": {
+        "message": "Uploading documents",
+        "startedAt": "2025-08-04T09:44:32.435Z",
+        "progress": {
+          "current": 0,
+          "total": 0
+        }
+      },
+      "config": {
+        "processing": {
+          "strategy": "recursive",
+          "chunkSize": 512,
+          "chunkOverlap": 64,
+          "preprocessing": [
+            "remove_html",
+            "extract_metadata"
+          ]
+        },
+        "embedding": {
+          "model": "bge-large-en-v1.5",
+          "provider": "local"
+        },
+        "vectorStore": {
+          "type": "qdrant",
+          "connectionType": "cloud",
+          "collectionName": "collection_1754300650492",
+          "namespace": ""
+        }
+      },
+      "createdAt": "2025-08-04T09:44:32.674Z",
+      "updatedAt": "2025-08-04T09:44:32.674Z"
+    },
+    {
+      "id": "job_1754303019681_bmk3pvv4a",
+      "type": "pipeline_deployment",
+      "module": "pipeline",
+      "targetId": "pipe_1c79f191-4019-42e3-bfac-b0cc10282833",
+      "status": "processing",
+      "state": "deploying",
+      "stateDetails": {
+        "message": "Deploying pipeline resources and configurations",
+        "startedAt": "2025-08-04T10:23:39.555Z",
+        "progress": {
+          "current": 0,
+          "total": 5
+        }
+      },
+      "config": {
+        "pipelineType": "rag",
+        "pipelineName": "",
+        "steps": [
+          {
+            "id": "validate",
+            "name": "Validating configuration",
+            "status": "pending"
+          },
+          {
+            "id": "resources",
+            "name": "Allocating resources",
+            "status": "pending"
+          },
+          {
+            "id": "deploy",
+            "name": "Deploying pipeline",
+            "status": "pending"
+          },
+          {
+            "id": "test",
+            "name": "Running tests",
+            "status": "pending"
+          },
+          {
+            "id": "activate",
+            "name": "Activating pipeline",
+            "status": "pending"
+          }
+        ]
+      },
+      "createdAt": "2025-08-04T10:23:39.682Z",
+      "updatedAt": "2025-08-04T10:23:39.682Z"
     }
   ]
 }

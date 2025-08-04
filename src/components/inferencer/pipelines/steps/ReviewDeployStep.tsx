@@ -8,7 +8,11 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { WizardStepProps } from '@/types/wizard.types';
 import { usePipelineState } from '@/components/inferencer/pipelines/providers/pipeline-state-provider';
-import { useAppSelector } from '@/store/hooks';
+// ❌ Remove Redux import:
+// import { useAppSelector } from '@/store/hooks';
+
+// ✅ Add Zustand imports:
+import { useCollectionsStore, useModelsStore } from '@/stores';
 import { 
   CheckCircle,
   Info,
@@ -33,8 +37,10 @@ interface ReviewData {
 
 export function ReviewDeployStep({ data, onChange, isLastStep }: WizardStepProps) {
   const { state: pipelineState } = usePipelineState();
-  const { entities: collections } = useAppSelector(state => state.collections);
-  const { entities: models } = useAppSelector(state => state.models);
+  
+  // ✅ Replace Redux with Zustand
+  const { getCollectionById } = useCollectionsStore();
+  const { getModelById } = useModelsStore();
   
   const [localData, setLocalData] = useState<ReviewData>({
     agreedToTerms: false,
@@ -45,11 +51,11 @@ export function ReviewDeployStep({ data, onChange, isLastStep }: WizardStepProps
   const formData = pipelineState.formData;
   const pipelineType = pipelineState.pipelineType;
 
-  // Get selected collections (for RAG)
-  const selectedCollections = formData.collections?.map(id => collections[id]).filter(Boolean) || [];
+  // ✅ Get selected collections using Zustand getter (for RAG)
+  const selectedCollections = formData.collections?.map(id => getCollectionById(id)).filter(Boolean) || [];
   
-  // Get selected model
-  const selectedModel = models[formData.llm?.model || ''];
+  // ✅ Get selected model using Zustand getter
+  const selectedModel = getModelById(formData.llm?.model || '');
 
   // Calculate estimates
   const estimates = {
